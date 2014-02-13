@@ -26,8 +26,6 @@ public class TweetsCrawler extends Thread {
         twitter.setOAuthAccessToken(oathAccessToken);
 
         this.location = location;
-
-        System.out.println("Crawler for " + this.location.getName() + " created");
     }
 
     public String getCrawlerName () {
@@ -57,10 +55,24 @@ public class TweetsCrawler extends Thread {
             this.isCrawling = true;
         }
 
+        PrintWriter out = null;
+        File tweetsFile = new File(Application.TWEETS_FOLDER + this.location.getName());
+
+        if (tweetsFile.exists() == false) {
+            try {
+                tweetsFile.createNewFile();
+                out = new PrintWriter(new BufferedWriter(new FileWriter(tweetsFile, true)));
+            }
+            catch (IOException exception) {
+                System.err.println("Failed to create location file");
+                return;
+            }
+        }
+
+        System.out.println("Crawler for " + this.location.getName() + " started");
+
         Query query = new Query("");
         query.geoCode(new GeoLocation(this.location.getLongitude(), this.location.getLatitude()), this.location.getRadius(), Query.KILOMETERS);
-
-        PrintWriter out = null;
 
         while (true) {
             synchronized (this.isCrawlingLock) {
@@ -72,30 +84,36 @@ public class TweetsCrawler extends Thread {
 
             /* Crawl */
 
-
-            File tweetsFile = new File(Application.TWEETS_FOLDER + this.location.getName());
-
-            if (tweetsFile.exists() == false) {
-                try {
-                    tweetsFile.createNewFile();
-                    out = new PrintWriter(new BufferedWriter(new FileWriter(tweetsFile, true)));
-                }
-                catch (IOException exception) {
-                    System.err.println("Failed to create location file");
-                    return;
-                }
-            }
-
             try {
+
+                this.rateLimitWatchDog();
+
                 QueryResult queryResult = this.twitter.search(query);
 
                 for (Status status : queryResult.getTweets()) {
-                    out.println("@" + status.getUser().getScreenName() + ":" + status.getText());
+                    out.println("@" + status.getUser().getScreenName() + " " + status.getCreatedAt().toString());
+                    out.println(status.getText());
+
+                    out.close();
+                    return;
                 }
             }
             catch (TwitterException exception) {
                 System.err.println(exception.getMessage());
             }
+        }
+    }
+
+    private void rateLimitWatchDog () {
+        try {
+            if (this.getRemainingRateLimit("/search/tweets") < 100) {
+
+                System.out.println(this.location.getName() + " close to rate limit, going to sleep");
+                Thread.sleep(this.getResetTime("/search/tweets") * 1000);
+            }
+        }
+        catch (Exception exception) {
+            System.err.println(exception.getMessage());
         }
     }
 
