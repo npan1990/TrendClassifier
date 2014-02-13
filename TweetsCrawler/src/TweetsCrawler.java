@@ -48,6 +48,8 @@ public class TweetsCrawler extends Thread {
             this.isCrawling = false;
         }
 
+        this.tweetsWriter.flush();
+
         System.out.println("Crawler " + this.location.getName() + " stopped");
     }
 
@@ -63,7 +65,7 @@ public class TweetsCrawler extends Thread {
                 tweetsFile.createNewFile();
             }
 
-            tweetsWriter = new PrintWriter(new BufferedWriter(new FileWriter(tweetsFile, true)));
+            tweetsWriter = new PrintWriter(new BufferedWriter(new FileWriter(tweetsFile, true)), true);
         }
         catch (IOException exception) {
             System.err.println("Failed to create location file");

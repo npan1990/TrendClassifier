@@ -67,7 +67,7 @@
       <file leaf-file-name="Application.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Application.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="37" column="41" selection-start="1065" selection-end="1065" vertical-scroll-proportion="0.0" vertical-offset="208" max-vertical-offset="870">
+            <state line="37" column="41" selection-start="1065" selection-end="1065" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="870">
               <folding>
                 <element signature="docComment;class#Application#0" expanded="false" />
                 <element signature="e#351#366#0" expanded="true" />
@@ -81,7 +81,7 @@
       <file leaf-file-name="TweetsCrawler.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/TweetsCrawler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="82" column="17" selection-start="2483" selection-end="2483" vertical-scroll-proportion="0.75409836" vertical-offset="818" max-vertical-offset="1965">
+            <state line="96" column="120" selection-start="2883" selection-end="2883" vertical-scroll-proportion="0.4730679" vertical-offset="1148" max-vertical-offset="1995">
               <folding />
             </state>
           </provider>
@@ -111,8 +111,8 @@
         <option value="$PROJECT_DIR$/Secrets/CONSUMER" />
         <option value="$PROJECT_DIR$/Tweets/London" />
         <option value="$PROJECT_DIR$/Tweets/Dublin" />
-        <option value="$PROJECT_DIR$/src/TweetsCrawler.java" />
         <option value="$PROJECT_DIR$/src/Application.java" />
+        <option value="$PROJECT_DIR$/src/TweetsCrawler.java" />
       </list>
     </option>
   </component>
@@ -608,6 +608,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/TrendClassifier.iml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="13" column="0" selection-start="504" selection-end="504" vertical-scroll-proportion="0.4431818" vertical-offset="0" max-vertical-offset="440">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/Application.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="37" column="41" selection-start="1065" selection-end="1065" vertical-scroll-proportion="0.0" vertical-offset="208" max-vertical-offset="870">
@@ -620,16 +627,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/TrendClassifier.iml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="0" selection-start="504" selection-end="504" vertical-scroll-proportion="0.4431818" vertical-offset="0" max-vertical-offset="440">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/TweetsCrawler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="82" column="17" selection-start="2483" selection-end="2483" vertical-scroll-proportion="0.75409836" vertical-offset="818" max-vertical-offset="1965">
+        <state line="96" column="120" selection-start="2883" selection-end="2883" vertical-scroll-proportion="0.4730679" vertical-offset="1148" max-vertical-offset="1995">
           <folding />
         </state>
       </provider>
