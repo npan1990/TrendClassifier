@@ -81,7 +81,6 @@ public class TweetsCrawler extends Thread {
                 }
             }
 
-
             try {
                 QueryResult queryResult = this.twitter.search(query);
 

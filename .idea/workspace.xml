@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ae5c05d0-1c96-4719-ac96-644a3605cff3" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.gitignore" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Application.java" afterPath="$PROJECT_DIR$/src/Application.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/LocationLoader.java" afterPath="$PROJECT_DIR$/src/LocationLoader.java" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Secrets/ACCESS_TOKEN" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Secrets/CONSUMER" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Configs/LOCATIONS" afterPath="$PROJECT_DIR$/Configs/LOCATIONS" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/TweetsCrawler.java" afterPath="$PROJECT_DIR$/src/TweetsCrawler.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -73,7 +73,7 @@
       <file leaf-file-name="Application.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Application.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="33" column="0" selection-start="888" selection-end="888" vertical-scroll-proportion="0.0" vertical-offset="175" max-vertical-offset="840">
+            <state line="28" column="0" selection-start="786" selection-end="786" vertical-scroll-proportion="0.0" vertical-offset="190" max-vertical-offset="840">
               <folding>
                 <element signature="e#351#366#0" expanded="true" />
                 <element signature="e#995#1226#0" expanded="true" />
@@ -83,61 +83,13 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TweetsCrawler.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="TweetsCrawler.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/TweetsCrawler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="54" column="36" selection-start="1529" selection-end="1529" vertical-scroll-proportion="0.0" vertical-offset="973" max-vertical-offset="1515">
+            <state line="80" column="17" selection-start="2442" selection-end="2442" vertical-scroll-proportion="0.3529412" vertical-offset="990" max-vertical-offset="1500">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ACCESS_TOKEN" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Secrets/ACCESS_TOKEN">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="45" selection-start="0" selection-end="45" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="90">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="London" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Tweets/London">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="11400" max-vertical-offset="12225">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Dublin" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Tweets/Dublin">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="13" column="34" selection-start="1150" selection-end="1150" vertical-scroll-proportion="0.39235413" vertical-offset="0" max-vertical-offset="8280">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="LocationLoader.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/LocationLoader.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="16" column="40" selection-start="417" selection-end="417" vertical-scroll-proportion="0.0" vertical-offset="13" max-vertical-offset="585">
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#315#325#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Secrets.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Secrets.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="14" column="19" selection-start="434" selection-end="445" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="480">
-              <folding />
             </state>
           </provider>
         </entry>
@@ -161,9 +113,10 @@
         <option value="$PROJECT_DIR$/src/Location.java" />
         <option value="$PROJECT_DIR$/src/Secrets.java" />
         <option value="$PROJECT_DIR$/src/ConfigurationLoader.java" />
-        <option value="$PROJECT_DIR$/src/TweetsCrawler.java" />
         <option value="$PROJECT_DIR$/src/Application.java" />
         <option value="$PROJECT_DIR$/src/LocationLoader.java" />
+        <option value="$PROJECT_DIR$/Secrets/ACCESS_TOKEN" />
+        <option value="$PROJECT_DIR$/src/TweetsCrawler.java" />
       </list>
     </option>
   </component>
@@ -216,62 +169,6 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="TweetsCrawler" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="TrendClassifier" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Tweets" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="TweetsCrawler" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="TrendClassifier" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="TweetsCrawler" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="TrendClassifier" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Secrets" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="TweetsCrawler" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="TrendClassifier" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Configs" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
         </subPane>
       </pane>
       <pane id="Scope" />
@@ -291,6 +188,7 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/TeetsCrawler" />
       <recent name="$PROJECT_DIR$/lib" />
     </key>
   </component>
@@ -546,7 +444,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Secrets/CONSUMER">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="41" selection-start="41" selection-end="41" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="677" />
+        <state line="0" column="41" selection-start="41" selection-end="41" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="677">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Location.java">
@@ -579,9 +479,40 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Tweets/Dublin">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="13" column="34" selection-start="1150" selection-end="1150" vertical-scroll-proportion="0.39235413" vertical-offset="0" max-vertical-offset="8280">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tweets/London">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-22.937626" vertical-offset="11400" max-vertical-offset="12225">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Secrets/ACCESS_TOKEN">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="510">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/LocationLoader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="6" column="27" selection-start="105" selection-end="132" vertical-scroll-proportion="0.12072434" vertical-offset="0" max-vertical-offset="585">
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#315#325#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/Application.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="33" column="0" selection-start="888" selection-end="888" vertical-scroll-proportion="0.0" vertical-offset="175" max-vertical-offset="840">
+        <state line="28" column="0" selection-start="786" selection-end="786" vertical-scroll-proportion="0.0" vertical-offset="190" max-vertical-offset="840">
           <folding>
             <element signature="e#351#366#0" expanded="true" />
             <element signature="e#995#1226#0" expanded="true" />
@@ -590,43 +521,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/LocationLoader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="40" selection-start="417" selection-end="417" vertical-scroll-proportion="0.0" vertical-offset="13" max-vertical-offset="585">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#315#325#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/TweetsCrawler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="54" column="36" selection-start="1529" selection-end="1529" vertical-scroll-proportion="0.0" vertical-offset="973" max-vertical-offset="1515">
+        <state line="80" column="17" selection-start="2442" selection-end="2442" vertical-scroll-proportion="0.3529412" vertical-offset="990" max-vertical-offset="1500">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Secrets/ACCESS_TOKEN">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="45" selection-start="0" selection-end="45" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="90">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Tweets/London">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="12225">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Tweets/Dublin">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="34" selection-start="1150" selection-end="1150" vertical-scroll-proportion="0.39235413" vertical-offset="0" max-vertical-offset="8280">
-          <folding />
         </state>
       </provider>
     </entry>
