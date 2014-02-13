@@ -6,6 +6,7 @@ import twitter4j.*;
 import twitter4j.auth.AccessToken;
 
 import java.io.*;
+import java.util.Map;
 
 public class TweetsCrawler extends Thread {
 
@@ -96,5 +97,15 @@ public class TweetsCrawler extends Thread {
                 System.err.println(exception.getMessage());
             }
         }
+    }
+
+    private int getRemainingRateLimit (String of) throws TwitterException {
+        Map<String ,RateLimitStatus> rateLimitStatus = twitter.getRateLimitStatus();
+        return rateLimitStatus.get(of).getRemaining();
+    }
+
+    private int getResetTime(String of) throws TwitterException {
+        Map<String ,RateLimitStatus> rateLimitStatus = twitter.getRateLimitStatus();
+        return rateLimitStatus.get(of).getResetTimeInSeconds();
     }
 }
