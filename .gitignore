@@ -1,8 +1,8 @@
 
-Secrets/*
-
 out/production/TrendClassifier/Application.class
 
 Tweets/*
 
-.gitignore
+TweetsCrawler/Secrets/ACCESS_TOKEN
+
+TweetsCrawler/Secrets/CONSUMER
