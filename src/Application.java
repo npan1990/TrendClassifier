@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * Created by panossakkos on 2/13/14.
  */
@@ -6,19 +8,26 @@ public class Application {
 
     public static final String CONFIGS_FOLDER = "Configs/";
     public static final String SECRETS_FOLDER = "Secrets/";
+    public static final String TWEETS_FOLDER = "Tweets/";
 
-    private static TweetsCrawler crawler;
+    private static ArrayList<TweetsCrawler> crawlers = new ArrayList<TweetsCrawler>();
 
     public static void main(String[] args) throws Exception {
 
         Application.addShutDownHook();
 
+        Location location;
         LocationLoader locationLoader = new LocationLoader();
 
-        Application.crawler = new TweetsCrawler(locationLoader.getLocation());
-        Application.crawler.start();
+        while ((location = locationLoader.getLocation()) != null) {
+            crawlers.add(new TweetsCrawler(location));
+        }
 
-        while (Application.crawler.isCrawling()) {
+        for (TweetsCrawler crawler : crawlers) {
+            crawler.start();
+        }
+
+        while (true) {
 
             System.out.println("Crawling");
             Thread.sleep(10000);
@@ -32,8 +41,9 @@ public class Application {
             @Override
             public void run()
             {
-                Application.crawler.stopCrawling();
-                System.out.println("Stopped");
+                for (TweetsCrawler crawler : crawlers) {
+                    crawler.stopCrawling();
+                }
             }
         });
     }

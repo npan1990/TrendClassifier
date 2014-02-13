@@ -25,6 +25,11 @@ public class LocationLoader {
     }
 
     public Location getLocation () {
+
+        if (this.locationIndex == this.locations.size()) {
+            return null;
+        }
+
         return this.locations.get(this.locationIndex++);
     }
 }

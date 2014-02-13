@@ -1,4 +1,8 @@
 
-secrets/ACCESS_TOKEN
+Secrets/*
 
-secrets/CONSUMER
+out/production/TrendClassifier/Application.class
+
+Tweets/*
+
+.gitignore

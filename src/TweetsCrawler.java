@@ -5,9 +5,10 @@
 import twitter4j.*;
 import twitter4j.auth.AccessToken;
 
+import java.io.*;
+
 public class TweetsCrawler extends Thread {
 
-    private static final String TWEETS_FOLDER = "Tweets/";
     private static final String CONSUMER_KEY = "ERLRoYHJSuCuMn2iG8Z2w";
     private static String ACCESS_TOKEN = "40974174-Jy3bKCgVykJM6i0eN27f02CS0liqWkLTd8TdAsEaR";
 
@@ -42,6 +43,8 @@ public class TweetsCrawler extends Thread {
         synchronized (this.isCrawlingLock) {
             this.isCrawling = false;
         }
+
+        System.out.println("Crawler " + this.location.getName() + " stopped");
     }
 
     @Override public void run () {
@@ -52,24 +55,38 @@ public class TweetsCrawler extends Thread {
         Query query = new Query("");
         query.geoCode(new GeoLocation(this.location.getLongitude(), this.location.getLatitude()), this.location.getRadius(), Query.KILOMETERS);
 
+        PrintWriter out = null;
+
         while (true) {
             synchronized (this.isCrawlingLock) {
                 if (this.isCrawling == false) {
-                    // TODO clean up
-
+                    out.close();
                     return;
                 }
             }
 
             /* Crawl */
 
-            
+
+            File tweetsFile = new File(Application.TWEETS_FOLDER + this.location.getName());
+
+            if (tweetsFile.exists() == false) {
+                try {
+                    tweetsFile.createNewFile();
+                    out = new PrintWriter(new BufferedWriter(new FileWriter(tweetsFile, true)));
+                }
+                catch (IOException exception) {
+                    System.err.println("Failed to create location file");
+                    return;
+                }
+            }
+
 
             try {
                 QueryResult queryResult = this.twitter.search(query);
 
                 for (Status status : queryResult.getTweets()) {
-                    System.out.println("@" + status.getUser().getScreenName() + ":" + status.getText());
+                    out.println("@" + status.getUser().getScreenName() + ":" + status.getText());
                 }
             }
             catch (TwitterException exception) {
