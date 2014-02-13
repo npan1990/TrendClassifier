@@ -6,13 +6,11 @@ import java.io.*;
 
 public class Secrets {
 
-    private static final String SECRETS_FOLDER = "Secrets/";
     private static final String CONSUMER = "CONSUMER";
     private static final String ACCESS_TOKEN = "ACCESS_TOKEN";
 
     public static String getConsumerSecret () throws Exception {
-        BufferedReader br = new BufferedReader(new FileReader(Secrets.SECRETS_FOLDER + Secrets.CONSUMER));
-        StringBuilder sb = new StringBuilder();
+        BufferedReader br = new BufferedReader(new FileReader(Application.SECRETS_FOLDER + Secrets.CONSUMER));
         String consumer = br.readLine();
         br.close();
 
@@ -20,10 +18,9 @@ public class Secrets {
     }
 
     public static String getAccessTokenSecret () throws Exception {
-        BufferedReader br = new BufferedReader(new FileReader(Secrets.SECRETS_FOLDER + Secrets.ACCESS_TOKEN));
-        StringBuilder sb = new StringBuilder();
+        BufferedReader br = new BufferedReader(new FileReader(Application.SECRETS_FOLDER + Secrets.ACCESS_TOKEN));
         String accessToken = br.readLine();
-
+        br.close();
 
         return accessToken;
     }

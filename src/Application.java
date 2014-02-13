@@ -4,14 +4,19 @@
 
 public class Application {
 
+    public static final String CONFIGS_FOLDER = "Configs/";
+    public static final String SECRETS_FOLDER = "Secrets/";
+
     private static TweetsCrawler crawler;
 
     public static void main(String[] args) throws Exception {
 
         Application.addShutDownHook();
 
-        Application.crawler = new TweetsCrawler();
-        crawler.start();
+        LocationLoader locationLoader = new LocationLoader();
+
+        Application.crawler = new TweetsCrawler(locationLoader.getLocation());
+        Application.crawler.start();
 
         while (Application.crawler.isCrawling()) {
 
