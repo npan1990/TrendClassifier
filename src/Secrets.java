@@ -15,6 +15,7 @@ public class Secrets {
         StringBuilder sb = new StringBuilder();
         String consumer = br.readLine();
         br.close();
+
         return consumer;
     }
 
@@ -22,7 +23,8 @@ public class Secrets {
         BufferedReader br = new BufferedReader(new FileReader(Secrets.SECRETS_FOLDER + Secrets.ACCESS_TOKEN));
         StringBuilder sb = new StringBuilder();
         String accessToken = br.readLine();
-        br.close();
+
+
         return accessToken;
     }
 
