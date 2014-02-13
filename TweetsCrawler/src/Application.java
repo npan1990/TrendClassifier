@@ -35,8 +35,7 @@ public class Application {
                 }
             }
 
-            Thread.sleep(10000);
-
+            Thread.sleep(15 * 60 * 1000);
         }
     }
 

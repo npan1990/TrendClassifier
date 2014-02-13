@@ -18,6 +18,7 @@ public class TweetsCrawler extends Thread {
 
     private Twitter twitter;
     private Location location;
+    private PrintWriter tweetsWriter;
 
     public TweetsCrawler (Location location) throws Exception {
         twitter = new TwitterFactory().getInstance();
@@ -55,18 +56,18 @@ public class TweetsCrawler extends Thread {
             this.isCrawling = true;
         }
 
-        PrintWriter out = null;
         File tweetsFile = new File(Application.TWEETS_FOLDER + this.location.getName());
 
-        if (tweetsFile.exists() == false) {
-            try {
+        try {
+            if (tweetsFile.exists() == false) {
                 tweetsFile.createNewFile();
-                out = new PrintWriter(new BufferedWriter(new FileWriter(tweetsFile, true)));
             }
-            catch (IOException exception) {
-                System.err.println("Failed to create location file");
-                return;
-            }
+
+            tweetsWriter = new PrintWriter(new BufferedWriter(new FileWriter(tweetsFile, true)));
+        }
+        catch (IOException exception) {
+            System.err.println("Failed to create location file");
+            return;
         }
 
         System.out.println("Crawler for " + this.location.getName() + " started");
@@ -77,7 +78,7 @@ public class TweetsCrawler extends Thread {
         while (true) {
             synchronized (this.isCrawlingLock) {
                 if (this.isCrawling == false) {
-                    out.close();
+                    tweetsWriter.close();
                     return;
                 }
             }
@@ -91,11 +92,8 @@ public class TweetsCrawler extends Thread {
                 QueryResult queryResult = this.twitter.search(query);
 
                 for (Status status : queryResult.getTweets()) {
-                    out.println("@" + status.getUser().getScreenName() + " " + status.getCreatedAt().toString());
-                    out.println(status.getText());
-
-                    out.close();
-                    return;
+                    tweetsWriter.println("@" + status.getUser().getScreenName() + " " + status.getCreatedAt().toString());
+                    tweetsWriter.println(status.getText());
                 }
             }
             catch (TwitterException exception) {
@@ -106,10 +104,14 @@ public class TweetsCrawler extends Thread {
 
     private void rateLimitWatchDog () {
         try {
-            if (this.getRemainingRateLimit("/search/tweets") < 100) {
+            if (this.getRemainingRateLimit("/search/tweets") < 10) {
 
-                System.out.println(this.location.getName() + " close to rate limit, going to sleep");
-                Thread.sleep(this.getResetTime("/search/tweets") * 1000);
+                int sleepSeconds = this.getSecondsUntilReset("/search/tweets");
+
+                System.out.println(this.location.getName() + " close to rate limit, going to sleep for " + sleepSeconds);
+
+                tweetsWriter.flush();
+                Thread.sleep(sleepSeconds * 1000);
             }
         }
         catch (Exception exception) {
@@ -122,8 +124,8 @@ public class TweetsCrawler extends Thread {
         return rateLimitStatus.get(of).getRemaining();
     }
 
-    private int getResetTime(String of) throws TwitterException {
+    private int getSecondsUntilReset (String of) throws TwitterException {
         Map<String ,RateLimitStatus> rateLimitStatus = twitter.getRateLimitStatus();
-        return rateLimitStatus.get(of).getResetTimeInSeconds();
+        return rateLimitStatus.get(of).getSecondsUntilReset();
     }
 }
