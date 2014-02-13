@@ -29,6 +29,10 @@ public class TweetsCrawler extends Thread {
         System.out.println("Crawler for " + this.location.getName() + " created");
     }
 
+    public String getCrawlerName () {
+        return this.location.getName();
+    }
+
     public boolean isCrawling () {
         boolean crawling;
 

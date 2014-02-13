@@ -29,7 +29,12 @@ public class Application {
 
         while (true) {
 
-            System.out.println("Crawling");
+            for (TweetsCrawler crawler : crawlers) {
+                if (crawler.isCrawling()) {
+                    System.out.println(crawler.getCrawlerName() + " is crawling");
+                }
+            }
+
             Thread.sleep(10000);
 
         }

@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ae5c05d0-1c96-4719-ac96-644a3605cff3" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Secrets/ACCESS_TOKEN" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Secrets/CONSUMER" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Configs/LOCATIONS" afterPath="$PROJECT_DIR$/Configs/LOCATIONS" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Application.java" afterPath="$PROJECT_DIR$/src/Application.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/TweetsCrawler.java" afterPath="$PROJECT_DIR$/src/TweetsCrawler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="TweetsCrawler.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -70,23 +67,23 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Application.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="Application.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Application.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="28" column="0" selection-start="786" selection-end="786" vertical-scroll-proportion="0.0" vertical-offset="190" max-vertical-offset="840">
+            <state line="30" column="0" selection-start="810" selection-end="810" vertical-scroll-proportion="0.5" vertical-offset="195" max-vertical-offset="915">
               <folding>
                 <element signature="e#351#366#0" expanded="true" />
-                <element signature="e#995#1226#0" expanded="true" />
-                <element signature="e#1215#1216#0" expanded="true" />
+                <element signature="e#1164#1395#0" expanded="true" />
+                <element signature="e#1384#1385#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TweetsCrawler.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="TweetsCrawler.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/TweetsCrawler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="80" column="17" selection-start="2442" selection-end="2442" vertical-scroll-proportion="0.3529412" vertical-offset="990" max-vertical-offset="1500">
+            <state line="31" column="28" selection-start="991" selection-end="991" vertical-scroll-proportion="0.0" vertical-offset="195" max-vertical-offset="1560">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -113,10 +110,10 @@
         <option value="$PROJECT_DIR$/src/Location.java" />
         <option value="$PROJECT_DIR$/src/Secrets.java" />
         <option value="$PROJECT_DIR$/src/ConfigurationLoader.java" />
-        <option value="$PROJECT_DIR$/src/Application.java" />
         <option value="$PROJECT_DIR$/src/LocationLoader.java" />
         <option value="$PROJECT_DIR$/Secrets/ACCESS_TOKEN" />
         <option value="$PROJECT_DIR$/src/TweetsCrawler.java" />
+        <option value="$PROJECT_DIR$/src/Application.java" />
       </list>
     </option>
   </component>
@@ -166,6 +163,20 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="TrendClassifier" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TweetsCrawler" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TrendClassifier" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -510,22 +521,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Application.java">
+    <entry file="file://$PROJECT_DIR$/src/TweetsCrawler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="0" selection-start="786" selection-end="786" vertical-scroll-proportion="0.0" vertical-offset="190" max-vertical-offset="840">
+        <state line="31" column="28" selection-start="991" selection-end="991" vertical-scroll-proportion="0.0" vertical-offset="195" max-vertical-offset="1560">
           <folding>
-            <element signature="e#351#366#0" expanded="true" />
-            <element signature="e#995#1226#0" expanded="true" />
-            <element signature="e#1215#1216#0" expanded="true" />
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/TweetsCrawler.java">
+    <entry file="file://$PROJECT_DIR$/src/Application.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="80" column="17" selection-start="2442" selection-end="2442" vertical-scroll-proportion="0.3529412" vertical-offset="990" max-vertical-offset="1500">
+        <state line="30" column="0" selection-start="810" selection-end="810" vertical-scroll-proportion="0.5" vertical-offset="195" max-vertical-offset="915">
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="e#351#366#0" expanded="true" />
+            <element signature="e#1164#1395#0" expanded="true" />
+            <element signature="e#1384#1385#0" expanded="true" />
           </folding>
         </state>
       </provider>
