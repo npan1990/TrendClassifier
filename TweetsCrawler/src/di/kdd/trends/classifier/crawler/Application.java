@@ -39,7 +39,6 @@ public class Application {
         }
 
         while (true) {
-
             for (Crawler crawler : crawlers) {
                 if (crawler.isCrawling()) {
                     crawler.join();
