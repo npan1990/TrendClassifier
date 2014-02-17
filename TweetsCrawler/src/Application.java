@@ -7,8 +7,8 @@ import java.util.ArrayList;
 public class Application {
 
     public static final String CONFIGS_FOLDER = "Configs/";
-    public static final String PUBLIC_TOKENS_FOLDER = "PublicTokens/";
-    public static final String SECRET_TOKENS_FOLDER = "SecretTokens/";
+    public static final String PUBLIC_TOKENS_FOLDER = CONFIGS_FOLDER + "/PublicTokens/";
+    public static final String SECRET_TOKENS_FOLDER = CONFIGS_FOLDER + "/SecretTokens/";
     public static final String DATA_FOLDER = "Data/";
 
     private static ArrayList<Crawler> crawlers = new ArrayList<Crawler>();
