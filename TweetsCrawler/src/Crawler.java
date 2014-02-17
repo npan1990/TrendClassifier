@@ -18,7 +18,7 @@ public class Crawler extends Thread {
 
     private Twitter twitter;
     private Location location;
-    private PrintWriter tweetsWriter;
+    private PrintWriter tweetsWriter, trendsWriter;
 
     public Crawler(Location location, Token token) throws Exception {
         twitter = new TwitterFactory().getInstance();
@@ -48,7 +48,7 @@ public class Crawler extends Thread {
             this.isCrawling = false;
         }
 
-        this.tweetsWriter.flush();
+        this.flushWriters();
 
         System.out.println("Crawler " + this.location.getName() + " stopped");
     }
@@ -60,6 +60,8 @@ public class Crawler extends Thread {
 
         try {
             this.setupFileSystem();
+
+            this.initializeWriters();
         }
         catch (Exception exception) {
             System.err.println(exception.getMessage());
@@ -67,9 +69,6 @@ public class Crawler extends Thread {
         }
 
         System.out.println("Crawler for " + this.location.getName() + " started");
-
-        Query query = new Query("");
-        query.geoCode(new GeoLocation(this.location.getLongitude(), this.location.getLatitude()), this.location.getRadius(), Query.KILOMETERS);
 
         while (true) {
             synchronized (this.isCrawlingLock) {
@@ -81,21 +80,58 @@ public class Crawler extends Thread {
 
             /* Crawl */
 
-            try {
+            this.crawlTrends();
+            this.crawlTweets();
+        }
+    }
 
-                this.rateLimitWatchDog("/search/tweets");
+    private void crawlTweets() {
+        Query query = new Query("");
+        query.geoCode(new GeoLocation(this.location.getLongitude(), this.location.getLatitude()), this.location.getRadius(), Query.KILOMETERS);
 
-                QueryResult queryResult = this.twitter.search(query);
+        try {
 
-                for (Status status : queryResult.getTweets()) {
-                    tweetsWriter.println("@" + status.getUser().getScreenName() + " " + status.getCreatedAt().toString());
-                    tweetsWriter.println(status.getText());
-                }
-            }
-            catch (TwitterException exception) {
-                System.err.println(exception.getMessage());
+            this.rateLimitWatchDog("/search/tweets");
+
+            QueryResult queryResult = this.twitter.search(query);
+
+            for (Status status : queryResult.getTweets()) {
+                tweetsWriter.println(
+                        status.getId() +
+                        " " + status.getUser().getScreenName() +
+                        " " + status.getCreatedAt().toString() +
+                        " " + status.isRetweet() +
+                        " " + status.getRetweetCount());
+
+                tweetsWriter.println(status.getText());
             }
         }
+        catch (TwitterException exception) {
+            System.err.println(exception.getMessage());
+        }
+
+    }
+
+    private void crawlTrends () {
+        // TODO
+    }
+
+    private void initializeWriters() throws IOException {
+        tweetsWriter = new PrintWriter(new BufferedWriter(new FileWriter(tweetsFile(), true)));
+        trendsWriter = new PrintWriter(new BufferedWriter(new FileWriter(trendsFile(), true)));
+    }
+
+    private void flushWriters () {
+        this.tweetsWriter.flush();
+        this.trendsWriter.flush();
+    }
+
+    private String tweetsFile () {
+        return Application.DATA_FOLDER + this.location.getName() + "/" + Crawler.TWEETS_FILE;
+    }
+
+    private String trendsFile () {
+        return Application.DATA_FOLDER + this.location.getName() + "/" + Crawler.TRENDS_FILE;
     }
 
     private void setupFileSystem() throws Exception {
@@ -104,8 +140,8 @@ public class Crawler extends Thread {
 
         if (locationDir.exists() == false) {
             locationDir.mkdir();
-            (new File(Application.DATA_FOLDER + this.location.getName() + "/" + Crawler.TWEETS_FILE)).createNewFile();
-            (new File(Application.DATA_FOLDER + this.location.getName() + "/" + Crawler.TRENDS_FILE)).createNewFile();
+            (new File(this.tweetsFile())).createNewFile();
+            (new File(this.trendsFile())).createNewFile();
         }
     }
 
@@ -117,7 +153,7 @@ public class Crawler extends Thread {
 
                 System.out.println(this.location.getName() + " close to rate limit, going to sleep for " + sleepSeconds);
 
-                tweetsWriter.flush();
+                this.flushWriters();
                 Thread.sleep(sleepSeconds * 1000);
             }
         }
