@@ -1,7 +1,8 @@
-/**
+package di.kdd.trends.classifier.crawler; /**
  * Created by panossakkos on 2/12/14.
  */
 
+import di.kdd.trends.classifier.crawler.config.*;
 import twitter4j.*;
 import twitter4j.auth.AccessToken;
 
@@ -16,16 +17,15 @@ public class Crawler extends Thread {
     private static String TWEETS_FILE = "tweets";
     private static String TRENDS_FILE = "trends";
 
-    private static int TRENDS_CRAWL_INTERVAL = 5 * 60 * 1000;
+    private static int TRENDS_CRAWL_INTERVAL = 5 * 60 * 1000; //5 Minutes (in millis)
 
-    private Object isCrawlingLock = new Object();
     private boolean isCrawling = false;
 
     private Twitter twitter;
-    private Location location;
+    private di.kdd.trends.classifier.crawler.config.Location location;
     private PrintWriter tweetsWriter, trendsWriter;
 
-    public Crawler(Location location, Token token) throws Exception {
+    public Crawler(di.kdd.trends.classifier.crawler.config.Location location, Token token) throws Exception {
         twitter = new TwitterFactory().getInstance();
         twitter.setOAuthConsumer(token.getConsumer(), token.getConsumerSecret());
         AccessToken oathAccessToken = new AccessToken(token.getAccess(), token.getAccessSecret());
@@ -34,34 +34,24 @@ public class Crawler extends Thread {
         this.location = location;
     }
 
-    public String getCrawlerName () {
-        return this.location.getName();
+    private synchronized void startCrawling () {
+        this.isCrawling = true;
     }
 
-    public boolean isCrawling () {
-        boolean crawling;
-
-        synchronized (this.isCrawlingLock) {
-            crawling = this.isCrawling;
-        }
-
-        return crawling;
+    public synchronized boolean isCrawling () {
+        return this.isCrawling;
     }
 
-    public void stopCrawling () {
-        synchronized (this.isCrawlingLock) {
-            this.isCrawling = false;
-        }
+    public synchronized void stopCrawling () {
+        this.isCrawling = false;
 
         this.flushWriters();
 
-        System.out.println("Crawler " + this.location.getName() + " stopped");
+        System.out.println("di.kdd.trends.classifier.crawler.Crawler " + this.location.getName() + " stopped");
     }
 
     @Override public void run () {
-        synchronized (this.isCrawlingLock) {
-            this.isCrawling = true;
-        }
+        this.startCrawling();
 
         try {
             this.setupFileSystem();
@@ -73,20 +63,49 @@ public class Crawler extends Thread {
             System.err.println("Failed to start " + this.location.getName() + " crawler");
         }
 
-        System.out.println("Crawler for " + this.location.getName() + " started");
+        System.out.println("di.kdd.trends.classifier.crawler.Crawler for " + this.location.getName() + " started");
 
-        while (true) {
-            synchronized (this.isCrawlingLock) {
-                if (this.isCrawling == false) {
-                    tweetsWriter.close();
-                    return;
-                }
+        while (this.isCrawling()) {
+            this.crawlTrends();
+            this.crawlTweets();
+        }
+
+        this.flushWriters();
+        this.closeWriters();
+    }
+
+    private long lastTrendCrawl;
+
+    private void crawlTrends () {
+        long now = System.currentTimeMillis();
+
+        if (lastTrendCrawl != 0) {
+
+            /* Check if 5 minutes elapsed since last trend crawling */
+
+            if (now - this.lastTrendCrawl < Crawler.TRENDS_CRAWL_INTERVAL) {
+                return;
+            }
+        }
+
+        try {
+            DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
+            Trend[] trends = twitter.getPlaceTrends(this.location.getWoeid()).getTrends();
+
+            Date date = new Date();
+            this.trendsWriter.println(dateFormat.format(date));
+
+            for (Trend trend : trends) {
+                this.trendsWriter.println(trend.getName());
             }
 
-            /* Crawl */
-
-            this.crawlTrends();
-//            this.crawlTweets();
+            this.trendsWriter.flush();
+            this.lastTrendCrawl = now;
+        }
+        catch (Exception exception) {
+            System.err.println("Failed to crawl trends");
+            System.err.println(exception.getMessage());
         }
     }
 
@@ -117,41 +136,6 @@ public class Crawler extends Thread {
 
     }
 
-    private long lastTrendCrawl;
-
-    private void crawlTrends () {
-        long now = System.currentTimeMillis();
-
-        if (lastTrendCrawl > 0) {
-
-            /* Check if 5 minutes elapsed since last trend crawling */
-
-            if (now - this.lastTrendCrawl < Crawler.TRENDS_CRAWL_INTERVAL) {
-                return;
-            }
-        }
-
-        try {
-            DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-
-            Trend[] trends = twitter.getPlaceTrends(this.location.getWoeid()).getTrends();
-
-            Date date = new Date();
-            this.trendsWriter.println(dateFormat.format(date));
-
-            for (Trend trend : trends) {
-                this.trendsWriter.println(trend.getName());
-            }
-
-            this.trendsWriter.flush();
-            this.lastTrendCrawl = now;
-        }
-        catch (Exception exception) {
-            System.err.println("Failed to crawl trends");
-            System.err.println(exception.getMessage());
-        }
-    }
-
     private void initializeWriters() throws IOException {
         tweetsWriter = new PrintWriter(new BufferedWriter(new FileWriter(tweetsFile(), true)));
         trendsWriter = new PrintWriter(new BufferedWriter(new FileWriter(trendsFile(), true)));
@@ -160,6 +144,11 @@ public class Crawler extends Thread {
     private void flushWriters () {
         this.tweetsWriter.flush();
         this.trendsWriter.flush();
+    }
+
+    private void closeWriters() {
+        this.tweetsWriter.close();
+        this.trendsWriter.close();
     }
 
     private String tweetsFile () {
@@ -183,11 +172,11 @@ public class Crawler extends Thread {
 
     private void rateLimitWatchDog (String what) {
         try {
-            if (this.getRemainingRateLimit(what) < 100) {
+            if (this.getRemainingRateLimit(what) < 10) { //TODO change the guard number
 
                 int sleepSeconds = this.getSecondsUntilReset(what);
 
-                System.out.println(this.location.getName() + " close to rate limit, going to sleep for " + sleepSeconds);
+                System.out.println(this.location.getName() + " close to rate limit, going to sleep for " + sleepSeconds + " seconds");
 
                 this.flushWriters();
                 Thread.sleep(sleepSeconds * 1000);

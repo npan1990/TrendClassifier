@@ -1,3 +1,5 @@
+package di.kdd.trends.classifier.crawler.config;
+
 /**
  * Created by panossakkos on 2/17/14.
  */

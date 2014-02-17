@@ -1,3 +1,10 @@
+package di.kdd.trends.classifier.crawler;
+
+import di.kdd.trends.classifier.crawler.config.Location;
+import di.kdd.trends.classifier.crawler.config.LocationLoader;
+import di.kdd.trends.classifier.crawler.config.Token;
+import di.kdd.trends.classifier.crawler.config.TokenLoader;
+
 import java.util.ArrayList;
 
 /**
@@ -23,7 +30,7 @@ public class Application {
         TokenLoader tokenLoader = new TokenLoader();
 
         while ((location = locationLoader.getLocation()) != null &&
-                (token = tokenLoader.getToken()) != null) {
+                        (token = tokenLoader.getToken()) != null) {
             crawlers.add(new Crawler(location, token));
         }
 
@@ -35,7 +42,7 @@ public class Application {
 
             for (Crawler crawler : crawlers) {
                 if (crawler.isCrawling()) {
-                    System.out.println(crawler.getCrawlerName() + " is crawling");
+                    crawler.join();
                 }
             }
         }
