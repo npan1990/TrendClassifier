@@ -38,8 +38,6 @@ public class Application {
                     System.out.println(crawler.getCrawlerName() + " is crawling");
                 }
             }
-
-            Thread.sleep(15 * 60 * 1000);
         }
     }
 
