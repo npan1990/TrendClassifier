@@ -124,7 +124,7 @@ public class Crawler extends Thread {
 
         if (lastTrendCrawl > 0) {
 
-            /* Check if 5 minute    s passed since last trend crawling */
+            /* Check if 5 minutes elapsed since last trend crawling */
 
             if (now - this.lastTrendCrawl < Crawler.TRENDS_CRAWL_INTERVAL) {
                 return;
