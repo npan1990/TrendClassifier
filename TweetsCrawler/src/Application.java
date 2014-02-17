@@ -7,7 +7,8 @@ import java.util.ArrayList;
 public class Application {
 
     public static final String CONFIGS_FOLDER = "Configs/";
-    public static final String SECRETS_FOLDER = "Secrets/";
+    public static final String PUBLIC_TOKENS_FOLDER = "PublicTokens/";
+    public static final String SECRET_TOKENS_FOLDER = "SecretTokens/";
     public static final String TWEETS_FOLDER = "Tweets/";
 
     private static ArrayList<TweetsCrawler> crawlers = new ArrayList<TweetsCrawler>();
@@ -18,9 +19,12 @@ public class Application {
 
         Location location;
         LocationLoader locationLoader = new LocationLoader();
+        Token token;
+        TokenLoader tokenLoader = new TokenLoader();
 
-        while ((location = locationLoader.getLocation()) != null) {
-            crawlers.add(new TweetsCrawler(location));
+        while ((location = locationLoader.getLocation()) != null &&
+                (token = tokenLoader.getToken()) != null) {
+            crawlers.add(new TweetsCrawler(location, token));
         }
 
         for (TweetsCrawler crawler : crawlers) {
