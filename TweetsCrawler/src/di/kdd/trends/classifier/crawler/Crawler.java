@@ -1,4 +1,6 @@
-package di.kdd.trends.classifier.crawler; /**
+package di.kdd.trends.classifier.crawler;
+
+/**
  * Created by panossakkos on 2/12/14.
  */
 
@@ -17,7 +19,7 @@ public class Crawler extends Thread {
     private static String TWEETS_FILE = "tweets";
     private static String TRENDS_FILE = "trends";
 
-    private static int TRENDS_CRAWL_INTERVAL = 5 * 60 * 1000; //5 Minutes (in millis)
+    private static int TRENDS_CRAWL_INTERVAL = 5 * 60 * 1000; // 5 Minutes (in millis)
 
     private boolean isCrawling = false;
 
