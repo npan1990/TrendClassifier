@@ -8,7 +8,10 @@ import twitter4j.auth.AccessToken;
 import java.io.*;
 import java.util.Map;
 
-public class TweetsCrawler extends Thread {
+public class Crawler extends Thread {
+
+    private static String TWEETS_FILE = "tweets";
+    private static String TRENDS_FILE = "trends";
 
     private Object isCrawlingLock = new Object();
     private boolean isCrawling = false;
@@ -17,7 +20,7 @@ public class TweetsCrawler extends Thread {
     private Location location;
     private PrintWriter tweetsWriter;
 
-    public TweetsCrawler (Location location, Token token) throws Exception {
+    public Crawler(Location location, Token token) throws Exception {
         twitter = new TwitterFactory().getInstance();
         twitter.setOAuthConsumer(token.getConsumer(), token.getConsumerSecret());
         AccessToken oathAccessToken = new AccessToken(token.getAccess(), token.getAccessSecret());
@@ -55,18 +58,12 @@ public class TweetsCrawler extends Thread {
             this.isCrawling = true;
         }
 
-        File tweetsFile = new File(Application.TWEETS_FOLDER + this.location.getName());
-
         try {
-            if (tweetsFile.exists() == false) {
-                tweetsFile.createNewFile();
-            }
-
-            tweetsWriter = new PrintWriter(new BufferedWriter(new FileWriter(tweetsFile, true)), true);
+            this.setupFileSystem();
         }
-        catch (IOException exception) {
-            System.err.println("Failed to create location file");
-            return;
+        catch (Exception exception) {
+            System.err.println(exception.getMessage());
+            System.err.println("Failed to start " + this.location.getName() + " crawler");
         }
 
         System.out.println("Crawler for " + this.location.getName() + " started");
@@ -86,7 +83,7 @@ public class TweetsCrawler extends Thread {
 
             try {
 
-                this.rateLimitWatchDog();
+                this.rateLimitWatchDog("/search/tweets");
 
                 QueryResult queryResult = this.twitter.search(query);
 
@@ -101,11 +98,22 @@ public class TweetsCrawler extends Thread {
         }
     }
 
-    private void rateLimitWatchDog () {
-        try {
-            if (this.getRemainingRateLimit("/search/tweets") < 100) {
+    private void setupFileSystem() throws Exception {
 
-                int sleepSeconds = this.getSecondsUntilReset("/search/tweets");
+        File locationDir = new File(Application.DATA_FOLDER + this.location.getName());
+
+        if (locationDir.exists() == false) {
+            locationDir.mkdir();
+            (new File(Application.DATA_FOLDER + this.location.getName() + "/" + Crawler.TWEETS_FILE)).createNewFile();
+            (new File(Application.DATA_FOLDER + this.location.getName() + "/" + Crawler.TRENDS_FILE)).createNewFile();
+        }
+    }
+
+    private void rateLimitWatchDog (String what) {
+        try {
+            if (this.getRemainingRateLimit(what) < 100) {
+
+                int sleepSeconds = this.getSecondsUntilReset(what);
 
                 System.out.println(this.location.getName() + " close to rate limit, going to sleep for " + sleepSeconds);
 
