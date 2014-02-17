@@ -22,8 +22,8 @@ public class TweetsCrawler extends Thread {
 
     public TweetsCrawler (Location location) throws Exception {
         twitter = new TwitterFactory().getInstance();
-        twitter.setOAuthConsumer(CONSUMER_KEY, Secrets.getConsumerSecret());
-        AccessToken oathAccessToken = new AccessToken(ACCESS_TOKEN, Secrets.getAccessTokenSecret());
+        twitter.setOAuthConsumer(CONSUMER_KEY, TokenLoader.getConsumerSecret());
+        AccessToken oathAccessToken = new AccessToken(ACCESS_TOKEN, TokenLoader.getAccessTokenSecret());
         twitter.setOAuthAccessToken(oathAccessToken);
 
         this.location = location;
