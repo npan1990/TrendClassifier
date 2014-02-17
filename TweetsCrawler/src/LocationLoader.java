@@ -20,7 +20,11 @@ public class LocationLoader {
         while ((line = br.readLine()) != null) {
             String[] tokens = line.split(" ");
 
-            this.locations.add(new Location(tokens[0], Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3])));
+            this.locations.add(new Location(tokens[0],
+                    Double.parseDouble(tokens[1]),
+                    Double.parseDouble(tokens[2]),
+                    Double.parseDouble(tokens[3]),
+                    Integer.parseInt(tokens[4])));
         }
     }
 

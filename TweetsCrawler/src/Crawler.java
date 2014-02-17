@@ -6,12 +6,17 @@ import twitter4j.*;
 import twitter4j.auth.AccessToken;
 
 import java.io.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 public class Crawler extends Thread {
 
     private static String TWEETS_FILE = "tweets";
     private static String TRENDS_FILE = "trends";
+
+    private static int TRENDS_CRAWL_INTERVAL = 5 * 60 * 1000;
 
     private Object isCrawlingLock = new Object();
     private boolean isCrawling = false;
@@ -81,7 +86,7 @@ public class Crawler extends Thread {
             /* Crawl */
 
             this.crawlTrends();
-            this.crawlTweets();
+//            this.crawlTweets();
         }
     }
 
@@ -112,8 +117,39 @@ public class Crawler extends Thread {
 
     }
 
+    private long lastTrendCrawl;
+
     private void crawlTrends () {
-        // TODO
+        long now = System.currentTimeMillis();
+
+        if (lastTrendCrawl > 0) {
+
+            /* Check if 5 minute    s passed since last trend crawling */
+
+            if (now - this.lastTrendCrawl < Crawler.TRENDS_CRAWL_INTERVAL) {
+                return;
+            }
+        }
+
+        try {
+            DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
+            Trend[] trends = twitter.getPlaceTrends(this.location.getWoeid()).getTrends();
+
+            Date date = new Date();
+            this.trendsWriter.println(dateFormat.format(date));
+
+            for (Trend trend : trends) {
+                this.trendsWriter.println(trend.getName());
+            }
+
+            this.trendsWriter.flush();
+            this.lastTrendCrawl = now;
+        }
+        catch (Exception exception) {
+            System.err.println("Failed to crawl trends");
+            System.err.println(exception.getMessage());
+        }
     }
 
     private void initializeWriters() throws IOException {
