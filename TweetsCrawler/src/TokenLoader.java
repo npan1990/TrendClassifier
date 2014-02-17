@@ -7,8 +7,8 @@ import java.util.ArrayList;
 
 public class TokenLoader {
 
-    private static final String CONSUMER_FILE = "CONSUMER_FILE";
-    private static final String ACCESS_TOKEN_FILE = "ACCESS_TOKEN_FILE";
+    private static final String CONSUMER_FILE = "CONSUMER";
+    private static final String ACCESS_TOKEN_FILE = "ACCESS_TOKEN";
 
     private int tokenIndex = 0;
     private ArrayList<Token> tokens = new ArrayList<Token>();

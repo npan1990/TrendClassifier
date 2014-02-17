@@ -19,10 +19,12 @@ public class Application {
 
         Location location;
         LocationLoader locationLoader = new LocationLoader();
+        Token token;
         TokenLoader tokenLoader = new TokenLoader();
 
-        while ((location = locationLoader.getLocation()) != null) {
-            crawlers.add(new TweetsCrawler(location));
+        while ((location = locationLoader.getLocation()) != null &&
+                (token = tokenLoader.getToken()) != null) {
+            crawlers.add(new TweetsCrawler(location, token));
         }
 
         for (TweetsCrawler crawler : crawlers) {

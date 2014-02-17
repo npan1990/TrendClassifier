@@ -10,9 +10,6 @@ import java.util.Map;
 
 public class TweetsCrawler extends Thread {
 
-    private static final String CONSUMER_KEY = "ERLRoYHJSuCuMn2iG8Z2w";
-    private static String ACCESS_TOKEN = "40974174-Jy3bKCgVykJM6i0eN27f02CS0liqWkLTd8TdAsEaR";
-
     private Object isCrawlingLock = new Object();
     private boolean isCrawling = false;
 
@@ -20,10 +17,10 @@ public class TweetsCrawler extends Thread {
     private Location location;
     private PrintWriter tweetsWriter;
 
-    public TweetsCrawler (Location location) throws Exception {
+    public TweetsCrawler (Location location, Token token) throws Exception {
         twitter = new TwitterFactory().getInstance();
-        twitter.setOAuthConsumer(CONSUMER_KEY, TokenLoader.getConsumerSecret());
-        AccessToken oathAccessToken = new AccessToken(ACCESS_TOKEN, TokenLoader.getAccessTokenSecret());
+        twitter.setOAuthConsumer(token.getConsumer(), token.getConsumerSecret());
+        AccessToken oathAccessToken = new AccessToken(token.getAccess(), token.getAccessSecret());
         twitter.setOAuthAccessToken(oathAccessToken);
 
         this.location = location;
@@ -106,7 +103,7 @@ public class TweetsCrawler extends Thread {
 
     private void rateLimitWatchDog () {
         try {
-            if (this.getRemainingRateLimit("/search/tweets") < 10) {
+            if (this.getRemainingRateLimit("/search/tweets") < 100) {
 
                 int sleepSeconds = this.getSecondsUntilReset("/search/tweets");
 
