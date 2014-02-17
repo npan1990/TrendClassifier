@@ -1,6 +1,8 @@
-/**
+package di.kdd.trends.classifier.crawler.config; /**
  * Created by panossakkos on 2/13/14.
  */
+
+import di.kdd.trends.classifier.crawler.Application;
 
 import java.io.*;
 import java.util.ArrayList;

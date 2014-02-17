@@ -1,3 +1,10 @@
+package di.kdd.trends.classifier.crawler;
+
+import di.kdd.trends.classifier.crawler.config.Location;
+import di.kdd.trends.classifier.crawler.config.LocationLoader;
+import di.kdd.trends.classifier.crawler.config.Token;
+import di.kdd.trends.classifier.crawler.config.TokenLoader;
+
 import java.util.ArrayList;
 
 /**
@@ -7,11 +14,11 @@ import java.util.ArrayList;
 public class Application {
 
     public static final String CONFIGS_FOLDER = "Configs/";
-    public static final String PUBLIC_TOKENS_FOLDER = "PublicTokens/";
-    public static final String SECRET_TOKENS_FOLDER = "SecretTokens/";
-    public static final String TWEETS_FOLDER = "Tweets/";
+    public static final String PUBLIC_TOKENS_FOLDER = CONFIGS_FOLDER + "/Tokens/PublicTokens/";
+    public static final String SECRET_TOKENS_FOLDER = CONFIGS_FOLDER + "/Tokens/SecretTokens/";
+    public static final String DATA_FOLDER = "Data/";
 
-    private static ArrayList<TweetsCrawler> crawlers = new ArrayList<TweetsCrawler>();
+    private static ArrayList<Crawler> crawlers = new ArrayList<Crawler>();
 
     public static void main(String[] args) throws Exception {
 
@@ -23,23 +30,20 @@ public class Application {
         TokenLoader tokenLoader = new TokenLoader();
 
         while ((location = locationLoader.getLocation()) != null &&
-                (token = tokenLoader.getToken()) != null) {
-            crawlers.add(new TweetsCrawler(location, token));
+                        (token = tokenLoader.getToken()) != null) {
+            crawlers.add(new Crawler(location, token));
         }
 
-        for (TweetsCrawler crawler : crawlers) {
+        for (Crawler crawler : crawlers) {
             crawler.start();
         }
 
         while (true) {
-
-            for (TweetsCrawler crawler : crawlers) {
+            for (Crawler crawler : crawlers) {
                 if (crawler.isCrawling()) {
-                    System.out.println(crawler.getCrawlerName() + " is crawling");
+                    crawler.join();
                 }
             }
-
-            Thread.sleep(15 * 60 * 1000);
         }
     }
 
@@ -49,7 +53,7 @@ public class Application {
             @Override
             public void run()
             {
-                for (TweetsCrawler crawler : crawlers) {
+                for (Crawler crawler : crawlers) {
                     crawler.stopCrawling();
                 }
             }

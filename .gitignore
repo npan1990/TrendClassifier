@@ -2,3 +2,5 @@
 TweetsCrawler/out/production/*
 
 TweetsCrawler/.idea/*
+
+*.iml
