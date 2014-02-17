@@ -49,7 +49,7 @@ public class Crawler extends Thread {
 
         this.flushWriters();
 
-        System.out.println("di.kdd.trends.classifier.crawler.Crawler " + this.location.getName() + " stopped");
+        System.out.println("Crawler " + this.location.getName() + " stopped");
     }
 
     @Override public void run () {
@@ -65,7 +65,7 @@ public class Crawler extends Thread {
             System.err.println("Failed to start " + this.location.getName() + " crawler");
         }
 
-        System.out.println("di.kdd.trends.classifier.crawler.Crawler for " + this.location.getName() + " started");
+        System.out.println("Crawler for " + this.location.getName() + " started");
 
         while (this.isCrawling()) {
             this.crawlTrends();
