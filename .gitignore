@@ -1,5 +1,11 @@
+*.class
 
-TweetsCrawler/out/production/*
+# Package Files #
+*.jar
+*.war
+*.ear
+
+#Intellij files
 
 TweetsCrawler/.idea/*
 
