@@ -5,6 +5,7 @@ package di.kdd.trends.classifier.crawler;
  */
 
 import di.kdd.trends.classifier.crawler.config.*;
+import di.kdd.trends.classifier.crawler.config.Location;
 import twitter4j.*;
 import twitter4j.auth.AccessToken;
 
@@ -27,7 +28,7 @@ public class Crawler extends Thread {
     private di.kdd.trends.classifier.crawler.config.Location location;
     private PrintWriter tweetsWriter, trendsWriter;
 
-    public Crawler(di.kdd.trends.classifier.crawler.config.Location location, Token token) throws Exception {
+    public Crawler(Location location, Token token) throws Exception {
         twitter = new TwitterFactory().getInstance();
         twitter.setOAuthConsumer(token.getConsumer(), token.getConsumerSecret());
         AccessToken oathAccessToken = new AccessToken(token.getAccess(), token.getAccessSecret());
