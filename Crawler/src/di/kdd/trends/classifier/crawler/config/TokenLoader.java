@@ -41,4 +41,12 @@ public class TokenLoader {
 
         return this.tokens.get(this.tokenIndex++);
     }
+
+    public Token getToken (int index) {
+        if (index == this.tokens.size()) {
+            return null;
+        }
+
+        return this.tokens.get(index);
+    }
 }

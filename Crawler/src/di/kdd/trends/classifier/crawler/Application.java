@@ -24,14 +24,38 @@ public class Application {
 
         Application.addShutDownHook();
 
-        Location location;
-        LocationLoader locationLoader = new LocationLoader();
         Token token;
+        Location location;
+
+        LocationLoader locationLoader = new LocationLoader();
         TokenLoader tokenLoader = new TokenLoader();
 
-        while ((location = locationLoader.getLocation()) != null &&
-                        (token = tokenLoader.getToken()) != null) {
-            crawlers.add(new Crawler(location, token));
+        if (args.length == 0) {
+
+            /* Light'em all */
+
+            while ((location = locationLoader.getLocation()) != null &&
+                            (token = tokenLoader.getToken()) != null) {
+                crawlers.add(new Crawler(location, token));
+            }
+        }
+        else {
+
+            for (String locationName : args) {
+                location = locationLoader.getLocation(locationName);
+
+                if (location == null) {
+                    continue;
+                }
+
+                token = tokenLoader.getToken(location.getId());
+
+                if (token == null) {
+                    continue;
+                }
+
+                crawlers.add(new Crawler(location, token));
+            }
         }
 
         for (Crawler crawler : crawlers) {
