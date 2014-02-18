@@ -45,12 +45,14 @@ public class Application {
                 location = locationLoader.getLocation(locationName);
 
                 if (location == null) {
+                    System.err.println("No location " + locationName);
                     continue;
                 }
 
                 token = tokenLoader.getToken(location.getId());
 
                 if (token == null) {
+                    System.err.println("No token for " + location.getName());
                     continue;
                 }
 
