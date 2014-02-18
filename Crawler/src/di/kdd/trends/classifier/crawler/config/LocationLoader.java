@@ -38,4 +38,14 @@ public class LocationLoader {
 
         return this.locations.get(this.locationIndex++);
     }
+
+    public Location getLocation (String name) {
+        for (Location location : this.locations) {
+            if (location.getName().toLowerCase().equals(name.toLowerCase())) {
+                return location;
+            }
+        }
+
+        return null;
+    }
 }
