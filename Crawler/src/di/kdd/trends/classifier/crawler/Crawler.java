@@ -86,6 +86,7 @@ public class Crawler extends Thread {
         if (lastTrendCrawl != 0) {
 
             /* Check if TRENDS_CRAWL_INTERVAL elapsed since last trend crawling */
+            
             if (now - this.lastTrendCrawl < Crawler.TRENDS_CRAWL_INTERVAL) {
                 return;
             }
