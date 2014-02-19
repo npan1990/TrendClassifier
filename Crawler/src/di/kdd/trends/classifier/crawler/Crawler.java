@@ -29,7 +29,7 @@ public class Crawler extends Thread {
     private PrintWriter tweetsWriter, trendsWriter;
 
     private String LOGTAG;
-    public Crawler(Location location, Token token) throws Exception {
+    public Crawler(Location location, Token token) {
         twitter = new TwitterFactory().getInstance();
         twitter.setOAuthConsumer(token.getConsumer(), token.getConsumerSecret());
         AccessToken oathAccessToken = new AccessToken(token.getAccess(), token.getAccessSecret());
