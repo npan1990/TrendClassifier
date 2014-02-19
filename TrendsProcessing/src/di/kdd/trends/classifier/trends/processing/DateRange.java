@@ -22,7 +22,8 @@ public class DateRange {
         if (from == null || from.before(date) == false) {
             this.from = date;
         }
-        else if (to == null || to.after(date) == false) {
+
+        if (to == null || to.after(date) == false) {
             this.to = date;
         }
     }

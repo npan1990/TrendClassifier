@@ -13,8 +13,7 @@ public class TrendValue {
     private ArrayList<Integer> rankings = new ArrayList<Integer>();
 
     public TrendValue (Date date, int ranking) {
-        this.dateRange.updateRange(date);
-        this.rankings.add(ranking);
+        this.update(date, ranking);
     }
 
     public void update (Date date, int ranking) {
