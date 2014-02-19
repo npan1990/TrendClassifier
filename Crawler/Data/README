@@ -1,0 +1,21 @@
+This directory contains the crawled data.
+
+Structure
+
+    location/
+        tweets
+        trends
+
+Description
+
+    location/
+        The location folder is auto-generated from the crawler instance.
+
+    location/tweets
+        Each tweet is written in two lines.
+            userID username date isRetweet retweetCount
+            tweetText
+
+    location/trends
+        Each crawled trend session is written in eleven lines.
+        The first line is the date crawled and the following ten, the ten crawled trends.
