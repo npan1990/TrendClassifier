@@ -6,7 +6,12 @@ package di.kdd.trends.classifier.trends.processing;
 
 public class Application {
 
-    public static void main(String []args) {
+    private static String DATA_FOLDER = "Data/";
 
+    public static void main(String []args) throws Exception {
+        TrendsProcessor trendsProcessor = new TrendsProcessor();
+        trendsProcessor.process(Application.DATA_FOLDER + "trends-18-02");
+
+        return;
     }
 }
