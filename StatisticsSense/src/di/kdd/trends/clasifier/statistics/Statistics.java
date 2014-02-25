@@ -33,38 +33,6 @@ public class Statistics {
         Statistics.trends.clear();
     }
 
-    private static void findDistinctWordsOfTrend(String trend) {
-        ArrayList<String> distinctWords = new ArrayList<String>();
-
-        for (ProcessedTweet tweet : Statistics.tweets) {
-            for (String word : tweet.getTokens()) {
-
-                if (tweet.getTokens().contains(trend) || tweet.getHashTags().contains(trend)) {
-                    if (distinctWords.contains(word) == false) {
-                        distinctWords.add(word);
-                    }
-                }
-
-            }
-        }
-
-        System.out.println("Number of distinct words for " + trend + ": " + distinctWords.size());
-    }
-
-    private static void findDistinctWords() {
-        ArrayList<String> distinctWords = new ArrayList<String>();
-
-        for (ProcessedTweet tweet : Statistics.tweets) {
-            for (String word : tweet.getTokens()) {
-                if (distinctWords.contains(word) == false) {
-                    distinctWords.add(word);
-                }
-            }
-        }
-
-        System.out.println("Number of distinct words: " + distinctWords.size());
-    }
-
     private static void loadTweets(String tweetsFileName) throws Exception {
         BufferedReader reader = new BufferedReader(new FileReader(tweetsFileName));
 
@@ -89,6 +57,38 @@ public class Statistics {
                 }
             }
         }
+    }
+
+    private static void findDistinctWords() {
+        ArrayList<String> distinctWords = new ArrayList<String>();
+
+        for (ProcessedTweet tweet : Statistics.tweets) {
+            for (String word : tweet.getTokens()) {
+                if (distinctWords.contains(word) == false) {
+                    distinctWords.add(word);
+                }
+            }
+        }
+
+        System.out.println("Number of distinct words: " + distinctWords.size());
+    }
+
+    private static void findDistinctWordsOfTrend(String trend) {
+        ArrayList<String> distinctWords = new ArrayList<String>();
+
+        for (ProcessedTweet tweet : Statistics.tweets) {
+            for (String word : tweet.getTokens()) {
+
+                if (tweet.getTokens().contains(trend) || tweet.getHashTags().contains(trend)) {
+                    if (distinctWords.contains(word) == false) {
+                        distinctWords.add(word);
+                    }
+                }
+
+            }
+        }
+
+        System.out.println("Number of distinct words for " + trend + ": " + distinctWords.size());
     }
 
     private static void computeAveragesPerTweet() {
