@@ -102,6 +102,7 @@ public class Statistics {
     }
 
     private static void computeAveragesPerTweetOfTrend(String trend) {
+        int tweetsWithTrend = 0;
         int tokenPopulation, urlPopulation, repliesPopulation, hashTagsPopulation;
 
         tokenPopulation = urlPopulation = repliesPopulation = hashTagsPopulation = 0;
@@ -112,12 +113,14 @@ public class Statistics {
                 urlPopulation += tweet.getUrls().size();
                 repliesPopulation += tweet.getReplies().size();
                 hashTagsPopulation += tweet.getHashTags().size();
+
+                tweetsWithTrend++;
             }
         }
 
-        System.out.println("Average tokens per tweet for " + trend + ": " + (double) tokenPopulation / Statistics.tweets.size());
-        System.out.println("Average urls per tweet for " + trend + ": " + (double) urlPopulation / Statistics.tweets.size());
-        System.out.println("Average replies per tweet for " + trend + ": " + (double) repliesPopulation / Statistics.tweets.size());
-        System.out.println("Average hash tags per tweet for " + trend + ": " + (double) hashTagsPopulation / Statistics.tweets.size());
+        System.out.println("Average tokens per tweet for " + trend + ": " + (double) tokenPopulation / tweetsWithTrend);
+        System.out.println("Average urls per tweet for " + trend + ": " + (double) urlPopulation / tweetsWithTrend);
+        System.out.println("Average replies per tweet for " + trend + ": " + (double) repliesPopulation / tweetsWithTrend);
+        System.out.println("Average hash tags per tweet for " + trend + ": " + (double) hashTagsPopulation / tweetsWithTrend);
     }
 }
