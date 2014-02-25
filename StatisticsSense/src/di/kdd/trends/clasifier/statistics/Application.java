@@ -3,6 +3,7 @@ package di.kdd.trends.clasifier.statistics;
 /**
  * Created by panos on 2/25/14.
  */
+
 public class Application {
 
     private static String DATA_FOLDER = "Data/";
@@ -19,7 +20,9 @@ public class Application {
         String location = args[0];
         String date = args[1];
 
-        Statistics.sense(Application.DATA_FOLDER + location + "/" + date + Application.TWEETS_FILE,
-                        Application.DATA_FOLDER + location + "/" + date + Application.TRENDS_FILE);
+        Statistics.load(Application.DATA_FOLDER + location + "/" + date + Application.TWEETS_FILE,
+                Application.DATA_FOLDER + location + "/" + date + Application.TRENDS_FILE);
+
+         Statistics.sense();
     }
 }

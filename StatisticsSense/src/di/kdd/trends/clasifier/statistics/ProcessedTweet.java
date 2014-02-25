@@ -57,11 +57,7 @@ public class ProcessedTweet {
     }
 
     public ProcessedTweet(String fromString) throws ParseException {
-        String []split = fromString.split(";");
-
-        for (String lol : split) {
-            System.out.println(lol);
-        }
+        String []split = fromString.split("\\|", -1);
 
         this.id = split[0];
         this.userName = split[1];
@@ -70,25 +66,25 @@ public class ProcessedTweet {
         this.isRwetweet = Boolean.parseBoolean(split[3]);
         this.retweetCount = Integer.parseInt(split[4]);
 
-        String []tokens = split[5].split(",");
+        String []tokens = split[5].split(",", -1);
 
         for (String token : tokens) {
             this.getTokens().add(token);
         }
 
-        String []hashTags = split[6].split(",");
+        String []hashTags = split[6].split(",", -1);
 
         for (String hashTag : hashTags) {
             this.getHashTags().add(hashTag.replace("#", ""));
         }
 
-        String []urls = split[7].split(",");
+        String []urls = split[7].split(",", -1);
 
         for (String url : urls) {
             this.getUrls().add(url);
         }
 
-        String []replies = split[8].split(",");
+        String []replies = split[8].split(",", -1);
 
         for (String reply : replies) {
             this.getReplies().add(reply);
