@@ -1,4 +1,4 @@
-package di.kdd.trends.classifier.trends.processing;
+package di.kdd.trends.classifier.processing;
 
 /**
  * Created by panossakkos on 2/19/14.

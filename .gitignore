@@ -7,7 +7,6 @@
 
 #Intellij files
 
-Crawler/.idea/*
-TrendsProcessing/.idea/*
-StatisticsSense/.idea/*
+Classifier/.idea/*
+
 *.iml
