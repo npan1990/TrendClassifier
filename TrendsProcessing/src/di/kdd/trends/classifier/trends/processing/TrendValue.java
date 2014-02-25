@@ -20,4 +20,12 @@ public class TrendValue {
         this.dateRange.updateRange(date);
         this.rankings.add(ranking);
     }
-}
+
+    public DateRange getDateRange() {
+        return this.dateRange;
+    }
+
+    public ArrayList<Integer> getRanking()
+    {
+        return this.rankings;
+    }}

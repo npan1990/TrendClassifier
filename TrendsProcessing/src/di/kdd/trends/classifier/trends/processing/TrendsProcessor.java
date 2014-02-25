@@ -1,7 +1,6 @@
 package di.kdd.trends.classifier.trends.processing;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.*;
 import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -68,5 +67,27 @@ public class TrendsProcessor {
             previousTrends.clear();
             previousTrends.addAll(currentTrends);
         }
+    }
+
+    void dumpTrends(String where) throws Exception {
+        PrintWriter trendsWriter = new PrintWriter(new BufferedWriter(new FileWriter(where, true)));
+
+        for (String trend : this.trends.keySet()) {
+            trendsWriter.println(trend);
+
+            for (TrendValue trendValue : this.trends.get(trend)) {
+                trendsWriter.println("From: " + trendValue.getDateRange().getFrom() +
+                                    " To : " + trendValue.getDateRange().getTo());
+
+                for (Integer rank : trendValue.getRanking()) {
+                    trendsWriter.print(rank + " ");
+                }
+
+                trendsWriter.println();
+            }
+        }
+
+        trendsWriter.flush();
+        trendsWriter.close();
     }
 }
