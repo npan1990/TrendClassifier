@@ -1,4 +1,4 @@
-package di.kdd.trends.clasifier.statistics;
+package di.kdd.trends.classifier.statistics;
 
 /**
  * Created by panos on 2/25/14.

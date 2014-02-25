@@ -1,4 +1,4 @@
-package di.kdd.trends.clasifier.statistics;
+package di.kdd.trends.classifier.statistics;
 
 import java.text.*;
 import java.util.ArrayList;

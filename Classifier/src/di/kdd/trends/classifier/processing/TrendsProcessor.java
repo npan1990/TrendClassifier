@@ -1,7 +1,6 @@
-package di.kdd.trends.classifier.trends.processing;
+package di.kdd.trends.classifier.processing;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -67,6 +66,16 @@ public class TrendsProcessor {
             previousTrends.clear();
             previousTrends.addAll(currentTrends);
         }
+    }
+
+    public ArrayList<String> getTrends() {
+        ArrayList<String> trends = new ArrayList<String>();
+
+        for (String trend : this.trends.keySet()) {
+            trends.add(trend);
+        }
+
+        return trends;
     }
 
     void dumpTrends(String where) throws Exception {

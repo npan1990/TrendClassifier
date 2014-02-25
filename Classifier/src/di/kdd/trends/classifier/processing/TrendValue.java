@@ -1,4 +1,4 @@
-package di.kdd.trends.classifier.trends.processing;
+package di.kdd.trends.classifier.processing;
 
 import java.util.ArrayList;
 import java.util.Date;
