@@ -7,7 +7,6 @@
 
 #Intellij files
 
-Crawler/.idea/*
 Classifier/.idea/*
 
 *.iml
