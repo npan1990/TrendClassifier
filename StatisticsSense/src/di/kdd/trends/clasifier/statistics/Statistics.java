@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 public class Statistics {
 
+    private static ArrayList<ProcessedTweet> tweets = new ArrayList<ProcessedTweet>();
     private static ArrayList<String> trends = new ArrayList<String>();
 
     public static void sense (String tweetsFileName, String trendsFileName) throws Exception {
@@ -17,10 +18,18 @@ public class Statistics {
         Statistics.loadTweets(tweetsFileName);
         Statistics.loadTrends(trendsFileName);
 
+        Statistics.tweets.clear();
         Statistics.trends.clear();
     }
 
     private static void loadTweets(String tweetsFileName) throws Exception {
+        BufferedReader reader = new BufferedReader(new FileReader(tweetsFileName));
+
+        String line;
+
+        while ((line = reader.readLine()) != null) {
+            Statistics.tweets.add(new ProcessedTweet(line));
+        }
     }
 
     private static void loadTrends(String trendsFileName) throws Exception {
