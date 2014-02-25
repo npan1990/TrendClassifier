@@ -8,5 +8,6 @@
 #Intellij files
 
 Crawler/.idea/*
+TrendsProcessing/.idea/*
 
 *.iml
