@@ -20,6 +20,42 @@ public class ProcessedTweet {
     private ArrayList<String> urls = new ArrayList<String>();
     private ArrayList<String> replies = new ArrayList<String>();
 
+    public String getId() {
+        return id;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public Date getTime() {
+        return time;
+    }
+
+    public Boolean getIsRwetweet() {
+        return isRwetweet;
+    }
+
+    public int getRetweetCount() {
+        return retweetCount;
+    }
+
+    public ArrayList<String> getTokens() {
+        return tokens;
+    }
+
+    public ArrayList<String> getHashTags() {
+        return hashTags;
+    }
+
+    public ArrayList<String> getUrls() {
+        return urls;
+    }
+
+    public ArrayList<String> getReplies() {
+        return replies;
+    }
+
     public ProcessedTweet(String fromString) throws ParseException {
         String []split = fromString.split(";");
 
@@ -37,25 +73,25 @@ public class ProcessedTweet {
         String []tokens = split[5].split(",");
 
         for (String token : tokens) {
-            this.tokens.add(token);
+            this.getTokens().add(token);
         }
 
         String []hashTags = split[6].split(",");
 
         for (String hashTag : hashTags) {
-            this.hashTags.add(hashTag.replace("#", ""));
+            this.getHashTags().add(hashTag.replace("#", ""));
         }
 
         String []urls = split[7].split(",");
 
         for (String url : urls) {
-            this.urls.add(url);
+            this.getUrls().add(url);
         }
 
         String []replies = split[8].split(",");
 
         for (String reply : replies) {
-            this.replies.add(reply);
+            this.getReplies().add(reply);
         }
     }
 }

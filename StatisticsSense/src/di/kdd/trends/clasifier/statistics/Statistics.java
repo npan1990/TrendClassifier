@@ -18,8 +18,43 @@ public class Statistics {
         Statistics.loadTweets(tweetsFileName);
         Statistics.loadTrends(trendsFileName);
 
+        Statistics.findDistinctWords();
+        Statistics.computeAveragesPerTweet();
+        
         Statistics.tweets.clear();
         Statistics.trends.clear();
+    }
+
+    private static void computeAveragesPerTweet() {
+        int tokenPopulation, urlPopulation, repliesPopulation, hashTagsPopulation;
+
+        tokenPopulation = urlPopulation = repliesPopulation = hashTagsPopulation = 0;
+
+        for (ProcessedTweet tweet : Statistics.tweets) {
+            tokenPopulation += tweet.getTokens().size();
+            urlPopulation += tweet.getUrls().size();
+            repliesPopulation += tweet.getReplies().size();
+            hashTagsPopulation += tweet.getHashTags().size();
+        }
+
+        System.out.println("Average tokens per tweet: " + tokenPopulation / Statistics.tweets.size());
+        System.out.println("Average urls per tweet: " + urlPopulation / Statistics.tweets.size());
+        System.out.println("Average replies per tweet: " + repliesPopulation / Statistics.tweets.size());
+        System.out.println("Average hashtags per tweet: " + hashTagsPopulation / Statistics.tweets.size());
+    }
+
+    private static void findDistinctWords() {
+        ArrayList<String> distinctWords = new ArrayList<String>();
+
+        for (ProcessedTweet tweet : Statistics.tweets) {
+            for (String word : tweet.getTokens()) {
+                if (distinctWords.contains(word) == false) {
+                    distinctWords.add(word);
+                }
+            }
+        }
+
+        System.out.println("Number of distinct words: " + distinctWords.size());
     }
 
     private static void loadTweets(String tweetsFileName) throws Exception {
