@@ -131,7 +131,7 @@ public class Statistics {
             }
         }
 
-        System.out.println("Found in " + (double) tweetsWithTrend / Statistics.tweets.size() + " of tweets");
+        System.out.println("Found in " + tweetsWithTrend + " out of " + Statistics.tweets.size() +  " tweets (" + (double) tweetsWithTrend / Statistics.tweets.size() + ")");
         System.out.println("Average tokens per tweet for " + trend + ": " + (double) tokenPopulation / tweetsWithTrend);
         System.out.println("Average urls per tweet for " + trend + ": " + (double) urlPopulation / tweetsWithTrend);
         System.out.println("Average replies per tweet for " + trend + ": " + (double) repliesPopulation / tweetsWithTrend);
@@ -142,20 +142,24 @@ public class Statistics {
 
     private static boolean isRelevant(ProcessedTweet tweet, String trend) {
 
+        ArrayList<String> searchSpace = new ArrayList<String>();
 
-        if (tweet.getTokens().contains(trend)) {
+        searchSpace.addAll(tweet.getTokens());
+        searchSpace.addAll(tweet.getHashTags());
+
+        if (searchSpace.contains(trend)) {
             return true;
         }
 
         /* dani-alves */
 
-        if (tweet.getTokens().contains(trend.replace(" ", "_"))) {
+        if (searchSpace.contains(trend.replace(" ", "_"))) {
             return true;
         }
 
         /* dani_alves */
 
-        if (tweet.getTokens().contains(trend.replace(" ", "-"))) {
+        if (searchSpace.contains(trend.replace(" ", "-"))) {
             return true;
         }
 
@@ -165,6 +169,12 @@ public class Statistics {
 
         if (trendTokens.length > 0) {
 
+            for (String subToken : trendTokens) {
+                if (searchSpace.contains(subToken)) {
+                    return true;
+                }
+            }
+
             for (int i = 0; i < tweet.getTokens().size(); i++) {
 
                 boolean theyMatch = true;
@@ -172,7 +182,6 @@ public class Statistics {
                 if (tweet.getTokens().get(i).compareTo(trendTokens[0]) == 0) {
 
                     i++;
-
                     for (int j = 1; i < tweet.getTokens().size() && j < trendTokens.length; i++, j++) {
                         if (tweet.getTokens().get(i).compareTo(trendTokens[j]) != 0) {
                             theyMatch = false;
