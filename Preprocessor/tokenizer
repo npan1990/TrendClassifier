@@ -1,0 +1,141 @@
+import sys
+import nltk
+import datetime
+import argparse
+from nltk.corpus import stopwords
+from nltk.corpus import wordnet
+from nltk.tokenize.punkt import PunktWordTokenizer
+from nltk.tokenize import RegexpTokenizer
+from os.path import join as pjoin
+import os
+from os import listdir
+import codecs
+
+tweets_filename = 'tweets'
+trends_filename = 'trends'
+processed_tweets_filename = 'tweets.tok'
+processed_trends_filename = 'trends.tok'
+
+
+parser = argparse.ArgumentParser(description='Tokenizes tweets and splits to days')
+parser.add_argument('-v','--verbose', dest='verbose', help='Print verbose information', action='store_true', default=False, required=False)
+args = vars(parser.parse_args())
+
+print args['verbose']
+#print 'Input file:', args['input_filename']
+#print 'Output file:', output_filename
+
+#input_file = open(args['input_filename'], 'r')
+
+processed_data_directory = 'ProcessedData'
+data_directory = 'Data'
+last_file = ""
+
+#For each location under data_directory
+#locations = [x[0] for x in os.walk(data_directory)]
+
+for location_name in listdir(data_directory):
+	print location_name
+	location_dir = pjoin(data_directory, location_name)
+	processed_dir = pjoin(processed_data_directory, location_name)
+	
+	tweets_file = pjoin(location_dir, tweets_filename)
+	trends_file = pjoin(location_dir, trends_filename)
+
+	processed_tweets_file = pjoin(processed_dir, processed_tweets_filename)
+	processed_trends_file = pjoin(processed_dir, processed_trends_filename)
+
+	output_file = None
+	print processed_tweets_file
+	print processed_trends_file
+	
+	input_file = open(tweets_file, 'r')
+	with input_file as input:
+	    count = 0
+	    while True:
+		line1 = input.readline()
+		line2 = input.readline()
+		if not line2: break #EOF
+
+		fields = line1.split()
+		tweetId = fields[0]
+		userName = fields[1]
+		month = fields[3]
+		day = fields[4]
+		time = fields[5]
+		isRetweet = fields[8]
+		rtCount = fields[9]
+
+		date = datetime.datetime.strptime(" ".join([day,month]),"%d %b")	
+		directory = "-".join([str(date.day),str(date.month)])
+
+		path_to_dir = pjoin(processed_dir, directory)
+		if not os.path.exists(path_to_dir):
+	    		os.makedirs(path_to_dir)
+	  
+		path_to_file = pjoin(path_to_dir, processed_tweets_filename)
+	
+		#Close the old, open the new
+		if path_to_file != last_file: 
+			if output_file and not output_file.closed:
+				output_file.close()
+			print path_to_dir
+			output_file = codecs.open(path_to_file, 'w', 'utf-8')
+			last_file = path_to_file
+
+		
+		line2 = line2.decode('utf-8')
+
+		# Tokenize for hashtags/urls/@replies
+		unit_tokenizer = RegexpTokenizer(r'\S+')		
+		unit_tokens = unit_tokenizer.tokenize(line2)
+
+		# Get hashtags
+		hashtags = [t for t in unit_tokens if t.startswith('#')]
+
+		# Get urls
+		urls = [t for t in unit_tokens if (t.startswith('http:') or t.startswith('https:'))]
+
+	 	# Get replies
+		replies = [t for t in unit_tokens if t.startswith('@')] 
+		
+		# Remove hashtags, urls and @replies
+		for reply in replies:
+			line2 = line2.replace(reply, '')
+		for url in urls:
+			line2 = line2.replace(url, '')
+		for hashtag in hashtags:
+			line2 = line2.replace(hashtag, '')
+
+		# Tokenize for tokens
+		token_tokenizer = RegexpTokenizer(r'\w+')
+		word_tokens = token_tokenizer.tokenize(line2)
+		
+		# Lowercase word tokens
+		word_tokens = [t.lower() for t in word_tokens]
+
+		# Lowercase urls and hashtags
+		urls = [t.lower() for t in urls]
+		hashtags = [t.lower() for t in hashtags]
+
+		#tokens = [t.lower() for t in tokens if (not t.startswith('http:') and not t.startswith('@') and not t.startswith('#'))]
+
+		# Remove stopwords
+		word_tokens = [t for t in word_tokens if not t in stopwords.words('english')]
+		
+
+		line = "|".join([tweetId, userName, time, isRetweet, rtCount, ",".join(word_tokens), ",".join(hashtags), ",".join(urls), ",".join(replies)])
+		output_file.write(line)
+		output_file.write('\n')
+
+		if args['verbose'] == True:
+			print line1
+			print line2
+			print 'Tokens:', tokens
+			print 'Hashtags:', hashtags
+			print 'URLs:', urls
+			print 'Replies:', replies
+			print
+
+
+
