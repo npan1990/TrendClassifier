@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 public class Statistics {
 
+    private static TrendsProcessor trendsProcessor = new TrendsProcessor();
     private static ArrayList<ProcessedTweet> tweets = new ArrayList<ProcessedTweet>();
     private static ArrayList<String> trends = new ArrayList<String>();
 
@@ -30,6 +31,7 @@ public class Statistics {
         System.out.println("Length: " + trend.length());
         Statistics.findDistinctWordsOfTrend(trend);
         Statistics.computeAveragesPerTweetOfTrend(trend);
+        Statistics.trendsProcessor.dump(trend);
     }
 
     public static void clear() {
@@ -48,7 +50,6 @@ public class Statistics {
     }
 
     private static void loadTrends(String trendsFileName) throws Exception {
-        TrendsProcessor trendsProcessor = new TrendsProcessor();
         trendsProcessor.process(trendsFileName);
         Statistics.trends = trendsProcessor.getTrends();
     }

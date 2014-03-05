@@ -1,5 +1,6 @@
 package di.kdd.trends.classifier.processing;
 
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -28,4 +29,19 @@ public class TrendValue {
     public ArrayList<Integer> getRanking()
     {
         return this.rankings;
-    }}
+    }
+
+    @Override
+    public String toString() {
+        StringWriter output = new StringWriter();
+
+        output.append(this.dateRange.toString() + "\n");
+
+        for (Integer rank : this.rankings) {
+            output.append(rank + " ");
+        }
+        output.append("\n");
+
+        return output.toString();
+    }
+}

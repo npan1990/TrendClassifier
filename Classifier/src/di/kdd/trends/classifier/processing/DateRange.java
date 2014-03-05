@@ -1,5 +1,6 @@
 package di.kdd.trends.classifier.processing;
 
+import java.io.StringWriter;
 import java.util.Date;
 
 /**
@@ -26,5 +27,14 @@ public class DateRange {
         if (to == null || to.after(date) == false) {
             this.to = date;
         }
+    }
+
+    @Override
+    public String toString() {
+        StringWriter output = new StringWriter();
+
+        output.append(this.from + " - " + this.to);
+
+        return output.toString();
     }
 }

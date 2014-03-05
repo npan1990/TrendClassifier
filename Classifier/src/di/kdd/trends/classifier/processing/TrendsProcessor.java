@@ -99,4 +99,10 @@ public class TrendsProcessor {
         trendsWriter.flush();
         trendsWriter.close();
     }
+
+    public void dump(String trend) {
+        for (TrendValue value : this.trends.get(trend)) {
+            System.out.println(value.toString());
+        }
+    }
 }
