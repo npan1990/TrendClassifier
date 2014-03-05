@@ -124,4 +124,10 @@ public class Statistics {
         System.out.println("Average hash tags per tweet for " + trend + ": " + (double) hashTagsPopulation / tweetsWithTrend);
         System.out.println();
     }
+
+    public static void list() {
+        for (String trend : Statistics.trends) {
+            System.out.println(trend);
+        }
+    }
 }

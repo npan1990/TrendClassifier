@@ -35,6 +35,12 @@ public class ConsoleInterface {
             if (tokens.length == 1 && tokens[0].compareTo("all") == 0) {
                 Statistics.sense();
             }
+            if (tokens.length == 1 && tokens[0].compareTo("ls") == 0) {
+                Statistics.list();
+            }
+            if (tokens.length == 1 && tokens[0].compareTo("q") == 0) {
+                return;
+            }
             else if (tokens.length > 0) {
                 for (int i = 0; i < tokens.length; i++) {
                     Statistics.senseTrend(tokens[i]);
