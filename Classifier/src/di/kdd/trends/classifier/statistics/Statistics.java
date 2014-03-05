@@ -117,7 +117,7 @@ public class Statistics {
         tokenPopulation = urlPopulation = repliesPopulation = hashTagsPopulation = rts = 0;
 
         for (ProcessedTweet tweet : Statistics.tweets) {
-            if (tweet.getTokens().contains(trend) || tweet.getHashTags().contains(trend)) {
+            if (Statistics.isRelevant(tweet, trend)) {
                 tokenPopulation += tweet.getTokens().size();
                 urlPopulation += tweet.getUrls().size();
                 repliesPopulation += tweet.getReplies().size();
@@ -138,6 +138,57 @@ public class Statistics {
         System.out.println("Average hash tags per tweet for " + trend + ": " + (double) hashTagsPopulation / tweetsWithTrend);
         System.out.println("Percentage of tweets that were RTs: " +  rts * (double) 100 / tweetsWithTrend);
         System.out.println();
+    }
+
+    private static boolean isRelevant(ProcessedTweet tweet, String trend) {
+
+
+        if (tweet.getTokens().contains(trend)) {
+            return true;
+        }
+
+        /* dani-alves */
+
+        if (tweet.getTokens().contains(trend.replace(" ", "_"))) {
+            return true;
+        }
+
+        /* dani_alves */
+
+        if (tweet.getTokens().contains(trend.replace(" ", "-"))) {
+            return true;
+        }
+
+        /* [...,dani,alves,...] */
+
+        String []trendTokens = trend.split(" ");
+
+        if (trendTokens.length > 0) {
+
+            for (int i = 0; i < tweet.getTokens().size(); i++) {
+
+                boolean theyMatch = true;
+
+                if (tweet.getTokens().get(i).compareTo(trendTokens[0]) == 0) {
+
+                    i++;
+
+                    for (int j = 1; i < tweet.getTokens().size() && j < trendTokens.length; i++, j++) {
+                        if (tweet.getTokens().get(i).compareTo(trendTokens[j]) != 0) {
+                            theyMatch = false;
+                            break;
+                        }
+                    }
+
+                    if (theyMatch) {
+                        return true;
+                    }
+                }
+
+            }
+        }
+
+        return false;
     }
 
     public static void list() {
