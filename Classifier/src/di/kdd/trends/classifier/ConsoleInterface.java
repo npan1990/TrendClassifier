@@ -30,7 +30,7 @@ public class ConsoleInterface {
 
         System.out.print("> ");
         while ((command = scanner.nextLine()) != null) {
-            String tokens[] = command.split(" ");
+            String tokens[] = command.split(",");
 
             if (tokens.length == 1 && tokens[0].compareTo("all") == 0) {
                 Statistics.sense();

@@ -26,6 +26,7 @@ public class Statistics {
     }
 
     public static void senseTrend (String trend) throws Exception {
+        System.out.println("Trend: " + trend);
         System.out.println("Length: " + trend.length());
         Statistics.findDistinctWordsOfTrend(trend);
         Statistics.computeAveragesPerTweetOfTrend(trend);
