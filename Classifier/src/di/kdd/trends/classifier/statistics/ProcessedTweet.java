@@ -75,19 +75,27 @@ public class ProcessedTweet {
         String []hashTags = split[6].split(",", -1);
 
         for (String hashTag : hashTags) {
-            this.getHashTags().add(hashTag.replace("#", ""));
+            hashTag = hashTag.replace("#", "");
+
+            if (hashTag.length() > 0) {
+                this.getHashTags().add(hashTag.replace("#", ""));
+            }
         }
 
         String []urls = split[7].split(",", -1);
 
         for (String url : urls) {
-            this.getUrls().add(url);
+            if (url.length() > 0) {
+                this.getUrls().add(url);
+            }
         }
 
         String []replies = split[8].split(",", -1);
 
         for (String reply : replies) {
-            this.getReplies().add(reply);
+            if (reply.length() > 0) {
+                this.getReplies().add(reply);
+            }
         }
     }
 }
