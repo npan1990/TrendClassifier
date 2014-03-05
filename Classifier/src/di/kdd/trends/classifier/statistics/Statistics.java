@@ -119,6 +119,7 @@ public class Statistics {
             }
         }
 
+        System.out.println("Found in " + tweetsWithTrend + " tweets");
         System.out.println("Average tokens per tweet for " + trend + ": " + (double) tokenPopulation / tweetsWithTrend);
         System.out.println("Average urls per tweet for " + trend + ": " + (double) urlPopulation / tweetsWithTrend);
         System.out.println("Average replies per tweet for " + trend + ": " + (double) repliesPopulation / tweetsWithTrend);
