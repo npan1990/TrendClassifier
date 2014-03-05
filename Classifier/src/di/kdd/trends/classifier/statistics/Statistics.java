@@ -87,28 +87,34 @@ public class Statistics {
     }
 
     private static void computeAveragesPerTweet() {
-        int tokenPopulation, urlPopulation, repliesPopulation, hashTagsPopulation;
+        int tokenPopulation, urlPopulation, repliesPopulation, hashTagsPopulation, rts;
 
-        tokenPopulation = urlPopulation = repliesPopulation = hashTagsPopulation = 0;
+        tokenPopulation = urlPopulation = repliesPopulation = hashTagsPopulation = rts = 0;
 
         for (ProcessedTweet tweet : Statistics.tweets) {
             tokenPopulation += tweet.getTokens().size();
             urlPopulation += tweet.getUrls().size();
             repliesPopulation += tweet.getReplies().size();
             hashTagsPopulation += tweet.getHashTags().size();
+
+            if (tweet.getIsRwetweet()) {
+                rts++;
+            }
         }
 
         System.out.println("Average tokens per tweet: " + (double) tokenPopulation / Statistics.tweets.size());
         System.out.println("Average urls per tweet: " + (double) urlPopulation / Statistics.tweets.size());
         System.out.println("Average replies per tweet: " + (double) repliesPopulation / Statistics.tweets.size());
         System.out.println("Average hash tags per tweet: " + (double) hashTagsPopulation / Statistics.tweets.size());
+        System.out.println("Percentage of tweets that were RTs: " +  rts * (double) 100 / Statistics.tweets.size());
+        System.out.println();
     }
 
     private static void computeAveragesPerTweetOfTrend(String trend) {
         int tweetsWithTrend = 0;
-        int tokenPopulation, urlPopulation, repliesPopulation, hashTagsPopulation;
+        int tokenPopulation, urlPopulation, repliesPopulation, hashTagsPopulation, rts;
 
-        tokenPopulation = urlPopulation = repliesPopulation = hashTagsPopulation = 0;
+        tokenPopulation = urlPopulation = repliesPopulation = hashTagsPopulation = rts = 0;
 
         for (ProcessedTweet tweet : Statistics.tweets) {
             if (tweet.getTokens().contains(trend) || tweet.getHashTags().contains(trend)) {
@@ -116,6 +122,10 @@ public class Statistics {
                 urlPopulation += tweet.getUrls().size();
                 repliesPopulation += tweet.getReplies().size();
                 hashTagsPopulation += tweet.getHashTags().size();
+
+                if (tweet.getIsRwetweet()) {
+                    rts++;
+                }
 
                 tweetsWithTrend++;
             }
@@ -126,6 +136,7 @@ public class Statistics {
         System.out.println("Average urls per tweet for " + trend + ": " + (double) urlPopulation / tweetsWithTrend);
         System.out.println("Average replies per tweet for " + trend + ": " + (double) repliesPopulation / tweetsWithTrend);
         System.out.println("Average hash tags per tweet for " + trend + ": " + (double) hashTagsPopulation / tweetsWithTrend);
+        System.out.println("Percentage of tweets that were RTs: " +  rts * (double) 100 / tweetsWithTrend);
         System.out.println();
     }
 
