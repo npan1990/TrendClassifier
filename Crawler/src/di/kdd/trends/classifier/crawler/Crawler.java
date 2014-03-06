@@ -38,7 +38,7 @@ public class Crawler extends Thread {
         this.twitter = new UberTwitter(location);
 
         this.location = location;
-        LOGTAG = "[" + location.getName() + "]: ";
+        LOGTAG = "[" + location.getName() + " " + this.getDate() + "]: ";
     }
 
     private synchronized void startCrawling () {
@@ -249,5 +249,9 @@ public class Crawler extends Thread {
             (new File(this.tweetsFile())).createNewFile();
             (new File(this.trendsFile())).createNewFile();
         }
+    }
+
+    private Date getDate() {
+        return new Date();
     }
 }
