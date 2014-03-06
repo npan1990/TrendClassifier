@@ -23,6 +23,8 @@ public class Crawler extends Thread {
     private static int STREAM_TAG = 0;
     private static int SEARCH_TAG = 1;
 
+    private static int RATE_LIMIT_FLOOR = 10;
+
     private static int TRENDS_CRAWL_INTERVAL = 5 * 60 * 1000; // 5 Minutes (in millis)
     private static int TWEETS_CRAWL_INTERVAL =  10 * 1000; // 10 Seconds (in millis)
     private boolean isCrawling = false;
@@ -97,6 +99,14 @@ public class Crawler extends Thread {
         }
 
         try {
+
+            /* Check rate limit */
+
+            if (this.twitter.getRemainingRateLimit(What.Trends, "/trends/place") < Crawler.RATE_LIMIT_FLOOR) {
+                System.out.println(LOGTAG + "Hit rate limit floor (" + Crawler.RATE_LIMIT_FLOOR + ") for trends crawling");
+                return;
+            }
+
             DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
             Trend[] trends = twitter.getPlaceTrends(this.location.getWoeid()).getTrends();
@@ -141,6 +151,13 @@ public class Crawler extends Thread {
         emptyQuery.lang("en");
 
         try {
+
+            /* Check rate limit */
+
+            if (this.twitter.getRemainingRateLimit(What.Stream, "/search/tweets") < Crawler.RATE_LIMIT_FLOOR) {
+                System.out.println(LOGTAG + "Hit rate limit floor (" + Crawler.RATE_LIMIT_FLOOR + ") for stream crawling");
+                return;
+            }
 
             QueryResult queryResult = this.twitter.getStream(emptyQuery);
 
@@ -187,6 +204,13 @@ public class Crawler extends Thread {
             queryTrend.lang("en");
 
             try {
+
+                /* Check rate limit */
+
+                if (this.twitter.getRemainingRateLimit(What.Search, "/search/tweets") < Crawler.RATE_LIMIT_FLOOR) {
+                    System.out.println(LOGTAG + "Hit rate limit floor (" + Crawler.RATE_LIMIT_FLOOR + ") for trend search crawling");
+                    return;
+                }
 
                 QueryResult queryResult = this.twitter.search(queryTrend);
 
