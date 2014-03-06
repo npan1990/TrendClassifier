@@ -30,23 +30,28 @@ public class ConsoleInterface {
 
         System.out.print("> ");
         while ((command = scanner.nextLine()) != null) {
-            String tokens[] = command.split(",");
+            try {
+                String tokens[] = command.split(",");
 
-            if (tokens.length == 1 && tokens[0].compareTo("all") == 0) {
-                Statistics.sense();
-            }
-            else if (tokens.length == 1 && tokens[0].compareTo("ls") == 0) {
-                Statistics.list();
-            }
-            else if (tokens.length == 1 && tokens[0].compareTo("q") == 0) {
-                return;
-            }
-            else if (tokens.length > 0) {
-                for (int i = 0; i < tokens.length; i++) {
-                    Statistics.senseTrend(tokens[i]);
+                if (tokens.length == 1 && tokens[0].compareTo("all") == 0) {
+                    Statistics.sense();
+                }
+                else if (tokens.length == 1 && tokens[0].compareTo("ls") == 0) {
+                    Statistics.list();
+                }
+                else if (tokens.length == 1 && tokens[0].compareTo("q") == 0) {
+                    return;
+                }
+                else if (tokens.length > 0) {
+                    for (int i = 0; i < tokens.length; i++) {
+                        Statistics.senseTrend(tokens[i]);
+                    }
                 }
             }
-
+            catch (Exception exception) {
+                System.err.println(exception.getMessage());
+                continue;
+            }
             System.out.print("> ");
         }
     }
