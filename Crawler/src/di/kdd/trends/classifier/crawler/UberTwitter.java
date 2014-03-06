@@ -64,19 +64,19 @@ public class UberTwitter {
         }
     }
 
-    public int getRemainingRateLimit (What what, String of) throws TwitterException {
-        Map<String ,RateLimitStatus> rateLimitStatus;
+    public int getRemainingRateLimit (What what) throws TwitterException {
+        Map<String, RateLimitStatus> rateLimitStatus;
 
         switch (what) {
             case Trends:
                 rateLimitStatus = this.twitterz.get(UberTwitter.TREND_TOKEN).getRateLimitStatus();
-                return rateLimitStatus.get(of).getRemaining();
+                return rateLimitStatus.get("/trends/place").getRemaining();
             case Stream:
                 rateLimitStatus = this.twitterz.get(UberTwitter.STREAM_TOKEN).getRateLimitStatus();
-                return rateLimitStatus.get(of).getRemaining();
+                return rateLimitStatus.get("/search/tweets").getRemaining();
             case Search:
                 rateLimitStatus = this.twitterz.get(previousToken()).getRateLimitStatus();
-                return rateLimitStatus.get(of).getRemaining();
+                return rateLimitStatus.get("/search/tweets").getRemaining();
             default:
                 return 0;
         }

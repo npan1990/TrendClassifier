@@ -100,7 +100,7 @@ public class Crawler extends Thread {
 
             /* Check rate limit */
 
-            if (this.twitter.getRemainingRateLimit(What.Trends, "/trends/place") < Crawler.RATE_LIMIT_FLOOR) {
+            if (this.twitter.getRemainingRateLimit(What.Trends) < Crawler.RATE_LIMIT_FLOOR) {
                 System.out.println(this.getLogTag() + "Hit rate limit floor (" + Crawler.RATE_LIMIT_FLOOR + ") for trends crawling");
                 return;
             }
@@ -123,7 +123,7 @@ public class Crawler extends Thread {
             this.trendsWriter.flush();
             this.lastTrendCrawl = now;
 
-            System.out.println(this.getLogTag() + "Got trends. Left: " + this.twitter.getRemainingRateLimit(What.Trends, "/trends/place"));
+            System.out.println(this.getLogTag() + "Got trends. Left: " + this.twitter.getRemainingRateLimit(What.Trends));
         }
         catch (Exception exception) {
             System.err.println(this.getLogTag() + "Failed to crawl trends");
@@ -152,7 +152,7 @@ public class Crawler extends Thread {
 
             /* Check rate limit */
 
-            if (this.twitter.getRemainingRateLimit(What.Stream, "/search/tweets") < Crawler.RATE_LIMIT_FLOOR) {
+            if (this.twitter.getRemainingRateLimit(What.Stream) < Crawler.RATE_LIMIT_FLOOR) {
                 System.out.println(this.getLogTag() + "Hit rate limit floor (" + Crawler.RATE_LIMIT_FLOOR + ") for stream crawling");
                 return;
             }
@@ -176,7 +176,7 @@ public class Crawler extends Thread {
             this.tweetsWriter.flush();
             this.lastStreamCrawl = now;
 
-            System.out.println(this.getLogTag() + "Got stream. Left: " + this.twitter.getRemainingRateLimit(What.Stream, "/search/tweets"));
+            System.out.println(this.getLogTag() + "Got stream. Left: " + this.twitter.getRemainingRateLimit(What.Stream));
         }
         catch (TwitterException exception) {
             System.err.println(this.getLogTag() + "Failed to crawl tweets");
@@ -205,7 +205,7 @@ public class Crawler extends Thread {
 
                 /* Check rate limit */
 
-                if (this.twitter.getRemainingRateLimit(What.Search, "/search/tweets") < Crawler.RATE_LIMIT_FLOOR) {
+                if (this.twitter.getRemainingRateLimit(What.Search) < Crawler.RATE_LIMIT_FLOOR) {
                     System.out.println(this.getLogTag() + "Hit rate limit floor (" + Crawler.RATE_LIMIT_FLOOR + ") for trend search crawling");
                     return;
                 }
@@ -229,7 +229,7 @@ public class Crawler extends Thread {
                 this.tweetsWriter.flush();
                 this.lastSearchCrawl = now;
 
-                System.out.println(this.getLogTag() + "Got tweets containing trend: " + crawledTrend + ". Left: " + this.twitter.getRemainingRateLimit(What.Search, "/search/tweets"));
+                System.out.println(this.getLogTag() + "Got tweets containing trend: " + crawledTrend + ". Left: " + this.twitter.getRemainingRateLimit(What.Search));
             }
             catch (TwitterException exception) {
                 System.err.println(this.getLogTag() + "Failed to crawl tweets with trend " + crawledTrend);
