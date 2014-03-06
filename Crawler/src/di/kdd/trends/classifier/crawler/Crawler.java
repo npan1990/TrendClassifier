@@ -34,13 +34,11 @@ public class Crawler extends Thread {
     private Location location;
     private PrintWriter tweetsWriter, trendsWriter;
 
-    private String LOGTAG;
-
     public Crawler(Location location) throws Exception {
         this.twitter = new UberTwitter(location);
 
         this.location = location;
-        LOGTAG = "[" + location.getName() + " " + this.getDate() + "]: ";
+
     }
 
     private synchronized void startCrawling () {
@@ -54,7 +52,7 @@ public class Crawler extends Thread {
     public synchronized void stopCrawling () {
         this.isCrawling = false;
         this.flushWriters();
-        System.out.println(LOGTAG + "Crawler " + this.location.getName() + " stopped");
+        System.out.println(this.getLogTag() + "Crawler " + this.location.getName() + " stopped");
     }
 
     @Override public void run () {
@@ -67,10 +65,10 @@ public class Crawler extends Thread {
         }
         catch (Exception exception) {
             System.err.println(exception.getMessage());
-            System.err.println(LOGTAG + "Failed to start " + this.location.getName() + " crawler");
+            System.err.println(this.getLogTag() + "Failed to start " + this.location.getName() + " crawler");
         }
 
-        System.out.println(LOGTAG + "Crawler for " + this.location.getName() + " started");
+        System.out.println(this.getLogTag() + "Crawler for " + this.location.getName() + " started");
 
         while (this.isCrawling()) {
             this.crawlTrends();
@@ -103,7 +101,7 @@ public class Crawler extends Thread {
             /* Check rate limit */
 
             if (this.twitter.getRemainingRateLimit(What.Trends, "/trends/place") < Crawler.RATE_LIMIT_FLOOR) {
-                System.out.println(LOGTAG + "Hit rate limit floor (" + Crawler.RATE_LIMIT_FLOOR + ") for trends crawling");
+                System.out.println(this.getLogTag() + "Hit rate limit floor (" + Crawler.RATE_LIMIT_FLOOR + ") for trends crawling");
                 return;
             }
 
@@ -125,10 +123,10 @@ public class Crawler extends Thread {
             this.trendsWriter.flush();
             this.lastTrendCrawl = now;
 
-            System.out.println(LOGTAG + "Got trends. Left: " + this.twitter.getRemainingRateLimit(What.Trends, "/trends/place"));
+            System.out.println(this.getLogTag() + "Got trends. Left: " + this.twitter.getRemainingRateLimit(What.Trends, "/trends/place"));
         }
         catch (Exception exception) {
-            System.err.println(LOGTAG + "Failed to crawl trends");
+            System.err.println(this.getLogTag() + "Failed to crawl trends");
             System.err.println(exception.getMessage());
         }
     }
@@ -155,7 +153,7 @@ public class Crawler extends Thread {
             /* Check rate limit */
 
             if (this.twitter.getRemainingRateLimit(What.Stream, "/search/tweets") < Crawler.RATE_LIMIT_FLOOR) {
-                System.out.println(LOGTAG + "Hit rate limit floor (" + Crawler.RATE_LIMIT_FLOOR + ") for stream crawling");
+                System.out.println(this.getLogTag() + "Hit rate limit floor (" + Crawler.RATE_LIMIT_FLOOR + ") for stream crawling");
                 return;
             }
 
@@ -178,10 +176,10 @@ public class Crawler extends Thread {
             this.tweetsWriter.flush();
             this.lastStreamCrawl = now;
 
-            System.out.println(LOGTAG + "Got stream. Left: " + this.twitter.getRemainingRateLimit(What.Stream, "/search/tweets"));
+            System.out.println(this.getLogTag() + "Got stream. Left: " + this.twitter.getRemainingRateLimit(What.Stream, "/search/tweets"));
         }
         catch (TwitterException exception) {
-            System.err.println(LOGTAG + "Failed to crawl tweets");
+            System.err.println(this.getLogTag() + "Failed to crawl tweets");
             System.err.println(exception.getMessage());
         }
     }
@@ -208,7 +206,7 @@ public class Crawler extends Thread {
                 /* Check rate limit */
 
                 if (this.twitter.getRemainingRateLimit(What.Search, "/search/tweets") < Crawler.RATE_LIMIT_FLOOR) {
-                    System.out.println(LOGTAG + "Hit rate limit floor (" + Crawler.RATE_LIMIT_FLOOR + ") for trend search crawling");
+                    System.out.println(this.getLogTag() + "Hit rate limit floor (" + Crawler.RATE_LIMIT_FLOOR + ") for trend search crawling");
                     return;
                 }
 
@@ -231,10 +229,10 @@ public class Crawler extends Thread {
                 this.tweetsWriter.flush();
                 this.lastSearchCrawl = now;
 
-                System.out.println(LOGTAG + "Got tweets containing trend: " + crawledTrend + ". Left: " + this.twitter.getRemainingRateLimit(What.Search, "/search/tweets"));
+                System.out.println(this.getLogTag() + "Got tweets containing trend: " + crawledTrend + ". Left: " + this.twitter.getRemainingRateLimit(What.Search, "/search/tweets"));
             }
             catch (TwitterException exception) {
-                System.err.println(LOGTAG + "Failed to crawl tweets with trend " + crawledTrend);
+                System.err.println(this.getLogTag() + "Failed to crawl tweets with trend " + crawledTrend);
                 System.err.println(exception.getMessage());
             }
         }
@@ -276,6 +274,10 @@ public class Crawler extends Thread {
     }
 
     private Date getDate() {
-        return new Date();
+        return new Date(System.currentTimeMillis());
+    }
+
+    public Object getLogTag() {
+        return "[" + location.getName() + " " + this.getDate() + "]: ";
     }
 }
