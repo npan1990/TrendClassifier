@@ -12,7 +12,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Map;
+
+import di.kdd.trends.classifier.crawler.UberTwitter.What;
 
 public class Crawler extends Thread {
 
@@ -109,7 +110,7 @@ public class Crawler extends Thread {
 
             this.trendsWriter.flush();
             this.lastTrendCrawl = now;
-            System.out.println(LOGTAG + "Got trends. Left: " + this.twitter.getRemainingRateLimit(UberTwitter.What.Trends, "/trends/place"));
+            System.out.println(LOGTAG + "Got trends. Left: " + this.twitter.getRemainingRateLimit(What.Trends, "/trends/place"));
         }
         catch (Exception exception) {
             System.err.println(LOGTAG + "Failed to crawl trends");
@@ -149,7 +150,7 @@ public class Crawler extends Thread {
             }
             this.tweetsWriter.flush();
             this.lastTweetCrawl = now;
-            System.out.println(LOGTAG + "Got tweets. Left: " + this.twitter.getRemainingRateLimit(UberTwitter.What.Search, "/search/tweets"));
+            System.out.println(LOGTAG + "Got tweets. Left: " + this.twitter.getRemainingRateLimit(What.Search, "/search/tweets"));
         }
         catch (TwitterException exception) {
             System.err.println(LOGTAG + "Failed to crawl tweets");

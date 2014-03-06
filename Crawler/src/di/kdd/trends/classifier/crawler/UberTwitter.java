@@ -40,17 +40,17 @@ public class UberTwitter {
         }
     }
 
-    public int getRemainingRateLimit (UberTwitter.What what, String of) throws TwitterException {
+    public int getRemainingRateLimit (What what, String of) throws TwitterException {
         Map<String ,RateLimitStatus> rateLimitStatus;
 
         switch (what) {
             case Trends:
                 rateLimitStatus = this.twitterz.get(UberTwitter.TREND_TOKEN).getRateLimitStatus();
                 return rateLimitStatus.get(of).getRemaining();
-            case Stream:
-                rateLimitStatus = this.twitterz.get(UberTwitter.STREAM_TOKEN).getRateLimitStatus();
-                return rateLimitStatus.get(of).getSecondsUntilReset();
             case Search:
+                rateLimitStatus = this.twitterz.get(UberTwitter.STREAM_TOKEN).getRateLimitStatus();
+                return rateLimitStatus.get(of).getRemaining();
+            case Stream:
                 return 0;
             default:
                 return 0;
