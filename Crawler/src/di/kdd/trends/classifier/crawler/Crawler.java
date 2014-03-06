@@ -20,6 +20,9 @@ public class Crawler extends Thread {
     private static String TWEETS_FILE = "tweets";
     private static String TRENDS_FILE = "trends";
 
+    private static int STREAM_TAG = 0;
+    private static int SEARCH_TAG = 1;
+
     private static int TRENDS_CRAWL_INTERVAL = 5 * 60 * 1000; // 5 Minutes (in millis)
     private static int TWEETS_CRAWL_INTERVAL =  10 * 1000; // 10 Seconds (in millis)
     private boolean isCrawling = false;
@@ -78,7 +81,8 @@ public class Crawler extends Thread {
     }
 
     private long lastTrendCrawl;
-    private long lastTweetCrawl;
+    private long lastStreamCrawl;
+    private long lastSearchCrawl;
 
     private void crawlTrends () {
         long now = System.currentTimeMillis();
@@ -110,6 +114,7 @@ public class Crawler extends Thread {
 
             this.trendsWriter.flush();
             this.lastTrendCrawl = now;
+
             System.out.println(LOGTAG + "Got trends. Left: " + this.twitter.getRemainingRateLimit(What.Trends, "/trends/place"));
         }
         catch (Exception exception) {
@@ -122,45 +127,93 @@ public class Crawler extends Thread {
 
         long now = System.currentTimeMillis();
 
-        if (lastTweetCrawl != 0) {
+        if (lastStreamCrawl != 0) {
 
             /* Check if TWEETS_CRAWL_INTERVAL elapsed since last trend crawling */
-            if (now - this.lastTweetCrawl < Crawler.TWEETS_CRAWL_INTERVAL) {
+
+            if (now - this.lastStreamCrawl < Crawler.TWEETS_CRAWL_INTERVAL) {
                 return;
             }
         }
 
-        Query query = new Query("");
-        query.geoCode(new GeoLocation(this.location.getLongitude(), this.location.getLatitude()), this.location.getRadius(), Query.KILOMETERS);
-        query.lang("en");
+        Query emptyQuery = new Query("");
+        emptyQuery.geoCode(new GeoLocation(this.location.getLongitude(), this.location.getLatitude()), this.location.getRadius(), Query.KILOMETERS);
+        emptyQuery.lang("en");
+
         try {
 
-            QueryResult queryResult = this.twitter.getStream(query);
+            QueryResult queryResult = this.twitter.getStream(emptyQuery);
 
             for (Status status : queryResult.getTweets()) {
                 tweetsWriter.println(
-                        status.getId() +
-                        " " + status.getUser().getScreenName() +
-                        " " + status.getCreatedAt().toString() +
-                        " " + status.isRetweet() +
-                        " " + status.getRetweetCount());
+                                Crawler.STREAM_TAG +
+                                " " + status.getId() +
+                                " " + status.getUser().getScreenName() +
+                                " " + status.getCreatedAt().toString() +
+                                " " + status.isRetweet() +
+                                " " + status.getRetweetCount()
+                );
 
                 String text = status.getText().replace("\n", " ").replace("\r", " ").replace("\r\n", " ");
                 tweetsWriter.println(text);
             }
+
             this.tweetsWriter.flush();
-            this.lastTweetCrawl = now;
-            System.out.println(LOGTAG + "Got tweets. Left: " + this.twitter.getRemainingRateLimit(What.Search, "/search/tweets"));
+            this.lastStreamCrawl = now;
+
+            System.out.println(LOGTAG + "Got tweets. Left: " + this.twitter.getRemainingRateLimit(What.Stream, "/search/tweets"));
         }
         catch (TwitterException exception) {
             System.err.println(LOGTAG + "Failed to crawl tweets");
             System.err.println(exception.getMessage());
         }
-
     }
 
     private void crawlTweetsWithTrends() {
+        long now = System.currentTimeMillis();
 
+        if (lastStreamCrawl != 0) {
+
+            /* Check if TWEETS_CRAWL_INTERVAL elapsed since last trend crawling */
+
+            if (now - this.lastSearchCrawl < Crawler.TWEETS_CRAWL_INTERVAL) {
+                return;
+            }
+        }
+
+        for (String crawledTrend : this.crawledTrends) {
+            Query queryTrend = new Query(crawledTrend);
+            queryTrend.geoCode(new GeoLocation(this.location.getLongitude(), this.location.getLatitude()), this.location.getRadius(), Query.KILOMETERS);
+            queryTrend.lang("en");
+
+            try {
+
+                QueryResult queryResult = this.twitter.search(queryTrend);
+
+                for (Status status : queryResult.getTweets()) {
+                    tweetsWriter.println(
+                                    Crawler.SEARCH_TAG +
+                                    " " + status.getId() +
+                                    " " + status.getUser().getScreenName() +
+                                    " " + status.getCreatedAt().toString() +
+                                    " " + status.isRetweet() +
+                                    " " + status.getRetweetCount()
+                    );
+
+                    String text = status.getText().replace("\n", " ").replace("\r", " ").replace("\r\n", " ");
+                    tweetsWriter.println(text);
+                }
+
+                this.tweetsWriter.flush();
+                this.lastSearchCrawl = now;
+
+                System.out.println(LOGTAG + "Got tweets containing trend: " + crawledTrend + ". Left: " + this.twitter.getRemainingRateLimit(What.Search, "/search/tweets"));
+            }
+            catch (TwitterException exception) {
+                System.err.println(LOGTAG + "Failed to crawl tweets with trend " + crawledTrend);
+                System.err.println(exception.getMessage());
+            }
+        }
     }
 
     private void initializeWriters() throws IOException {
