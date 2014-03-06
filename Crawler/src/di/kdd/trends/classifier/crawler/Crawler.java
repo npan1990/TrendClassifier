@@ -38,7 +38,7 @@ public class Crawler extends Thread {
         this.twitter = new UberTwitter(location);
 
         this.location = location;
-        LOGTAG = "[" + location.getName() + "]:";
+        LOGTAG = "[" + location.getName() + "]: ";
     }
 
     private synchronized void startCrawling () {
@@ -123,7 +123,7 @@ public class Crawler extends Thread {
         }
     }
 
-    private void crawlStream() {
+    private void crawlStream () {
 
         long now = System.currentTimeMillis();
 
@@ -176,7 +176,7 @@ public class Crawler extends Thread {
 
             /* Check if TWEETS_CRAWL_INTERVAL elapsed since last trend crawling */
 
-            if (now - this.lastSearchCrawl < Crawler.TWEETS_CRAWL_INTERVAL) {
+            if (now - this.lastSearchCrawl < Crawler.TWEETS_CRAWL_INTERVAL * this.crawledTrends.size()) {
                 return;
             }
         }
