@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 /**
- * Encapsulates <UberTwitter.HOW_MANY> Twitter objects in one Uber class.
+ * Encapsulates {@valueUberTwitter.SEARCH_TOKENS} Twitter objects in one Uber class.
  *
  * Created by panos on 3/6/14.
  */
