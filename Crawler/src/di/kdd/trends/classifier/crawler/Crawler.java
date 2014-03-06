@@ -161,7 +161,7 @@ public class Crawler extends Thread {
             this.tweetsWriter.flush();
             this.lastStreamCrawl = now;
 
-            System.out.println(LOGTAG + "Got tweets. Left: " + this.twitter.getRemainingRateLimit(What.Stream, "/search/tweets"));
+            System.out.println(LOGTAG + "Got stream. Left: " + this.twitter.getRemainingRateLimit(What.Stream, "/search/tweets"));
         }
         catch (TwitterException exception) {
             System.err.println(LOGTAG + "Failed to crawl tweets");
