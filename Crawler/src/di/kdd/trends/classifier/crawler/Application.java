@@ -27,19 +27,16 @@ public class Application {
 
         Application.addShutDownHook();
 
-        Token token;
         Location location;
 
         LocationLoader locationLoader = new LocationLoader();
-        TokenLoader tokenLoader = new TokenLoader();
 
         if (args.length == 0) {
 
             /* Light'em all */
 
-            while ((location = locationLoader.getLocation()) != null &&
-                            (token = tokenLoader.getToken()) != null) {
-                crawlers.add(new Crawler(location, token));
+            while ((location = locationLoader.getLocation()) != null) {
+                crawlers.add(new Crawler(location));
             }
         }
         else {
@@ -52,14 +49,7 @@ public class Application {
                     continue;
                 }
 
-                token = tokenLoader.getToken(location.getId());
-
-                if (token == null) {
-                    System.err.println("No token for " + location.getName());
-                    continue;
-                }
-
-                crawlers.add(new Crawler(location, token));
+                crawlers.add(new Crawler(location));
             }
         }
 

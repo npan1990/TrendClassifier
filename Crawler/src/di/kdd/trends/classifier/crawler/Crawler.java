@@ -5,38 +5,40 @@ package di.kdd.trends.classifier.crawler;
  */
 
 import di.kdd.trends.classifier.crawler.config.Location;
-import di.kdd.trends.classifier.crawler.config.Token;
 import twitter4j.*;
-import twitter4j.auth.AccessToken;
 
 import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.Map;
+
+import di.kdd.trends.classifier.crawler.UberTwitter.What;
 
 public class Crawler extends Thread {
 
     private static String TWEETS_FILE = "tweets";
     private static String TRENDS_FILE = "trends";
 
+    private static int STREAM_TAG = 0;
+    private static int SEARCH_TAG = 1;
+
+    private static int RATE_LIMIT_FLOOR = 10;
+
     private static int TRENDS_CRAWL_INTERVAL = 5 * 60 * 1000; // 5 Minutes (in millis)
     private static int TWEETS_CRAWL_INTERVAL =  10 * 1000; // 10 Seconds (in millis)
     private boolean isCrawling = false;
 
-    private Twitter twitter;
+    private UberTwitter twitter;
+    private ArrayList<String> crawledTrends = new ArrayList<String>();
     private Location location;
     private PrintWriter tweetsWriter, trendsWriter;
 
-    private String LOGTAG;
-    public Crawler(Location location, Token token) {
-        twitter = new TwitterFactory().getInstance();
-        twitter.setOAuthConsumer(token.getConsumer(), token.getConsumerSecret());
-        AccessToken oathAccessToken = new AccessToken(token.getAccess(), token.getAccessSecret());
-        twitter.setOAuthAccessToken(oathAccessToken);
+    public Crawler(Location location) throws Exception {
+        this.twitter = new UberTwitter(location);
 
         this.location = location;
-        LOGTAG = "[" + location.getName() + "]:";
+
     }
 
     private synchronized void startCrawling () {
@@ -50,7 +52,7 @@ public class Crawler extends Thread {
     public synchronized void stopCrawling () {
         this.isCrawling = false;
         this.flushWriters();
-        System.out.println(LOGTAG + "Crawler " + this.location.getName() + " stopped");
+        System.out.println(this.getLogTag() + "Crawler " + this.location.getName() + " stopped");
     }
 
     @Override public void run () {
@@ -63,14 +65,15 @@ public class Crawler extends Thread {
         }
         catch (Exception exception) {
             System.err.println(exception.getMessage());
-            System.err.println(LOGTAG + "Failed to start " + this.location.getName() + " crawler");
+            System.err.println(this.getLogTag() + "Failed to start " + this.location.getName() + " crawler");
         }
 
-        System.out.println(LOGTAG + "Crawler for " + this.location.getName() + " started");
+        System.out.println(this.getLogTag() + "Crawler for " + this.location.getName() + " started");
 
         while (this.isCrawling()) {
             this.crawlTrends();
-            this.crawlTweets();
+            this.crawlStream();
+            this.crawlTweetsWithTrends();
         }
 
         this.flushWriters();
@@ -78,7 +81,8 @@ public class Crawler extends Thread {
     }
 
     private long lastTrendCrawl;
-    private long lastTweetCrawl;
+    private long lastStreamCrawl;
+    private long lastSearchCrawl;
 
     private void crawlTrends () {
         long now = System.currentTimeMillis();
@@ -93,6 +97,14 @@ public class Crawler extends Thread {
         }
 
         try {
+
+            /* Check rate limit */
+
+            if (this.twitter.getRemainingRateLimit(What.Trends, "/trends/place") < Crawler.RATE_LIMIT_FLOOR) {
+                System.out.println(this.getLogTag() + "Hit rate limit floor (" + Crawler.RATE_LIMIT_FLOOR + ") for trends crawling");
+                return;
+            }
+
             DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
             Trend[] trends = twitter.getPlaceTrends(this.location.getWoeid()).getTrends();
@@ -102,57 +114,128 @@ public class Crawler extends Thread {
 
             for (Trend trend : trends) {
                 this.trendsWriter.println(trend.getName());
+
+                if (this.crawledTrends.contains(trend.getName()) == false) {
+                    this.crawledTrends.add(trend.getName());
+                }
             }
 
             this.trendsWriter.flush();
             this.lastTrendCrawl = now;
-            System.out.println(LOGTAG + "Got trends. Left: " + getRemainingRateLimit("/trends/place"));
+
+            System.out.println(this.getLogTag() + "Got trends. Left: " + this.twitter.getRemainingRateLimit(What.Trends, "/trends/place"));
         }
         catch (Exception exception) {
-            System.err.println(LOGTAG + "Failed to crawl trends");
+            System.err.println(this.getLogTag() + "Failed to crawl trends");
             System.err.println(exception.getMessage());
         }
     }
 
-    private void crawlTweets() {
+    private void crawlStream () {
 
         long now = System.currentTimeMillis();
 
-        if (lastTweetCrawl != 0) {
+        if (lastStreamCrawl != 0) {
 
             /* Check if TWEETS_CRAWL_INTERVAL elapsed since last trend crawling */
-            if (now - this.lastTweetCrawl < Crawler.TWEETS_CRAWL_INTERVAL) {
+
+            if (now - this.lastStreamCrawl < Crawler.TWEETS_CRAWL_INTERVAL) {
                 return;
             }
         }
 
-        Query query = new Query("");
-        query.geoCode(new GeoLocation(this.location.getLongitude(), this.location.getLatitude()), this.location.getRadius(), Query.KILOMETERS);
-        query.lang("en");
+        Query emptyQuery = new Query("");
+        emptyQuery.geoCode(new GeoLocation(this.location.getLongitude(), this.location.getLatitude()), this.location.getRadius(), Query.KILOMETERS);
+        emptyQuery.lang("en");
+
         try {
 
-            QueryResult queryResult = this.twitter.search(query);
+            /* Check rate limit */
+
+            if (this.twitter.getRemainingRateLimit(What.Stream, "/search/tweets") < Crawler.RATE_LIMIT_FLOOR) {
+                System.out.println(this.getLogTag() + "Hit rate limit floor (" + Crawler.RATE_LIMIT_FLOOR + ") for stream crawling");
+                return;
+            }
+
+            QueryResult queryResult = this.twitter.getStream(emptyQuery);
 
             for (Status status : queryResult.getTweets()) {
                 tweetsWriter.println(
-                        status.getId() +
-                        " " + status.getUser().getScreenName() +
-                        " " + status.getCreatedAt().toString() +
-                        " " + status.isRetweet() +
-                        " " + status.getRetweetCount());
+                                Crawler.STREAM_TAG +
+                                " " + status.getId() +
+                                " " + status.getUser().getScreenName() +
+                                " " + status.getCreatedAt().toString() +
+                                " " + status.isRetweet() +
+                                " " + status.getRetweetCount()
+                );
 
                 String text = status.getText().replace("\n", " ").replace("\r", " ").replace("\r\n", " ");
                 tweetsWriter.println(text);
             }
+
             this.tweetsWriter.flush();
-            this.lastTweetCrawl = now;
-            System.out.println(LOGTAG + "Got tweets. Left: " + getRemainingRateLimit("/search/tweets"));
+            this.lastStreamCrawl = now;
+
+            System.out.println(this.getLogTag() + "Got stream. Left: " + this.twitter.getRemainingRateLimit(What.Stream, "/search/tweets"));
         }
         catch (TwitterException exception) {
-            System.err.println(LOGTAG + "Failed to crawl tweets");
+            System.err.println(this.getLogTag() + "Failed to crawl tweets");
             System.err.println(exception.getMessage());
         }
+    }
 
+    private void crawlTweetsWithTrends() {
+        long now = System.currentTimeMillis();
+
+        if (lastStreamCrawl != 0) {
+
+            /* Check if TWEETS_CRAWL_INTERVAL elapsed since last trend crawling */
+
+            if (now - this.lastSearchCrawl < Crawler.TWEETS_CRAWL_INTERVAL * this.crawledTrends.size()) {
+                return;
+            }
+        }
+
+        for (String crawledTrend : this.crawledTrends) {
+            Query queryTrend = new Query(crawledTrend);
+            queryTrend.geoCode(new GeoLocation(this.location.getLongitude(), this.location.getLatitude()), this.location.getRadius(), Query.KILOMETERS);
+            queryTrend.lang("en");
+
+            try {
+
+                /* Check rate limit */
+
+                if (this.twitter.getRemainingRateLimit(What.Search, "/search/tweets") < Crawler.RATE_LIMIT_FLOOR) {
+                    System.out.println(this.getLogTag() + "Hit rate limit floor (" + Crawler.RATE_LIMIT_FLOOR + ") for trend search crawling");
+                    return;
+                }
+
+                QueryResult queryResult = this.twitter.search(queryTrend);
+
+                for (Status status : queryResult.getTweets()) {
+                    tweetsWriter.println(
+                                    Crawler.SEARCH_TAG +
+                                    " " + status.getId() +
+                                    " " + status.getUser().getScreenName() +
+                                    " " + status.getCreatedAt().toString() +
+                                    " " + status.isRetweet() +
+                                    " " + status.getRetweetCount()
+                    );
+
+                    String text = status.getText().replace("\n", " ").replace("\r", " ").replace("\r\n", " ");
+                    tweetsWriter.println(text);
+                }
+
+                this.tweetsWriter.flush();
+                this.lastSearchCrawl = now;
+
+                System.out.println(this.getLogTag() + "Got tweets containing trend: " + crawledTrend + ". Left: " + this.twitter.getRemainingRateLimit(What.Search, "/search/tweets"));
+            }
+            catch (TwitterException exception) {
+                System.err.println(this.getLogTag() + "Failed to crawl tweets with trend " + crawledTrend);
+                System.err.println(exception.getMessage());
+            }
+        }
     }
 
     private void initializeWriters() throws IOException {
@@ -190,30 +273,11 @@ public class Crawler extends Thread {
         }
     }
 
-    private void rateLimitWatchDog (String what) {
-        try {
-            if (this.getRemainingRateLimit(what) < 10) { //TODO change the guard number
-
-                int sleepSeconds = this.getSecondsUntilReset(what);
-
-                System.out.println(this.location.getName() + " close to rate limit, going to sleep for " + sleepSeconds + " seconds");
-
-                this.flushWriters();
-                Thread.sleep(sleepSeconds * 1000);
-            }
-        }
-        catch (Exception exception) {
-            System.err.println(exception.getMessage());
-        }
+    private Date getDate() {
+        return new Date(System.currentTimeMillis());
     }
 
-    private int getRemainingRateLimit (String of) throws TwitterException {
-        Map<String ,RateLimitStatus> rateLimitStatus = twitter.getRateLimitStatus();
-        return rateLimitStatus.get(of).getRemaining();
-    }
-
-    private int getSecondsUntilReset (String of) throws TwitterException {
-        Map<String ,RateLimitStatus> rateLimitStatus = twitter.getRateLimitStatus();
-        return rateLimitStatus.get(of).getSecondsUntilReset();
+    public Object getLogTag() {
+        return "[" + location.getName() + " " + this.getDate() + "]: ";
     }
 }

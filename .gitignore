@@ -7,6 +7,6 @@
 
 #Intellij files
 
-Classifier/.idea/*
+**/.idea/*
 
 *.iml
