@@ -5,13 +5,12 @@ package di.kdd.trends.classifier.crawler;
  */
 
 import di.kdd.trends.classifier.crawler.config.Location;
-import di.kdd.trends.classifier.crawler.config.Token;
 import twitter4j.*;
-import twitter4j.auth.AccessToken;
 
 import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 
@@ -24,16 +23,15 @@ public class Crawler extends Thread {
     private static int TWEETS_CRAWL_INTERVAL =  10 * 1000; // 10 Seconds (in millis)
     private boolean isCrawling = false;
 
-    private Twitter twitter;
+    private UberTwitter twitter;
+    private ArrayList<String> crawledTrends = new ArrayList<String>();
     private Location location;
     private PrintWriter tweetsWriter, trendsWriter;
 
     private String LOGTAG;
-    public Crawler(Location location, Token token) {
-        twitter = new TwitterFactory().getInstance();
-        twitter.setOAuthConsumer(token.getConsumer(), token.getConsumerSecret());
-        AccessToken oathAccessToken = new AccessToken(token.getAccess(), token.getAccessSecret());
-        twitter.setOAuthAccessToken(oathAccessToken);
+
+    public Crawler(Location location) throws Exception {
+        this.twitter = new UberTwitter(location);
 
         this.location = location;
         LOGTAG = "[" + location.getName() + "]:";
@@ -70,7 +68,8 @@ public class Crawler extends Thread {
 
         while (this.isCrawling()) {
             this.crawlTrends();
-            this.crawlTweets();
+            this.crawlStream();
+            this.crawlTweetsWithTrends();
         }
 
         this.flushWriters();
@@ -102,11 +101,15 @@ public class Crawler extends Thread {
 
             for (Trend trend : trends) {
                 this.trendsWriter.println(trend.getName());
+
+                if (this.crawledTrends.contains(trend.getName()) == false) {
+                    this.crawledTrends.add(trend.getName());
+                }
             }
 
             this.trendsWriter.flush();
             this.lastTrendCrawl = now;
-            System.out.println(LOGTAG + "Got trends. Left: " + getRemainingRateLimit("/trends/place"));
+            System.out.println(LOGTAG + "Got trends. Left: " + this.twitter.getRemainingRateLimit(UberTwitter.What.Trends, "/trends/place"));
         }
         catch (Exception exception) {
             System.err.println(LOGTAG + "Failed to crawl trends");
@@ -114,7 +117,7 @@ public class Crawler extends Thread {
         }
     }
 
-    private void crawlTweets() {
+    private void crawlStream() {
 
         long now = System.currentTimeMillis();
 
@@ -131,7 +134,7 @@ public class Crawler extends Thread {
         query.lang("en");
         try {
 
-            QueryResult queryResult = this.twitter.search(query);
+            QueryResult queryResult = this.twitter.getStream(query);
 
             for (Status status : queryResult.getTweets()) {
                 tweetsWriter.println(
@@ -146,12 +149,16 @@ public class Crawler extends Thread {
             }
             this.tweetsWriter.flush();
             this.lastTweetCrawl = now;
-            System.out.println(LOGTAG + "Got tweets. Left: " + getRemainingRateLimit("/search/tweets"));
+            System.out.println(LOGTAG + "Got tweets. Left: " + this.twitter.getRemainingRateLimit(UberTwitter.What.Search, "/search/tweets"));
         }
         catch (TwitterException exception) {
             System.err.println(LOGTAG + "Failed to crawl tweets");
             System.err.println(exception.getMessage());
         }
+
+    }
+
+    private void crawlTweetsWithTrends() {
 
     }
 
@@ -188,32 +195,5 @@ public class Crawler extends Thread {
             (new File(this.tweetsFile())).createNewFile();
             (new File(this.trendsFile())).createNewFile();
         }
-    }
-
-    private void rateLimitWatchDog (String what) {
-        try {
-            if (this.getRemainingRateLimit(what) < 10) { //TODO change the guard number
-
-                int sleepSeconds = this.getSecondsUntilReset(what);
-
-                System.out.println(this.location.getName() + " close to rate limit, going to sleep for " + sleepSeconds + " seconds");
-
-                this.flushWriters();
-                Thread.sleep(sleepSeconds * 1000);
-            }
-        }
-        catch (Exception exception) {
-            System.err.println(exception.getMessage());
-        }
-    }
-
-    private int getRemainingRateLimit (String of) throws TwitterException {
-        Map<String ,RateLimitStatus> rateLimitStatus = twitter.getRateLimitStatus();
-        return rateLimitStatus.get(of).getRemaining();
-    }
-
-    private int getSecondsUntilReset (String of) throws TwitterException {
-        Map<String ,RateLimitStatus> rateLimitStatus = twitter.getRateLimitStatus();
-        return rateLimitStatus.get(of).getSecondsUntilReset();
     }
 }
