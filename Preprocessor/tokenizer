@@ -16,7 +16,6 @@ trends_filename = 'trends'
 processed_tweets_filename = 'tweets.tok'
 processed_trends_filename = 'trends.tok'
 
-
 parser = argparse.ArgumentParser(description='Tokenizes tweets and splits to days')
 parser.add_argument('-v','--verbose', dest='verbose', help='Print verbose information', action='store_true', default=False, required=False)
 args = vars(parser.parse_args())
@@ -36,6 +35,8 @@ last_file = ""
 
 for location_name in listdir(data_directory):
 	print location_name
+	if location_name.startswith(".") or location_name=='README':
+		continue;
 	location_dir = pjoin(data_directory, location_name)
 	processed_dir = pjoin(processed_data_directory, location_name)
 	
@@ -136,6 +137,80 @@ for location_name in listdir(data_directory):
 			print 'URLs:', urls
 			print 'Replies:', replies
 			print
+
+	
+	# Separate trends to days
+	input_file = open(trends_file, 'r')
+	with input_file as input:
+            count = 0
+	    while True:
+		# Read trends specification
+		line1 = input.readline().decode('utf-8')
+		if not line1: break #EOF
+
+		# Find date (18/02/2014 17:39:00)
+		fields = line1.split()
+		date = fields[0]
+		time = fields[1]
+		
+
+		dateFields = date.split("/")
+		day = dateFields[0]
+		month = dateFields[1]
+		dateObj = datetime.datetime.strptime(" ".join([day,month]),"%d %m")	
+		directory = "-".join([str(dateObj.day), str(dateObj.month)])	
+		
+		path_to_dir = pjoin(processed_dir, directory)
+		
+		if not os.path.exists(path_to_dir):
+	    		os.makedirs(path_to_dir)
+	  
+		path_to_file = pjoin(path_to_dir, processed_trends_filename)
+	
+		#Close the old, open the new
+		if path_to_file != last_file: 
+			if output_file and not output_file.closed:
+				output_file.close()
+			print path_to_dir
+			output_file = codecs.open(path_to_file, 'w', 'utf-8')
+			last_file = path_to_file
+
+		output_file.write(line1)
+		
+		for count in range(0, 10):
+			line1 = input.readline().decode('utf-8')
+			if not line1: break #EOF
+			output_file.write(line1)
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

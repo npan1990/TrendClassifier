@@ -70,7 +70,17 @@ public class Crawler extends Thread {
 
         System.out.println(this.getLogTag() + "Crawler for " + this.location.getName() + " started");
 
+        DateFormat dateFormat = new SimpleDateFormat("dd");
+        String previousDay = dateFormat.format(new Date());
+
         while (this.isCrawling()) {
+            String currentDay = dateFormat.format(new Date());
+
+            if (!currentDay.equals(previousDay)) {
+                crawledTrends.clear();
+                previousDay = currentDay;
+            }
+
             this.crawlTrends();
             this.crawlStream();
             this.crawlTweetsWithTrends();
