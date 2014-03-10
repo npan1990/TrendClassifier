@@ -27,6 +27,8 @@ public class Crawler extends Thread {
 
     private static int TRENDS_CRAWL_INTERVAL = 5 * 60 * 1000; // 5 Minutes (in millis)
     private static int TWEETS_CRAWL_INTERVAL =  10 * 1000; // 10 Seconds (in millis)
+    private static int SEARCH_TREND_CRAWL_INTERVAL =  5 * 1000; // 5 Seconds (in millis)
+
     private boolean isCrawling = false;
 
     private UberTwitter twitter;
@@ -201,7 +203,7 @@ public class Crawler extends Thread {
 
             /* Check if TWEETS_CRAWL_INTERVAL elapsed since last trend crawling */
 
-            if (now - this.lastSearchCrawl < Crawler.TWEETS_CRAWL_INTERVAL * this.crawledTrends.size()) {
+            if (now - this.lastSearchCrawl < Crawler.SEARCH_TREND_CRAWL_INTERVAL * this.crawledTrends.size()) {
                 return;
             }
         }

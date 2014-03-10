@@ -59,13 +59,14 @@ for location_name in listdir(data_directory):
 		if not line2: break #EOF
 
 		fields = line1.split()
-		tweetId = fields[0]
-		userName = fields[1]
-		month = fields[3]
-		day = fields[4]
-		time = fields[5]
-		isRetweet = fields[8]
-		rtCount = fields[9]
+		fromSearch = fields[0]
+		tweetId = fields[1]
+		userName = fields[2]
+		month = fields[4]
+		day = fields[5]
+		time = fields[6]
+		isRetweet = fields[9]
+		rtCount = fields[10]
 
 		date = datetime.datetime.strptime(" ".join([day,month]),"%d %b")	
 		directory = "-".join([str(date.day),str(date.month)])
@@ -76,12 +77,15 @@ for location_name in listdir(data_directory):
 	  
 		path_to_file = pjoin(path_to_dir, processed_tweets_filename)
 	
+		
+
 		#Close the old, open the new
 		if path_to_file != last_file: 
 			if output_file and not output_file.closed:
 				output_file.close()
 			print path_to_dir
-			output_file = codecs.open(path_to_file, 'w', 'utf-8')
+			output_file = codecs.open(path_to_file, 'a', 'utf-8')
+			print output_file
 			last_file = path_to_file
 
 		
@@ -139,6 +143,21 @@ for location_name in listdir(data_directory):
 			print
 
 	
+for location_name in listdir(data_directory):
+	if location_name.startswith(".") or location_name=='README':
+		continue;
+	location_dir = pjoin(data_directory, location_name)
+	processed_dir = pjoin(processed_data_directory, location_name)
+	
+	tweets_file = pjoin(location_dir, tweets_filename)
+	trends_file = pjoin(location_dir, trends_filename)
+
+	processed_tweets_file = pjoin(processed_dir, processed_tweets_filename)
+	processed_trends_file = pjoin(processed_dir, processed_trends_filename)
+
+	output_file = None
+
+	print location_name
 	# Separate trends to days
 	input_file = open(trends_file, 'r')
 	with input_file as input:
@@ -172,7 +191,8 @@ for location_name in listdir(data_directory):
 			if output_file and not output_file.closed:
 				output_file.close()
 			print path_to_dir
-			output_file = codecs.open(path_to_file, 'w', 'utf-8')
+			output_file = codecs.open(path_to_file, 'a', 'utf-8')
+			print output_file
 			last_file = path_to_file
 
 		output_file.write(line1)
