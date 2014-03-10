@@ -17,6 +17,8 @@ public class Statistics {
     private static ArrayList<String> trends = new ArrayList<String>();
 
     public static void load(String tweetsFileName, String trendsFileName) throws Exception {
+        tweets.clear();
+        trends.clear();
         Statistics.loadTweets(tweetsFileName);
         Statistics.loadTrends(trendsFileName);
     }
