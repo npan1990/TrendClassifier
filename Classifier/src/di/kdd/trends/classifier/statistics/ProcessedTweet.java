@@ -1,7 +1,5 @@
 package di.kdd.trends.classifier.statistics;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-
 import java.text.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,7 +19,7 @@ public class ProcessedTweet {
     private ArrayList<String> tokens = new ArrayList<String>();
     private ArrayList<String> hashTags = new ArrayList<String>();
     private ArrayList<String> urls = new ArrayList<String>();
-    private ArrayList<String> replies = new ArrayList<String>();
+    private ArrayList<String> mentions = new ArrayList<String>();
 
     public String getId() {
         return id;
@@ -57,8 +55,8 @@ public class ProcessedTweet {
         return urls;
     }
 
-    public ArrayList<String> getReplies() {
-        return replies;
+    public ArrayList<String> getMentions() {
+        return mentions;
     }
 
     public ProcessedTweet(String fromString) throws ParseException {
@@ -101,7 +99,7 @@ public class ProcessedTweet {
 
         for (String reply : replies) {
             if (reply.length() > 0) {
-                this.getReplies().add(reply);
+                this.getMentions().add(reply);
             }
         }
     }

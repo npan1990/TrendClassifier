@@ -101,7 +101,7 @@ public class Statistics {
         for (ProcessedTweet tweet : Statistics.tweets) {
             tokenPopulation += tweet.getTokens().size();
             urlPopulation += tweet.getUrls().size();
-            repliesPopulation += tweet.getReplies().size();
+            repliesPopulation += tweet.getMentions().size();
             hashTagsPopulation += tweet.getHashTags().size();
 
             if (tweet.getIsRwetweet()) {
@@ -127,7 +127,7 @@ public class Statistics {
             if (Statistics.isRelevant(tweet, trend)) {
                 tokenPopulation += tweet.getTokens().size();
                 urlPopulation += tweet.getUrls().size();
-                repliesPopulation += tweet.getReplies().size();
+                repliesPopulation += tweet.getMentions().size();
                 hashTagsPopulation += tweet.getHashTags().size();
 
                 if (tweet.getIsRwetweet()) {
