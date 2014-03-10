@@ -1,5 +1,7 @@
 package di.kdd.trends.classifier.statistics;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 import java.text.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,6 +16,7 @@ public class ProcessedTweet {
     private String userName;
     private Date time;
     private Boolean isRwetweet;
+    private Boolean fromSearch;
     private int retweetCount;
     private ArrayList<String> tokens = new ArrayList<String>();
     private ArrayList<String> hashTags = new ArrayList<String>();
@@ -35,6 +38,8 @@ public class ProcessedTweet {
     public Boolean getIsRwetweet() {
         return isRwetweet;
     }
+
+    public Boolean isFromSearch() { return fromSearch; }
 
     public int getRetweetCount() {
         return retweetCount;
@@ -59,20 +64,22 @@ public class ProcessedTweet {
     public ProcessedTweet(String fromString) throws ParseException {
         String []split = fromString.split("\\|", -1);
 
-        this.id = split[0];
-        this.userName = split[1];
-        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-        this.time = dateFormat.parse(split[2]);
-        this.isRwetweet = Boolean.parseBoolean(split[3]);
-        this.retweetCount = Integer.parseInt(split[4]);
 
-        String []tokens = split[5].split(",", -1);
+        this.id = split[1];
+        this.userName = split[2];
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+        this.time = dateFormat.parse(split[3]);
+        this.isRwetweet = Boolean.parseBoolean(split[4]);
+        this.retweetCount = Integer.parseInt(split[5]);
+        this.fromSearch = Integer.parseInt(split[0])==1;
+
+        String []tokens = split[6].split(",", -1);
 
         for (String token : tokens) {
             this.getTokens().add(token);
         }
 
-        String []hashTags = split[6].split(",", -1);
+        String []hashTags = split[7].split(",", -1);
 
         for (String hashTag : hashTags) {
             hashTag = hashTag.replace("#", "");
@@ -82,7 +89,7 @@ public class ProcessedTweet {
             }
         }
 
-        String []urls = split[7].split(",", -1);
+        String []urls = split[8].split(",", -1);
 
         for (String url : urls) {
             if (url.length() > 0) {
@@ -90,7 +97,7 @@ public class ProcessedTweet {
             }
         }
 
-        String []replies = split[8].split(",", -1);
+        String []replies = split[9].split(",", -1);
 
         for (String reply : replies) {
             if (reply.length() > 0) {
