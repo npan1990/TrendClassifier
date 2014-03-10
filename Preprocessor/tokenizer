@@ -129,7 +129,7 @@ for location_name in listdir(data_directory):
 		word_tokens = [t for t in word_tokens if not t in stopwords.words('english')]
 		
 
-		line = "|".join([tweetId, userName, time, isRetweet, rtCount, ",".join(word_tokens), ",".join(hashtags), ",".join(urls), ",".join(replies)])
+		line = "|".join([fromSearch, tweetId, userName, time, isRetweet, rtCount, ",".join(word_tokens), ",".join(hashtags), ",".join(urls), ",".join(replies)])
 		output_file.write(line)
 		output_file.write('\n')
 
