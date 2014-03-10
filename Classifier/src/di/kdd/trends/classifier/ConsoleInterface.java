@@ -15,18 +15,6 @@ public class ConsoleInterface {
     public static void main (String []args) throws Exception {
         String date = null;
         String location = null;
-//        if (args.length < 2) {
-//            System.err.println("Processed tweets file and trends file are needed as arguments");
-//            return;
-//        }
-//
-//        String location = args[0];
-//        String date = args[1];
-//
-//        System.out.println("Processing data for " + args[0] + " " + args[1]);
-//        Statistics.load(Application.DATA_FOLDER + location + "/" + date + Application.TWEETS_FILE,
-//                Application.DATA_FOLDER + location + "/" + date + Application.TRENDS_FILE);
-//        System.out.println("Finished processing");
 
         String command;
         Scanner scanner = new Scanner(System.in);

@@ -74,9 +74,14 @@ public class Statistics {
         ArrayList<String> distinctWords = new ArrayList<String>();
 
         for (ProcessedTweet tweet : Statistics.tweets) {
-            for (String word : tweet.getTokens()) {
+            if (Statistics.isRelevant(tweet, trend)) {
+                for (String word : tweet.getTokens()) {
+                    if (distinctWords.contains(word) == false) {
+                        distinctWords.add(word);
+                    }
+                }
 
-                if (tweet.getTokens().contains(trend) || tweet.getHashTags().contains(trend)) {
+                for (String word : tweet.getHashTags()) {
                     if (distinctWords.contains(word) == false) {
                         distinctWords.add(word);
                     }
@@ -162,6 +167,7 @@ public class Statistics {
         /* dani_alves */
 
         if (searchSpace.contains(trend.replace(" ", "-"))) {
+            trend.replace(" ", "-");
             return true;
         }
 
