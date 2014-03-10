@@ -68,7 +68,7 @@ public class ConsoleInterface {
                     else if (split[0].compareTo("l") == 0) {
                         location = split[1];
                         System.out.println("Location: " + location);
-                        if (location == null) {
+                        if (date == null) {
                             System.out.println("Date not set yet!");
                         }
                         else {
