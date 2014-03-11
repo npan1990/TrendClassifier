@@ -177,6 +177,7 @@ public class Crawler extends Thread {
                                 " " + status.getId() +
                                 " " + status.getUser().getScreenName() +
                                 " " + status.getCreatedAt().toString() +
+                                " " + Boolean.toString(status.getInReplyToUserId() == -1) +
                                 " " + status.isRetweet() +
                                 " " + status.getRetweetCount()
                 );
@@ -230,6 +231,7 @@ public class Crawler extends Thread {
                                     " " + status.getId() +
                                     " " + status.getUser().getScreenName() +
                                     " " + status.getCreatedAt().toString() +
+                                    " " + Boolean.toString(status.getInReplyToUserId() == -1) +
                                     " " + status.isRetweet() +
                                     " " + status.getRetweetCount()
                     );
