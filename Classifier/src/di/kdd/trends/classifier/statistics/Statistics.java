@@ -104,7 +104,7 @@ public class Statistics {
             repliesPopulation += tweet.getMentions().size();
             hashTagsPopulation += tweet.getHashTags().size();
 
-            if (tweet.getIsRwetweet()) {
+            if (tweet.getIsRetweet()) {
                 rts++;
             }
         }
@@ -130,7 +130,7 @@ public class Statistics {
                 repliesPopulation += tweet.getMentions().size();
                 hashTagsPopulation += tweet.getHashTags().size();
 
-                if (tweet.getIsRwetweet()) {
+                if (tweet.getIsRetweet()) {
                     rts++;
                 }
 

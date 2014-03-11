@@ -14,7 +14,7 @@ public class ProcessedTweet {
     private String userName;
     private Date time;
     private Boolean isReply;
-    private Boolean isRwetweet;
+    private Boolean isRetweet;
     private Boolean fromSearch;
     private int retweetCount;
     private ArrayList<String> tokens = new ArrayList<String>();
@@ -36,8 +36,8 @@ public class ProcessedTweet {
 
     public Boolean getIsReply() { return isReply; }
 
-    public Boolean getIsRwetweet() {
-        return isRwetweet;
+    public Boolean getIsRetweet() {
+        return isRetweet;
     }
 
     public Boolean isFromSearch() { return fromSearch; }
@@ -71,7 +71,7 @@ public class ProcessedTweet {
         this.userName = split[2];
         this.time = (new SimpleDateFormat("HH:mm:ss")).parse(split[3]);
         this.isReply = Boolean.parseBoolean(split[4]);
-        this.isRwetweet = Boolean.parseBoolean(split[5]);
+        this.isRetweet = Boolean.parseBoolean(split[5]);
         this.retweetCount = Integer.parseInt(split[6]);
 
         String []tokens = split[7].split(",", -1);
