@@ -1,9 +1,11 @@
 package di.kdd.trends.classifier;
 
-import di.kdd.trends.classifier.processing.Vector;
+import di.kdd.trends.classifier.processing.TrendVector;
 import di.kdd.trends.classifier.statistics.Application;
 import di.kdd.trends.classifier.statistics.Statistics;
 
+import java.io.*;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -12,17 +14,20 @@ import java.util.Scanner;
 
 public class ConsoleInterface {
 
-    private static String vectorDirectory = Application.DATA_FOLDER + "Vectors";
-    private static String vectorFileName = "vector.csv";
+    private static String VECTORS_DIRECTORY = Application.DATA_FOLDER + "Vectors/";
+    private static String VECTOR_FILE_NAME = "vector.csv";
 
-    private static String memeTag = "m";
-    private static String plannedEventTag = "p";
-    private static String unplannedEventTag = "u";
-    private static String generalTag = "g";
+    private static String currentLocation = null;
+    private static String currentDate = null;
+
+    private static String MEME_TAG = "m";
+    private static String PLANNED_EVENT_TAG = "p";
+    private static String UNPLANNED_EVENT_TAG = "u";
+    private static String GENERAL_TAG = "g";
+
+    private static ArrayList<TrendVector> trendVectors = null;
 
     public static void main (String []args) throws Exception {
-        String date = null;
-        String location = null;
 
         String command;
         Scanner scanner = new Scanner(System.in);
@@ -42,7 +47,9 @@ public class ConsoleInterface {
                     return;
                 }
                 else if (tokens.length == 1 && tokens[0].compareTo("tag") == 0) {
-                    System.out.println("Entered tag mode");
+                    System.out.print("Entered tag mode\ntag-mode>");
+
+                    ConsoleInterface.trendVectors = ConsoleInterface.loadVectors();
 
                     while ((command = scanner.nextLine()).compareTo("q") != 0) {
                         if (command.compareTo("ls") == 0) {
@@ -58,34 +65,49 @@ public class ConsoleInterface {
                                 continue;
                             }
                             else {
-                                System.out.println(trend + " is meme (m), planned event (p), unplanned event (u) or general (g)?");
+
+                                TrendVector trendVector = new TrendVector();
+                                trendVector.setTrend(trend);
+
+                                if (ConsoleInterface.trendIsTagged(trend)) {
+                                    trendVector = ConsoleInterface.getTaggedTrendVector(trend);
+                                    System.out.println(trend + " is tagged as " + trendVector.getTrendClass());
+                                    System.out.print("Enter new tag");
+                                }
+
+                                System.out.print(trend + " is meme (m), planned event (p), unplanned event (u) or general (g)?\ntag-mode>");
 
                                 command = scanner.nextLine();
 
-                                while (command.compareTo(ConsoleInterface.memeTag) != 0 &&
-                                        command.compareTo(ConsoleInterface.plannedEventTag) != 0 &&
-                                        command.compareTo(ConsoleInterface.unplannedEventTag) != 0 &&
-                                        command.compareTo(ConsoleInterface.generalTag) != 0) {
+                                while (command.compareTo(ConsoleInterface.MEME_TAG) != 0 &&
+                                        command.compareTo(ConsoleInterface.PLANNED_EVENT_TAG) != 0 &&
+                                        command.compareTo(ConsoleInterface.UNPLANNED_EVENT_TAG) != 0 &&
+                                        command.compareTo(ConsoleInterface.GENERAL_TAG) != 0) {
 
-                                    System.out.println(trend + " is meme (m), planned event (p), unplanned event (u) or general (g)?");
+                                    System.out.print(trend + " is meme (m), planned event (p), unplanned event (u) or general (g)?\ntag-mode>");
                                 }
 
-                                if (command.compareTo(ConsoleInterface.memeTag) == 0) {
-
+                                if (command.compareTo(ConsoleInterface.MEME_TAG) == 0) {
+                                    trendVector.setTrendClass(TrendVector.TrendClass.Meme);
                                 }
-                                else if (command.compareTo(ConsoleInterface.plannedEventTag) == 0 ) {
-
+                                else if (command.compareTo(ConsoleInterface.PLANNED_EVENT_TAG) == 0 ) {
+                                    trendVector.setTrendClass(TrendVector.TrendClass.PlannedEvent);
                                 }
-                                else if (command.compareTo(ConsoleInterface.unplannedEventTag) == 0) {
-
+                                else if (command.compareTo(ConsoleInterface.UNPLANNED_EVENT_TAG) == 0) {
+                                    trendVector.setTrendClass(TrendVector.TrendClass.UnplannedEvent);
                                 }
-                                else if (command.compareTo(ConsoleInterface.generalTag) == 0) {
-
+                                else if (command.compareTo(ConsoleInterface.GENERAL_TAG) == 0) {
+                                    trendVector.setTrendClass(TrendVector.TrendClass.General);
                                 }
+
+                                ConsoleInterface.updateTrendVector(trendVector);
                             }
                         }
+
+                        System.out.print("tag-mode>");
                     }
 
+                    ConsoleInterface.dumpTrendVectors();
                     System.out.println("Exited tag mode");
                 }
                 else if (tokens.length > 0) {
@@ -93,32 +115,32 @@ public class ConsoleInterface {
 
                     // Set date
                     if (split[0].compareTo("d") == 0) {
-                        date = split[1];
-                        System.out.println("Date: " + date);
-                        if (location == null) {
+                        ConsoleInterface.currentDate = split[1];
+                        System.out.println("Date: " + ConsoleInterface.currentDate);
+                        if (ConsoleInterface.currentLocation == null) {
                             System.out.println("Location not set yet!");
                         }
                         else {
-                            System.out.println("Location: " + location);
+                            System.out.println("Location: " + ConsoleInterface.currentLocation);
                             System.out.println("Processing data...");
-                            Statistics.load(Application.DATA_FOLDER + location + "/" + date + Application.TWEETS_FILE,
-                                    Application.DATA_FOLDER + location + "/" + date + Application.TRENDS_FILE);
+                            Statistics.load(Application.DATA_FOLDER + ConsoleInterface.currentLocation + "/" + ConsoleInterface.currentDate + Application.TWEETS_FILE,
+                                    Application.DATA_FOLDER + ConsoleInterface.currentLocation + "/" + ConsoleInterface.currentDate + Application.TRENDS_FILE);
                             System.out.println("Finished processing!");
                         }
                     }
 
                     // Set location
                     else if (split[0].compareTo("l") == 0) {
-                        location = split[1];
-                        System.out.println("Location: " + location);
-                        if (date == null) {
+                        ConsoleInterface.currentLocation = split[1];
+                        System.out.println("Location: " + ConsoleInterface.currentLocation);
+                        if (ConsoleInterface.currentDate == null) {
                             System.out.println("Date not set yet!");
                         }
                         else {
-                            System.out.println("Date: " + date);
+                            System.out.println("Date: " + ConsoleInterface.currentDate);
                             System.out.println("Processing data...");
-                            Statistics.load(Application.DATA_FOLDER + location + "/" + date + Application.TWEETS_FILE,
-                                    Application.DATA_FOLDER + location + "/" + date + Application.TRENDS_FILE);
+                            Statistics.load(Application.DATA_FOLDER + ConsoleInterface.currentLocation + "/" + ConsoleInterface.currentDate + Application.TWEETS_FILE,
+                                    Application.DATA_FOLDER + ConsoleInterface.currentLocation + "/" + ConsoleInterface.currentDate + Application.TRENDS_FILE);
                             System.out.println("Finished processing!");
                         }
                     }
@@ -132,10 +154,104 @@ public class ConsoleInterface {
             }
             catch (Exception exception) {
                 System.err.println(exception.getMessage());
+                exception.printStackTrace();
                 continue;
             }
             System.out.print("> ");
         }
     }
 
+    private static boolean trendIsTagged (String trend) {
+
+        if (ConsoleInterface.trendVectors == null) {
+            return false;
+        }
+
+        for (TrendVector trendVector : ConsoleInterface.trendVectors) {
+            if (trendVector.getTrend().compareTo(trend) == 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static TrendVector getTaggedTrendVector (String trend) {
+        if (ConsoleInterface.trendVectors == null) {
+            return null;
+        }
+
+        for (int i = 0; i < ConsoleInterface.trendVectors.size(); i++) {
+            if (ConsoleInterface.trendVectors.get(i).getTrend().compareTo(trend) == 0) {
+                return ConsoleInterface.trendVectors.get(i);
+            }
+        }
+
+        return null;
+    }
+
+    private static void updateTrendVector (TrendVector trendVector) {
+        if (ConsoleInterface.trendVectors == null) {
+            return;
+        }
+
+        for (int i = 0; i < ConsoleInterface.trendVectors.size(); i++) {
+            if (ConsoleInterface.trendVectors.get(i).getTrend().compareTo(trendVector.getTrend()) == 0) {
+                ConsoleInterface.trendVectors.remove(i);
+                ConsoleInterface.trendVectors.add(i, trendVector);
+
+                return;
+            }
+        }
+
+        ConsoleInterface.trendVectors.add(trendVector);
+    }
+
+    private static String getCurrentDirectory() {
+        return ConsoleInterface.VECTORS_DIRECTORY + ConsoleInterface.currentLocation + "/" + ConsoleInterface.currentDate + "/";
+    }
+
+    private static String getCurrentVectorFileName () {
+        return ConsoleInterface.getCurrentDirectory() + ConsoleInterface.VECTOR_FILE_NAME;
+    }
+
+    private static void setupFileSystem() throws Exception {
+        File locationDir = new File(ConsoleInterface.getCurrentDirectory());
+
+        if (locationDir.exists() == false) {
+            locationDir.mkdirs();
+            (new File(ConsoleInterface.getCurrentDirectory() + ConsoleInterface.VECTOR_FILE_NAME)).createNewFile();
+        }
+    }
+
+
+    private static ArrayList<TrendVector> loadVectors() throws Exception {
+        ArrayList<TrendVector> trendVectors = new ArrayList<TrendVector>();
+
+        ConsoleInterface.setupFileSystem();
+
+        BufferedReader reader = new BufferedReader(new FileReader(ConsoleInterface.getCurrentDirectory() + ConsoleInterface.VECTOR_FILE_NAME));
+
+        String line;
+
+        while ((line = reader.readLine()) != null) {
+               trendVectors.add(new TrendVector(line));
+        }
+
+        return trendVectors;
+    }
+
+    private static void dumpTrendVectors() throws Exception {
+        (new File(ConsoleInterface.getCurrentVectorFileName())).delete();
+        (new File(ConsoleInterface.getCurrentVectorFileName())).createNewFile();
+
+        PrintWriter vectorWriter = new PrintWriter(new File(ConsoleInterface.getCurrentVectorFileName()));
+
+        for (TrendVector trendVector : ConsoleInterface.trendVectors) {
+            vectorWriter.println(trendVector.toCsv());
+        }
+
+        vectorWriter.flush();
+        vectorWriter.close();
+    }
 }
