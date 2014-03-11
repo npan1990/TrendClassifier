@@ -1,5 +1,6 @@
 package di.kdd.trends.classifier;
 
+import di.kdd.trends.classifier.processing.Vector;
 import di.kdd.trends.classifier.statistics.Application;
 import di.kdd.trends.classifier.statistics.Statistics;
 
@@ -11,6 +12,13 @@ import java.util.Scanner;
 
 public class ConsoleInterface {
 
+    private static String vectorDirectory = Application.DATA_FOLDER + "Vectors";
+    private static String vectorFileName = "vector.csv";
+
+    private static String memeTag = "m";
+    private static String plannedEventTag = "p";
+    private static String unplannedEventTag = "u";
+    private static String generalTag = "g";
 
     public static void main (String []args) throws Exception {
         String date = null;
@@ -32,6 +40,53 @@ public class ConsoleInterface {
                 }
                 else if (tokens.length == 1 && tokens[0].compareTo("q") == 0) {
                     return;
+                }
+                else if (tokens.length == 1 && tokens[0].compareTo("tag") == 0) {
+                    System.out.println("Entered tag mode");
+
+                    while ((command = scanner.nextLine()).compareTo("q") != 0) {
+                        if (command.compareTo("ls") == 0) {
+                            Statistics.list();
+                        }
+                        else {
+                            String trend = command;
+
+                            if (Statistics.getTrends().contains(trend) == false) {
+                                System.out.println(trend + " doesn't exist in current trends");
+                                Statistics.list();
+
+                                continue;
+                            }
+                            else {
+                                System.out.println(trend + " is meme (m), planned event (p), unplanned event (u) or general (g)?");
+
+                                command = scanner.nextLine();
+
+                                while (command.compareTo(ConsoleInterface.memeTag) != 0 &&
+                                        command.compareTo(ConsoleInterface.plannedEventTag) != 0 &&
+                                        command.compareTo(ConsoleInterface.unplannedEventTag) != 0 &&
+                                        command.compareTo(ConsoleInterface.generalTag) != 0) {
+
+                                    System.out.println(trend + " is meme (m), planned event (p), unplanned event (u) or general (g)?");
+                                }
+
+                                if (command.compareTo(ConsoleInterface.memeTag) == 0) {
+
+                                }
+                                else if (command.compareTo(ConsoleInterface.plannedEventTag) == 0 ) {
+
+                                }
+                                else if (command.compareTo(ConsoleInterface.unplannedEventTag) == 0) {
+
+                                }
+                                else if (command.compareTo(ConsoleInterface.generalTag) == 0) {
+
+                                }
+                            }
+                        }
+                    }
+
+                    System.out.println("Exited tag mode");
                 }
                 else if (tokens.length > 0) {
                     String[] split = tokens[0].split(" ");

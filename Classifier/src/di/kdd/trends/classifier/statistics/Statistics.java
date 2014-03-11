@@ -213,4 +213,8 @@ public class Statistics {
             System.out.println(trend);
         }
     }
+
+    public static ArrayList<String> getTrends() {
+        return Statistics.trends;
+    }
 }
