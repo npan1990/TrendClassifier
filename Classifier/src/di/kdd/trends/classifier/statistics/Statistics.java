@@ -35,6 +35,18 @@ public class Statistics {
         Statistics.trendsProcessor.dump(trend);
     }
 
+    public static ArrayList<Double> getTrendFeatures(String trend) throws Exception {
+        System.out.println("Trend: " + trend);
+        System.out.println("Length: " + trend.length());
+        ArrayList<Double> features = new ArrayList<Double>();
+
+        features.addAll(Statistics.computeAveragesPerTweetOfTrend(trend));
+        Statistics.findDistinctWordsOfTrend(trend);
+
+        Statistics.trendsProcessor.dump(trend);
+        return features;
+    }
+
     public static void clear() {
         Statistics.tweets.clear();
         Statistics.trends.clear();
@@ -116,34 +128,66 @@ public class Statistics {
         System.out.println();
     }
 
-    private static void computeAveragesPerTweetOfTrend(String trend) {
+    private static ArrayList<Double> computeAveragesPerTweetOfTrend(String trend) {
         int tweetsWithTrend = 0;
-        int tokenPopulation, urlPopulation, repliesPopulation, hashTagsPopulation, rts;
+        int tweetsFromStream = 0;
+        int relevantTweetsFromStream = 0;
 
-        tokenPopulation = urlPopulation = repliesPopulation = hashTagsPopulation = rts = 0;
+        int tokenPopulation, urlPopulation, mentionsPopulation, hashTagsPopulation, rts;
 
+        tokenPopulation = urlPopulation = mentionsPopulation = hashTagsPopulation = rts = 0;
+
+        ArrayList<Double> features = new ArrayList<Double>();
         for (ProcessedTweet tweet : Statistics.tweets) {
+
+            if (!tweet.isFromSearch()) {
+                tweetsFromStream++;
+            }
+
             if (Statistics.isRelevant(tweet, trend)) {
                 tokenPopulation += tweet.getTokens().size();
                 urlPopulation += tweet.getUrls().size();
-                repliesPopulation += tweet.getMentions().size();
+                mentionsPopulation += tweet.getMentions().size();
                 hashTagsPopulation += tweet.getHashTags().size();
 
                 if (tweet.getIsRetweet()) {
                     rts++;
                 }
 
+                if (!tweet.isFromSearch()) {
+                    relevantTweetsFromStream++;
+                }
+
                 tweetsWithTrend++;
             }
         }
 
+        // Percentage of tweets
+        features.add(new Double((double) relevantTweetsFromStream / tweetsFromStream));
+
+        // Avg tokens per tweet
+        features.add(new Double((double) tokenPopulation / tweetsWithTrend));
+
+        // Avg mentions per tweet
+        features.add(new Double((double) mentionsPopulation / tweetsWithTrend));
+
+        // Avg hash tags per tweet
+        features.add(new Double((double) hashTagsPopulation / tweetsWithTrend));
+
+        // Perc. of tweets that were RTs
+        features.add(new Double((double) rts / tweetsWithTrend));
+
+        // Output
         System.out.println("Found in " + tweetsWithTrend + " out of " + Statistics.tweets.size() +  " tweets (" + (double) tweetsWithTrend / Statistics.tweets.size() + ")");
+        System.out.println("Found in " + relevantTweetsFromStream + " out of " + tweetsFromStream +  " tweets from stream (" + (double) relevantTweetsFromStream / tweetsFromStream + ")");
         System.out.println("Average tokens per tweet for " + trend + ": " + (double) tokenPopulation / tweetsWithTrend);
         System.out.println("Average urls per tweet for " + trend + ": " + (double) urlPopulation / tweetsWithTrend);
-        System.out.println("Average replies per tweet for " + trend + ": " + (double) repliesPopulation / tweetsWithTrend);
+        System.out.println("Average mentions per tweet for " + trend + ": " + (double) mentionsPopulation / tweetsWithTrend);
         System.out.println("Average hash tags per tweet for " + trend + ": " + (double) hashTagsPopulation / tweetsWithTrend);
         System.out.println("Percentage of tweets that were RTs: " +  rts * (double) 100 / tweetsWithTrend);
         System.out.println();
+
+        return features;
     }
 
     private static boolean isRelevant(ProcessedTweet tweet, String trend) {

@@ -1,5 +1,7 @@
 package di.kdd.trends.classifier.processing;
 
+import java.util.ArrayList;
+
 /**
  * Created by panos on 3/11/14.
  */
@@ -14,6 +16,8 @@ public class TrendVector {
 
     private String trend;
     private TrendClass trendClass;
+
+    private ArrayList<Double> featureValues = new ArrayList<Double>();
 
     public TrendVector() { }
 
@@ -41,8 +45,17 @@ public class TrendVector {
     public void setTrendClass (TrendClass trendClass) { this.trendClass = trendClass; }
 
     public String toCsv () {
-        return this.trend
+        String vectorCsv = this.trend
                 + TrendVector.VALUE_SEPARATOR
                 + this.trendClass;
+
+        for (Double featureValue : featureValues) {
+            vectorCsv += TrendVector.VALUE_SEPARATOR + featureValue;
+        }
+        return vectorCsv;
+    }
+
+    public void setFeatureValues(ArrayList<Double> featureValues) {
+        this.featureValues.addAll(featureValues);
     }
 }

@@ -105,6 +105,7 @@ public class ConsoleInterface {
                                     trendVector.setTrendClass(TrendVector.TrendClass.General);
                                 }
 
+                                trendVector.setFeatureValues(Statistics.getTrendFeatures(trend));
                                 ConsoleInterface.updateTrendVector(trendVector);
                             }
                         }
