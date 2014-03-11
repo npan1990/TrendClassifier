@@ -29,6 +29,7 @@ print args['verbose']
 processed_data_directory = 'ProcessedData'
 data_directory = 'Data'
 last_file = ""
+tweet_set = set()
 
 #For each location under data_directory
 #locations = [x[0] for x in os.walk(data_directory)]
@@ -61,14 +62,19 @@ for location_name in listdir(data_directory):
 		fields = line1.split()
 		fromSearch = fields[0]
 		tweetId = fields[1]
+
+		if (tweetId in tweet_set):
+			continue
+
+		tweet_set.add(tweetId)
 		userName = fields[2]
 		month = fields[4]
 		day = fields[5]
 		time = fields[6]
-		
-		isReply = fields[9]
-		isRetweet = fields[10]
-		rtCount = fields[11]
+		isReply = 'true'
+		#isReply = fields[9]
+		isRetweet = fields[9]
+		rtCount = fields[10]
 
 		date = datetime.datetime.strptime(" ".join([day,month]),"%d %b")	
 		directory = "-".join([str(date.day),str(date.month)])
