@@ -13,6 +13,7 @@ public class ProcessedTweet {
     private String id;
     private String userName;
     private Date time;
+    private Boolean isReply;
     private Boolean isRwetweet;
     private Boolean fromSearch;
     private int retweetCount;
@@ -32,6 +33,8 @@ public class ProcessedTweet {
     public Date getTime() {
         return time;
     }
+
+    public Boolean getIsReply() { return isReply; }
 
     public Boolean getIsRwetweet() {
         return isRwetweet;
@@ -63,21 +66,21 @@ public class ProcessedTweet {
         String []split = fromString.split("\\|", -1);
 
 
+        this.fromSearch = Integer.parseInt(split[0]) == 1;
         this.id = split[1];
         this.userName = split[2];
-        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-        this.time = dateFormat.parse(split[3]);
-        this.isRwetweet = Boolean.parseBoolean(split[4]);
-        this.retweetCount = Integer.parseInt(split[5]);
-        this.fromSearch = Integer.parseInt(split[0])==1;
+        this.time = (new SimpleDateFormat("HH:mm:ss")).parse(split[3]);
+        this.isReply = Boolean.parseBoolean(split[4]);
+        this.isRwetweet = Boolean.parseBoolean(split[5]);
+        this.retweetCount = Integer.parseInt(split[6]);
 
-        String []tokens = split[6].split(",", -1);
+        String []tokens = split[7].split(",", -1);
 
         for (String token : tokens) {
             this.getTokens().add(token);
         }
 
-        String []hashTags = split[7].split(",", -1);
+        String []hashTags = split[8].split(",", -1);
 
         for (String hashTag : hashTags) {
             hashTag = hashTag.replace("#", "");
@@ -87,7 +90,7 @@ public class ProcessedTweet {
             }
         }
 
-        String []urls = split[8].split(",", -1);
+        String []urls = split[9].split(",", -1);
 
         for (String url : urls) {
             if (url.length() > 0) {
@@ -95,7 +98,7 @@ public class ProcessedTweet {
             }
         }
 
-        String []replies = split[9].split(",", -1);
+        String []replies = split[10].split(",", -1);
 
         for (String reply : replies) {
             if (reply.length() > 0) {
