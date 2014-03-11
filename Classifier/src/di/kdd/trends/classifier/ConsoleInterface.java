@@ -55,6 +55,11 @@ public class ConsoleInterface {
                         if (command.compareTo("ls") == 0) {
                             Statistics.list();
                         }
+                        else if (command.compareTo("ls -t") == 0) {
+                            for (TrendVector trendVector : ConsoleInterface.trendVectors) {
+                                System.out.println(trendVector.getTrend() + " " + trendVector.getTrendClass());
+                            }
+                        }
                         else {
                             String trend = command;
 
