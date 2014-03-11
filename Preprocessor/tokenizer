@@ -65,8 +65,10 @@ for location_name in listdir(data_directory):
 		month = fields[4]
 		day = fields[5]
 		time = fields[6]
-		isRetweet = fields[9]
-		rtCount = fields[10]
+		
+		isReply = fields[9]
+		isRetweet = fields[10]
+		rtCount = fields[11]
 
 		date = datetime.datetime.strptime(" ".join([day,month]),"%d %b")	
 		directory = "-".join([str(date.day),str(date.month)])
@@ -129,7 +131,7 @@ for location_name in listdir(data_directory):
 		word_tokens = [t for t in word_tokens if not t in stopwords.words('english')]
 		
 
-		line = "|".join([fromSearch, tweetId, userName, time, isRetweet, rtCount, ",".join(word_tokens), ",".join(hashtags), ",".join(urls), ",".join(replies)])
+		line = "|".join([fromSearch, tweetId, userName, time, isReply, isRetweet, rtCount, ",".join(word_tokens), ",".join(hashtags), ",".join(urls), ",".join(replies)])
 		output_file.write(line)
 		output_file.write('\n')
 
