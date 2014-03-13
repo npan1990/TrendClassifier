@@ -133,9 +133,9 @@ public class Statistics {
         int tweetsFromStream = 0;
         int relevantTweetsFromStream = 0;
 
-        int tokenPopulation, urlPopulation, mentionsPopulation, hashTagsPopulation, rts;
+        int tokenPopulation, urlPopulation, mentionsPopulation, hashTagsPopulation, replies,  rts;
 
-        tokenPopulation = urlPopulation = mentionsPopulation = hashTagsPopulation = rts = 0;
+        tokenPopulation = urlPopulation = mentionsPopulation = hashTagsPopulation = replies = rts = 0;
 
         ArrayList<Double> features = new ArrayList<Double>();
         for (ProcessedTweet tweet : Statistics.tweets) {
@@ -149,6 +149,10 @@ public class Statistics {
                 urlPopulation += tweet.getUrls().size();
                 mentionsPopulation += tweet.getMentions().size();
                 hashTagsPopulation += tweet.getHashTags().size();
+
+                if (tweet.getIsReply()) {
+                    replies++;
+                }
 
                 if (tweet.getIsRetweet()) {
                     rts++;
@@ -174,6 +178,9 @@ public class Statistics {
         // Avg hash tags per tweet
         features.add(new Double((double) hashTagsPopulation / tweetsWithTrend));
 
+        // Perc. of tweets that were replies
+        features.add(new Double((double) replies / tweetsWithTrend));
+
         // Perc. of tweets that were RTs
         features.add(new Double((double) rts / tweetsWithTrend));
 
@@ -184,6 +191,7 @@ public class Statistics {
         System.out.println("Average urls per tweet for " + trend + ": " + (double) urlPopulation / tweetsWithTrend);
         System.out.println("Average mentions per tweet for " + trend + ": " + (double) mentionsPopulation / tweetsWithTrend);
         System.out.println("Average hash tags per tweet for " + trend + ": " + (double) hashTagsPopulation / tweetsWithTrend);
+        System.out.println("Percentage of tweets that were replies: " +  replies * (double) 100 / tweetsWithTrend);
         System.out.println("Percentage of tweets that were RTs: " +  rts * (double) 100 / tweetsWithTrend);
         System.out.println();
 
