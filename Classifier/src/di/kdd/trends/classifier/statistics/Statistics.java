@@ -71,9 +71,12 @@ public class Statistics {
         ArrayList<String> distinctWords = new ArrayList<String>();
 
         for (ProcessedTweet tweet : Statistics.tweets) {
-            for (String word : tweet.getTokens()) {
-                if (distinctWords.contains(word) == false) {
-                    distinctWords.add(word);
+
+            if (tweet.isFromSearch() == false) {
+                for (String word : tweet.getTokens()) {
+                    if (distinctWords.contains(word) == false) {
+                        distinctWords.add(word);
+                    }
                 }
             }
         }
@@ -110,13 +113,15 @@ public class Statistics {
         tokenPopulation = urlPopulation = repliesPopulation = hashTagsPopulation = rts = 0;
 
         for (ProcessedTweet tweet : Statistics.tweets) {
-            tokenPopulation += tweet.getTokens().size();
-            urlPopulation += tweet.getUrls().size();
-            repliesPopulation += tweet.getMentions().size();
-            hashTagsPopulation += tweet.getHashTags().size();
+            if (tweet.isFromSearch() == false) {
+                tokenPopulation += tweet.getTokens().size();
+                urlPopulation += tweet.getUrls().size();
+                repliesPopulation += tweet.getMentions().size();
+                hashTagsPopulation += tweet.getHashTags().size();
 
-            if (tweet.getIsRetweet()) {
-                rts++;
+                if (tweet.getIsRetweet()) {
+                    rts++;
+                }
             }
         }
 
