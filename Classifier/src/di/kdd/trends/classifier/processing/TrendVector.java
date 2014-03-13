@@ -19,6 +19,7 @@ public class TrendVector {
 
     /* Dimensions of feature vector */
 
+    private int trendLength;
     private double relevantTweetsFromStream;
     private double tokensPerTweet;
     private double mentionsPerTweet;
@@ -46,6 +47,8 @@ public class TrendVector {
 
     public TrendClass getTrendClass () { return this.trendClass; }
 
+    public int getTrendLength () { return this.trendLength; }
+
     public double getRelevantTweetsFromStream () { return this.relevantTweetsFromStream; }
 
     public double getTokensPerTweet () { return this.tokensPerTweet; }
@@ -62,6 +65,10 @@ public class TrendVector {
 
     public void setTrend (String trend) { this.trend = trend; }
 
+    public void setTrendClass (TrendClass trendClass) { this.trendClass = trendClass; }
+
+    public void setTrendLength (int trendLength) { this.trendLength = trendLength; }
+
     public void setRelevantTweetsFromStream (double relevantTweetsFromStream) { this.relevantTweetsFromStream  = relevantTweetsFromStream; }
 
     public void setTokensPerTweet (double tokensPerTweet) { this.tokensPerTweet = tokensPerTweet; }
@@ -70,8 +77,6 @@ public class TrendVector {
 
     public void setHashTagsPerTweet (double hashTagsPerTweet) { this.hashTagsPerTweet = hashTagsPerTweet; }
 
-    public void setTrendClass (TrendClass trendClass) { this.trendClass = trendClass; }
-
     public void setTweetsWithUrl (double tweetsWithUrl) { this.tweetsWithUrl = tweetsWithUrl; }
 
     public void setTweetsWithReplies (double tweetsWithReplies) { this.tweetsWithReplies = tweetsWithReplies; }
@@ -79,8 +84,9 @@ public class TrendVector {
     public void setTweetsWithRts (double tweetsWithRts) { this.tweetsWithRts = tweetsWithRts; }
 
     public String toCsv () {
-        String vectorCsv = this.trend + TrendVector.VALUE_SEPARATOR
+        String vectorCsv =  this.trend + TrendVector.VALUE_SEPARATOR
                             + this.trendClass + TrendVector.VALUE_SEPARATOR
+                            + this.trendLength + TrendVector.VALUE_SEPARATOR
                             + this.relevantTweetsFromStream + TrendVector.VALUE_SEPARATOR
                             + this.tokensPerTweet + TrendVector.VALUE_SEPARATOR
                             + this.mentionsPerTweet + TrendVector.VALUE_SEPARATOR

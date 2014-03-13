@@ -43,6 +43,8 @@ public class Statistics {
         System.out.println("Trend: " + trend);
         System.out.println("Length: " + trend.length());
 
+        trendVector.setTrendLength(trend.length());
+
         Statistics.computeAveragesPerTweetOfTrend(trendVector);
         Statistics.findDistinctWordsOfTrend(trend);
 
@@ -183,28 +185,14 @@ public class Statistics {
             }
         }
 
-        // Percentage of tweets
         trendVector.setRelevantTweetsFromStream((double) relevantTweetsFromStream / tweetsFromStream);
-
-        // Avg tokens per tweet
         trendVector.setTokensPerTweet((double) tokenPopulation / tweetsWithTrend);
-
-        // Avg mentions per tweet
         trendVector.setMentionsPerTweet((double) mentionsPopulation / tweetsWithTrend);
-
-        // Avg hash tags per tweet
         trendVector.setHashTagsPerTweet((double) hashTagsPopulation / tweetsWithTrend);
-
-        // Perc. of tweets that had url
         trendVector.setTweetsWithUrl((double) urls / tweetsWithTrend);
-
-        // Perc. of tweets that were replies
         trendVector.setTweetsWithReplies((double) replies / tweetsWithTrend);
-
-        // Perc. of tweets that were RTs
         trendVector.setTweetsWithRts((double) rts / tweetsWithTrend);
 
-        // Output
         System.out.println("Found in " + tweetsWithTrend + " out of " + Statistics.tweets.size() +  " tweets (" + (double) tweetsWithTrend / Statistics.tweets.size() + ")");
         System.out.println("Found in " + relevantTweetsFromStream + " out of " + tweetsFromStream +  " tweets from stream (" + (double) relevantTweetsFromStream / tweetsFromStream + ")");
         System.out.println("Average tokens per tweet for " + trendVector.getTrend() + ": " + (double) tokenPopulation / tweetsWithTrend);
