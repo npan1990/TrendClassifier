@@ -108,9 +108,9 @@ public class Statistics {
     }
 
     private static void computeAveragesPerTweet() {
-        int tokenPopulation, urlPopulation, repliesPopulation, hashTagsPopulation, rts;
+        int tokenPopulation, urlPopulation, repliesPopulation, hashTagsPopulation, urls, rts;
 
-        tokenPopulation = urlPopulation = repliesPopulation = hashTagsPopulation = rts = 0;
+        tokenPopulation = urlPopulation = repliesPopulation = hashTagsPopulation = urls = rts = 0;
 
         for (ProcessedTweet tweet : Statistics.tweets) {
             if (tweet.isFromSearch() == false) {
@@ -118,6 +118,10 @@ public class Statistics {
                 urlPopulation += tweet.getUrls().size();
                 repliesPopulation += tweet.getMentions().size();
                 hashTagsPopulation += tweet.getHashTags().size();
+
+                if (tweet.getUrls().size() > 0) {
+                    urls++;
+                }
 
                 if (tweet.getIsRetweet()) {
                     rts++;
@@ -129,6 +133,7 @@ public class Statistics {
         System.out.println("Average urls per tweet: " + (double) urlPopulation / Statistics.tweets.size());
         System.out.println("Average replies per tweet: " + (double) repliesPopulation / Statistics.tweets.size());
         System.out.println("Average hash tags per tweet: " + (double) hashTagsPopulation / Statistics.tweets.size());
+        System.out.println("Percentage of tweets that had url: " +  urls * (double) 100 / Statistics.tweets.size());
         System.out.println("Percentage of tweets that were RTs: " +  rts * (double) 100 / Statistics.tweets.size());
         System.out.println();
     }
@@ -138,9 +143,9 @@ public class Statistics {
         int tweetsFromStream = 0;
         int relevantTweetsFromStream = 0;
 
-        int tokenPopulation, urlPopulation, mentionsPopulation, hashTagsPopulation, replies,  rts;
+        int tokenPopulation, urlPopulation, mentionsPopulation, hashTagsPopulation, urls, replies,  rts;
 
-        tokenPopulation = urlPopulation = mentionsPopulation = hashTagsPopulation = replies = rts = 0;
+        tokenPopulation = urlPopulation = mentionsPopulation = hashTagsPopulation = urls = replies = rts = 0;
 
         ArrayList<Double> features = new ArrayList<Double>();
         for (ProcessedTweet tweet : Statistics.tweets) {
@@ -154,6 +159,10 @@ public class Statistics {
                 urlPopulation += tweet.getUrls().size();
                 mentionsPopulation += tweet.getMentions().size();
                 hashTagsPopulation += tweet.getHashTags().size();
+
+                if (tweet.getUrls().size() > 0) {
+                    urls++;
+                }
 
                 if (tweet.getIsReply()) {
                     replies++;
@@ -183,6 +192,9 @@ public class Statistics {
         // Avg hash tags per tweet
         features.add(new Double((double) hashTagsPopulation / tweetsWithTrend));
 
+        // Perc. of tweets that had url
+        features.add(new Double((double) urls / tweetsWithTrend));
+
         // Perc. of tweets that were replies
         features.add(new Double((double) replies / tweetsWithTrend));
 
@@ -196,6 +208,7 @@ public class Statistics {
         System.out.println("Average urls per tweet for " + trend + ": " + (double) urlPopulation / tweetsWithTrend);
         System.out.println("Average mentions per tweet for " + trend + ": " + (double) mentionsPopulation / tweetsWithTrend);
         System.out.println("Average hash tags per tweet for " + trend + ": " + (double) hashTagsPopulation / tweetsWithTrend);
+        System.out.println("Percentage of tweets that had url: " +  urls * (double) 100 / tweetsWithTrend);
         System.out.println("Percentage of tweets that were replies: " +  replies * (double) 100 / tweetsWithTrend);
         System.out.println("Percentage of tweets that were RTs: " +  rts * (double) 100 / tweetsWithTrend);
         System.out.println();
