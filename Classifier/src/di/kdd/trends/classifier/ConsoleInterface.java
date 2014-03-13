@@ -66,8 +66,6 @@ public class ConsoleInterface {
                             if (Statistics.getTrends().contains(trend) == false) {
                                 System.out.println(trend + " doesn't exist in current trends");
                                 Statistics.list();
-
-                                continue;
                             }
                             else {
 
@@ -92,6 +90,8 @@ public class ConsoleInterface {
                                     System.out.print(trend + " is meme (m), planned event (p), unplanned event (u) or general (g)?\ntag-mode>");
                                 }
 
+                                trendVector = Statistics.getTrendFeatures(trend);
+
                                 if (command.compareTo(ConsoleInterface.MEME_TAG) == 0) {
                                     trendVector.setTrendClass(TrendVector.TrendClass.Meme);
                                 }
@@ -105,7 +105,6 @@ public class ConsoleInterface {
                                     trendVector.setTrendClass(TrendVector.TrendClass.General);
                                 }
 
-                                trendVector.setFeatureValues(Statistics.getTrendFeatures(trend));
                                 ConsoleInterface.updateTrendVector(trendVector);
                             }
                         }
@@ -153,7 +152,9 @@ public class ConsoleInterface {
 
                     else {
                         for (int i = 0; i < tokens.length; i++) {
-                            Statistics.senseTrend(tokens[i]);
+                            TrendVector trendVector = new TrendVector();
+                            trendVector.setTrend(tokens[i]);
+                            Statistics.senseTrend(trendVector);
                         }
                     }
                 }
