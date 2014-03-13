@@ -1,5 +1,6 @@
 package di.kdd.trends.classifier.statistics;
 
+import di.kdd.trends.classifier.processing.TrendVector;
 import di.kdd.trends.classifier.processing.TrendsProcessor;
 
 import java.io.BufferedReader;
@@ -27,24 +28,29 @@ public class Statistics {
         Statistics.computeAveragesPerTweet();
     }
 
-    public static void senseTrend (String trend) throws Exception {
-        System.out.println("Trend: " + trend);
-        System.out.println("Length: " + trend.length());
-        Statistics.findDistinctWordsOfTrend(trend);
-        Statistics.computeAveragesPerTweetOfTrend(trend);
-        Statistics.trendsProcessor.dump(trend);
+    public static void senseTrend (TrendVector trendVector) throws Exception {
+        System.out.println("Trend: " + trendVector.getTrend());
+        System.out.println("Length: " + trendVector.getTrend().length());
+        Statistics.findDistinctWordsOfTrend(trendVector.getTrend());
+        Statistics.computeAveragesPerTweetOfTrend(trendVector);
+        Statistics.trendsProcessor.dump(trendVector.getTrend());
     }
 
-    public static ArrayList<Double> getTrendFeatures(String trend) throws Exception {
+    public static TrendVector getTrendFeatures(String trend) throws Exception {
+        TrendVector trendVector = new TrendVector();
+        trendVector.setTrend(trend);
+
         System.out.println("Trend: " + trend);
         System.out.println("Length: " + trend.length());
-        ArrayList<Double> features = new ArrayList<Double>();
 
-        features.addAll(Statistics.computeAveragesPerTweetOfTrend(trend));
+        trendVector.setTrendLength(trend.length());
+
+        Statistics.computeAveragesPerTweetOfTrend(trendVector);
         Statistics.findDistinctWordsOfTrend(trend);
 
         Statistics.trendsProcessor.dump(trend);
-        return features;
+
+        return trendVector;
     }
 
     public static void clear() {
@@ -71,9 +77,12 @@ public class Statistics {
         ArrayList<String> distinctWords = new ArrayList<String>();
 
         for (ProcessedTweet tweet : Statistics.tweets) {
-            for (String word : tweet.getTokens()) {
-                if (distinctWords.contains(word) == false) {
-                    distinctWords.add(word);
+
+            if (tweet.isFromSearch() == false) {
+                for (String word : tweet.getTokens()) {
+                    if (distinctWords.contains(word) == false) {
+                        distinctWords.add(word);
+                    }
                 }
             }
         }
@@ -105,18 +114,24 @@ public class Statistics {
     }
 
     private static void computeAveragesPerTweet() {
-        int tokenPopulation, urlPopulation, repliesPopulation, hashTagsPopulation, rts;
+        int tokenPopulation, urlPopulation, repliesPopulation, hashTagsPopulation, urls, rts;
 
-        tokenPopulation = urlPopulation = repliesPopulation = hashTagsPopulation = rts = 0;
+        tokenPopulation = urlPopulation = repliesPopulation = hashTagsPopulation = urls = rts = 0;
 
         for (ProcessedTweet tweet : Statistics.tweets) {
-            tokenPopulation += tweet.getTokens().size();
-            urlPopulation += tweet.getUrls().size();
-            repliesPopulation += tweet.getMentions().size();
-            hashTagsPopulation += tweet.getHashTags().size();
+            if (tweet.isFromSearch() == false) {
+                tokenPopulation += tweet.getTokens().size();
+                urlPopulation += tweet.getUrls().size();
+                repliesPopulation += tweet.getMentions().size();
+                hashTagsPopulation += tweet.getHashTags().size();
 
-            if (tweet.getIsRetweet()) {
-                rts++;
+                if (tweet.getUrls().size() > 0) {
+                    urls++;
+                }
+
+                if (tweet.getIsRetweet()) {
+                    rts++;
+                }
             }
         }
 
@@ -124,31 +139,35 @@ public class Statistics {
         System.out.println("Average urls per tweet: " + (double) urlPopulation / Statistics.tweets.size());
         System.out.println("Average replies per tweet: " + (double) repliesPopulation / Statistics.tweets.size());
         System.out.println("Average hash tags per tweet: " + (double) hashTagsPopulation / Statistics.tweets.size());
+        System.out.println("Percentage of tweets that had url: " +  urls * (double) 100 / Statistics.tweets.size());
         System.out.println("Percentage of tweets that were RTs: " +  rts * (double) 100 / Statistics.tweets.size());
         System.out.println();
     }
 
-    private static ArrayList<Double> computeAveragesPerTweetOfTrend(String trend) {
+    private static void computeAveragesPerTweetOfTrend(TrendVector trendVector) {
         int tweetsWithTrend = 0;
         int tweetsFromStream = 0;
         int relevantTweetsFromStream = 0;
 
-        int tokenPopulation, urlPopulation, mentionsPopulation, hashTagsPopulation, replies,  rts;
+        int tokenPopulation, urlPopulation, mentionsPopulation, hashTagsPopulation, urls, replies,  rts;
 
-        tokenPopulation = urlPopulation = mentionsPopulation = hashTagsPopulation = replies = rts = 0;
+        tokenPopulation = urlPopulation = mentionsPopulation = hashTagsPopulation = urls = replies = rts = 0;
 
-        ArrayList<Double> features = new ArrayList<Double>();
         for (ProcessedTweet tweet : Statistics.tweets) {
 
             if (!tweet.isFromSearch()) {
                 tweetsFromStream++;
             }
 
-            if (Statistics.isRelevant(tweet, trend)) {
+            if (Statistics.isRelevant(tweet, trendVector.getTrend())) {
                 tokenPopulation += tweet.getTokens().size();
                 urlPopulation += tweet.getUrls().size();
                 mentionsPopulation += tweet.getMentions().size();
                 hashTagsPopulation += tweet.getHashTags().size();
+
+                if (tweet.getUrls().size() > 0) {
+                    urls++;
+                }
 
                 if (tweet.getIsReply()) {
                     replies++;
@@ -166,36 +185,24 @@ public class Statistics {
             }
         }
 
-        // Percentage of tweets
-        features.add(new Double((double) relevantTweetsFromStream / tweetsFromStream));
+        trendVector.setRelevantTweetsFromStream((double) relevantTweetsFromStream / tweetsFromStream);
+        trendVector.setTokensPerTweet((double) tokenPopulation / tweetsWithTrend);
+        trendVector.setMentionsPerTweet((double) mentionsPopulation / tweetsWithTrend);
+        trendVector.setHashTagsPerTweet((double) hashTagsPopulation / tweetsWithTrend);
+        trendVector.setTweetsWithUrl((double) urls / tweetsWithTrend);
+        trendVector.setTweetsWithReplies((double) replies / tweetsWithTrend);
+        trendVector.setTweetsWithRts((double) rts / tweetsWithTrend);
 
-        // Avg tokens per tweet
-        features.add(new Double((double) tokenPopulation / tweetsWithTrend));
-
-        // Avg mentions per tweet
-        features.add(new Double((double) mentionsPopulation / tweetsWithTrend));
-
-        // Avg hash tags per tweet
-        features.add(new Double((double) hashTagsPopulation / tweetsWithTrend));
-
-        // Perc. of tweets that were replies
-        features.add(new Double((double) replies / tweetsWithTrend));
-
-        // Perc. of tweets that were RTs
-        features.add(new Double((double) rts / tweetsWithTrend));
-
-        // Output
         System.out.println("Found in " + tweetsWithTrend + " out of " + Statistics.tweets.size() +  " tweets (" + (double) tweetsWithTrend / Statistics.tweets.size() + ")");
         System.out.println("Found in " + relevantTweetsFromStream + " out of " + tweetsFromStream +  " tweets from stream (" + (double) relevantTweetsFromStream / tweetsFromStream + ")");
-        System.out.println("Average tokens per tweet for " + trend + ": " + (double) tokenPopulation / tweetsWithTrend);
-        System.out.println("Average urls per tweet for " + trend + ": " + (double) urlPopulation / tweetsWithTrend);
-        System.out.println("Average mentions per tweet for " + trend + ": " + (double) mentionsPopulation / tweetsWithTrend);
-        System.out.println("Average hash tags per tweet for " + trend + ": " + (double) hashTagsPopulation / tweetsWithTrend);
+        System.out.println("Average tokens per tweet for " + trendVector.getTrend() + ": " + (double) tokenPopulation / tweetsWithTrend);
+        System.out.println("Average urls per tweet for " + trendVector.getTrend() + ": " + (double) urlPopulation / tweetsWithTrend);
+        System.out.println("Average mentions per tweet for " + trendVector.getTrend() + ": " + (double) mentionsPopulation / tweetsWithTrend);
+        System.out.println("Average hash tags per tweet for " + trendVector.getTrend() + ": " + (double) hashTagsPopulation / tweetsWithTrend);
+        System.out.println("Percentage of tweets that had url: " +  urls * (double) 100 / tweetsWithTrend);
         System.out.println("Percentage of tweets that were replies: " +  replies * (double) 100 / tweetsWithTrend);
         System.out.println("Percentage of tweets that were RTs: " +  rts * (double) 100 / tweetsWithTrend);
         System.out.println();
-
-        return features;
     }
 
     private static boolean isRelevant(ProcessedTweet tweet, String trend) {
