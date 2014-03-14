@@ -1,12 +1,17 @@
 package di.kdd.trends.classifier.statistics;
 
+import com.google.common.collect.ConcurrentHashMultiset;
+import com.google.common.collect.Maps;
 import di.kdd.trends.classifier.processing.TrendVector;
 import di.kdd.trends.classifier.processing.TrendsProcessor;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.ArrayList;
+import java.util.*;
+import java.util.concurrent.ConcurrentMap;
 
+
+import com.google.common.collect.Maps.*;
 /**
  * Created by panos on 2/25/14.
  */
@@ -129,7 +134,7 @@ public class Statistics {
                     urls++;
                 }
 
-                if (tweet.getIsRetweet()) {
+                if (tweet.isRetweet()) {
                     rts++;
                 }
             }
@@ -169,12 +174,15 @@ public class Statistics {
                     urls++;
                 }
 
-                if (tweet.getIsReply()) {
+                if (tweet.isReply()) {
                     replies++;
                 }
 
-                if (tweet.getIsRetweet()) {
+                // If this tweet is a retweet, add 1 to rts population
+                if (tweet.isRetweet()) {
                     rts++;
+                } else {
+                    rts+= tweet.getRetweetCount();
                 }
 
                 if (!tweet.isFromSearch()) {

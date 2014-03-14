@@ -34,11 +34,9 @@ public class ProcessedTweet {
         return time;
     }
 
-    public Boolean getIsReply() { return isReply; }
+    public Boolean isReply() { return isReply; }
 
-    public Boolean getIsRetweet() {
-        return isRetweet;
-    }
+    public Boolean isRetweet() { return isRetweet; }
 
     public Boolean isFromSearch() { return fromSearch; }
 
