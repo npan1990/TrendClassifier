@@ -172,18 +172,8 @@ public class Crawler extends Thread {
             QueryResult queryResult = this.twitter.getStream(emptyQuery);
 
             for (Status status : queryResult.getTweets()) {
-                tweetsWriter.println(
-                                Crawler.STREAM_TAG +
-                                " " + status.getId() +
-                                " " + status.getUser().getScreenName() +
-                                " " + status.getCreatedAt().toString() +
-                                " " + Boolean.toString(status.getInReplyToUserId() == -1) +
-                                " " + status.isRetweet() +
-                                " " + status.getRetweetCount()
-                );
-
-                String text = status.getText().replace("\n", " ").replace("\r", " ").replace("\r\n", " ");
-                tweetsWriter.println(text);
+                printMetaInfo(status, Crawler.STREAM_TAG);
+                printText(status);
             }
 
             this.tweetsWriter.flush();
@@ -226,18 +216,8 @@ public class Crawler extends Thread {
                 QueryResult queryResult = this.twitter.search(queryTrend);
 
                 for (Status status : queryResult.getTweets()) {
-                    tweetsWriter.println(
-                                    Crawler.SEARCH_TAG +
-                                    " " + status.getId() +
-                                    " " + status.getUser().getScreenName() +
-                                    " " + status.getCreatedAt().toString() +
-                                    " " + Boolean.toString(status.getInReplyToUserId() == -1) +
-                                    " " + status.isRetweet() +
-                                    " " + status.getRetweetCount()
-                    );
-
-                    String text = status.getText().replace("\n", " ").replace("\r", " ").replace("\r\n", " ");
-                    tweetsWriter.println(text);
+                    printMetaInfo(status, Crawler.SEARCH_TAG);
+                    printText(status);
                 }
 
                 this.tweetsWriter.flush();
@@ -293,5 +273,57 @@ public class Crawler extends Thread {
 
     public Object getLogTag() {
         return "[" + location.getName() + " " + this.getDate() + "]: ";
+    }
+
+    private void printMetaInfo(Status status, int tag) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(tag +
+                "|" + status.getId() +
+                "|" + status.getUser().getScreenName() +
+                "|" + status.getCreatedAt().toString() +
+                "|" + Boolean.toString(status.getInReplyToUserId() == -1) +
+                "|" + status.isRetweet() +
+                "|" + status.getRetweetCount() +
+                "|" + status.getFavoriteCount()
+        );
+
+        ArrayList<String> symbols = new ArrayList<String>();
+        for (SymbolEntity se : status.getSymbolEntities()){
+            symbols.add(se.getText());
+        }
+
+        sb.append("|" + symbols);
+
+        ArrayList<String> hashtags = new ArrayList<String>();
+        for (HashtagEntity he : status.getHashtagEntities()){
+            hashtags.add(he.getText());
+        }
+
+        sb.append("|" + hashtags);
+
+        ArrayList<String> urls = new ArrayList<String>();
+        for (URLEntity url : status.getURLEntities()){
+            urls.add(url.getText());
+        }
+        sb.append("|" + urls);
+
+        ArrayList<String> ums = new ArrayList<String>();
+        for (UserMentionEntity um : status.getUserMentionEntities()){
+            ums.add(um.getText());
+        }
+        sb.append("|" + ums);
+
+        ArrayList<String> media = new ArrayList<String>();
+        for (MediaEntity medium : status.getMediaEntities()){
+            media.add(medium.getType());
+        }
+        sb.append("|" + media);
+
+        tweetsWriter.println(sb.toString());
+    }
+
+    private void printText(Status status) {
+        String text = status.getText().replace("\n", " ").replace("\r", " ").replace("\r\n", " ");
+        tweetsWriter.println(text);
     }
 }
