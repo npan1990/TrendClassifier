@@ -283,7 +283,6 @@ public class Crawler extends Thread {
                 "|" + status.getCreatedAt().toString() +
                 "|" + Boolean.toString(status.getInReplyToUserId() != -1) +
                 "|" + status.isRetweet() +
-                "|" + status.isRetweeted() +
                 "|" + status.getRetweetCount() +
                 "|" + status.getFavoriteCount()
         );
