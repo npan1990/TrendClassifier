@@ -281,45 +281,46 @@ public class Crawler extends Thread {
                 "|" + status.getId() +
                 "|" + status.getUser().getScreenName() +
                 "|" + status.getCreatedAt().toString() +
-                "|" + Boolean.toString(status.getInReplyToUserId() == -1) +
+                "|" + Boolean.toString(status.getInReplyToUserId() != -1) +
                 "|" + status.isRetweet() +
+                "|" + status.isRetweeted() +
                 "|" + status.getRetweetCount() +
                 "|" + status.getFavoriteCount()
         );
 
+        // Lists of entities
         ArrayList<String> symbols = new ArrayList<String>();
         for (SymbolEntity se : status.getSymbolEntities()){
-            symbols.add(se.getText());
+            symbols.add(se.getText().replace("|", "").replace(",", ""));
         }
-
-        sb.append("|" + symbols);
+        sb.append("|" + symbols + "|" + symbols.size());
 
         ArrayList<String> hashtags = new ArrayList<String>();
         for (HashtagEntity he : status.getHashtagEntities()){
-            hashtags.add(he.getText());
+            hashtags.add(he.getText().replace("|", "").replace(",", ""));
         }
-
-        sb.append("|" + hashtags);
+        sb.append("|" + hashtags + "|" + hashtags.size());
 
         ArrayList<String> urls = new ArrayList<String>();
         for (URLEntity url : status.getURLEntities()){
-            urls.add(url.getText());
+            urls.add(url.getExpandedURL().replace("|", "").replace(",", ""));
+
         }
-        sb.append("|" + urls);
+        sb.append("|" + urls + "|" + urls.size());
 
         ArrayList<String> ums = new ArrayList<String>();
         for (UserMentionEntity um : status.getUserMentionEntities()){
-            ums.add(um.getText());
+            ums.add(um.getText().replace("|", "").replace(",", ""));
         }
-        sb.append("|" + ums);
+        sb.append("|" + ums + "|" + ums.size());
 
         ArrayList<String> media = new ArrayList<String>();
         for (MediaEntity medium : status.getMediaEntities()){
-            media.add(medium.getType());
+            media.add(medium.getType().replace("|", "").replace(",", ""));
         }
-        sb.append("|" + media);
+        sb.append("|" + media + "|" + media.size());
 
-        tweetsWriter.println(sb.toString());
+        tweetsWriter.println(sb.toString().replace("[", "").replace("]", ""));
     }
 
     private void printText(Status status) {
