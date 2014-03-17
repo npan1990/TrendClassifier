@@ -17,6 +17,12 @@ public class ProcessedTweet {
     private Boolean isRetweet;
     private Boolean fromSearch;
     private int retweetCount;
+    private int favoriteCount;
+    private int symbolCount;
+    private int urlsCount;
+    private int mediaCount;
+    private String rawTweet;
+
     private ArrayList<String> tokens = new ArrayList<String>();
     private ArrayList<String> hashTags = new ArrayList<String>();
     private ArrayList<String> urls = new ArrayList<String>();
@@ -44,6 +50,20 @@ public class ProcessedTweet {
         return retweetCount;
     }
 
+    public int getFavoriteCount() {
+        return retweetCount;
+    }
+
+    public int getSymbolCount() {
+        return retweetCount;
+    }
+
+    public int getUrlsCount() { return urlsCount; }
+
+    public int getMediaCount() { return mediaCount; }
+
+    public String getRawTweet() { return rawTweet; }
+
     public ArrayList<String> getTokens() {
         return tokens;
     }
@@ -52,17 +72,22 @@ public class ProcessedTweet {
         return hashTags;
     }
 
-    public ArrayList<String> getUrls() {
-        return urls;
-    }
+//    public ArrayList<String> getUrls() {
+//        return urls;
+//    }
 
     public ArrayList<String> getMentions() {
         return mentions;
     }
 
+
+    //Tokenizer output
+    //(0)fromSearch, (1)tweetId, (2)userName, (3)time, (4)isReply, (5)isRetweet, (6)retweetCount,
+    //(7)favoriteCount, (8)symbolCount, (9)urlsCount, (10)mediaCount, (11)tokenList, (12)hashtagList,
+    //(13)mentionList, (14)raw_tweet
+
     public ProcessedTweet(String fromString) throws ParseException {
         String []split = fromString.split("\\|", -1);
-
 
         this.fromSearch = Integer.parseInt(split[0]) == 1;
         this.id = split[1];
@@ -71,37 +96,32 @@ public class ProcessedTweet {
         this.isReply = Boolean.parseBoolean(split[4]);
         this.isRetweet = Boolean.parseBoolean(split[5]);
         this.retweetCount = Integer.parseInt(split[6]);
+        this.favoriteCount = Integer.parseInt(split[7]);
+        this.symbolCount = Integer.parseInt(split[8]);
+        this.urlsCount = Integer.parseInt(split[9]);
+        this.mediaCount = Integer.parseInt(split[10]);
 
-        String []tokens = split[7].split(",", -1);
-
+        String []tokens = split[11].split(",", -1);
         for (String token : tokens) {
-            this.getTokens().add(token);
+            if (token.length() > 0) {
+                this.getTokens().add(token);
+            }
         }
 
-        String []hashTags = split[8].split(",", -1);
-
+        String []hashTags = split[12].split(",", -1);
         for (String hashTag : hashTags) {
-            hashTag = hashTag.replace("#", "");
-
             if (hashTag.length() > 0) {
-                this.getHashTags().add(hashTag.replace("#", ""));
+                this.getHashTags().add(hashTag);
             }
         }
 
-        String []urls = split[9].split(",", -1);
-
-        for (String url : urls) {
-            if (url.length() > 0) {
-                this.getUrls().add(url);
+        String []mentions = split[13].split(",", -1);
+        for (String mention : mentions) {
+            if (mention.length() > 0) {
+                this.getMentions().add(mention);
             }
         }
 
-        String []replies = split[10].split(",", -1);
-
-        for (String reply : replies) {
-            if (reply.length() > 0) {
-                this.getMentions().add(reply);
-            }
-        }
+        this.rawTweet = split[14];
     }
 }

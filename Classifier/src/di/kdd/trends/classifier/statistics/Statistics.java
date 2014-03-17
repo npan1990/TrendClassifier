@@ -126,11 +126,11 @@ public class Statistics {
         for (ProcessedTweet tweet : Statistics.tweets) {
             if (tweet.isFromSearch() == false) {
                 tokenPopulation += tweet.getTokens().size();
-                urlPopulation += tweet.getUrls().size();
+                urlPopulation += tweet.getUrlsCount();
                 repliesPopulation += tweet.getMentions().size();
                 hashTagsPopulation += tweet.getHashTags().size();
 
-                if (tweet.getUrls().size() > 0) {
+                if (tweet.getUrlsCount() > 0) {
                     urls++;
                 }
 
@@ -166,11 +166,11 @@ public class Statistics {
 
             if (Statistics.isRelevant(tweet, trendVector.getTrend())) {
                 tokenPopulation += tweet.getTokens().size();
-                urlPopulation += tweet.getUrls().size();
+                urlPopulation += tweet.getUrlsCount();
                 mentionsPopulation += tweet.getMentions().size();
                 hashTagsPopulation += tweet.getHashTags().size();
 
-                if (tweet.getUrls().size() > 0) {
+                if (tweet.getUrlsCount() > 0) {
                     urls++;
                 }
 
