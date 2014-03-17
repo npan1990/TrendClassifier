@@ -72,10 +72,12 @@ public class ConsoleInterface {
                                 TrendVector trendVector = new TrendVector();
                                 trendVector.setTrend(trend);
 
+                                trendVector = Statistics.getTrendFeatures(trend);
+
                                 if (ConsoleInterface.trendIsTagged(trend)) {
                                     trendVector = ConsoleInterface.getTaggedTrendVector(trend);
                                     System.out.println(trend + " is tagged as " + trendVector.getTrendClass());
-                                    System.out.print("Enter new tag");
+                                    System.out.println("Enter new tag");
                                 }
 
                                 System.out.print(trend + " is meme (m), planned event (p), unplanned event (u) or general (g)?\ntag-mode>");
@@ -90,7 +92,7 @@ public class ConsoleInterface {
                                     System.out.print(trend + " is meme (m), planned event (p), unplanned event (u) or general (g)?\ntag-mode>");
                                 }
 
-                                trendVector = Statistics.getTrendFeatures(trend);
+
 
                                 if (command.compareTo(ConsoleInterface.MEME_TAG) == 0) {
                                     trendVector.setTrendClass(TrendVector.TrendClass.Meme);
