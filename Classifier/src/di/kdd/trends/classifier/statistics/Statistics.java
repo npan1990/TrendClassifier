@@ -201,13 +201,15 @@ public class Statistics {
         trendVector.setTokensPerTweet((double) tokenPopulation / tweetsWithTrend);
         trendVector.setMentionsPerTweet((double) mentionsPopulation / tweetsWithTrend);
         trendVector.setHashTagsPerTweet((double) hashTagsPopulation / tweetsWithTrend);
-        trendVector.setTweetsWithUrl((double) urls / tweetsWithTrend);
-        trendVector.setTweetsWithReplies((double) replies / tweetsWithTrend);
+        trendVector.setPercentageOfTweetsWithUrl((double) urls / tweetsWithTrend);
+        trendVector.setRepliesPerTrend((double) replies / tweetsWithTrend);
         trendVector.setTweetsWithRts((double) rts / tweetsWithTrend);
 
         trendVector.setFavoritesPerTweet((double) favsPopulation / tweetsWithTrend);
         trendVector.setUrlsPerTweet((double) urlPopulation / tweetsWithTrend);
         trendVector.setMediasPerTweet((double) mediasPopulation / tweetsWithTrend);
+        trendVector.setRetweetsPerTweet((double)rts / tweetsWithTrend);
+
 
         System.out.println("Found in " + tweetsWithTrend + " out of " + Statistics.tweets.size() +  " tweets (" + (double) tweetsWithTrend / Statistics.tweets.size() + ")");
         System.out.println("Found in " + relevantTweetsFromStream + " out of " + tweetsFromStream +  " tweets from stream (" + (double) relevantTweetsFromStream / tweetsFromStream + ")");
@@ -218,9 +220,9 @@ public class Statistics {
         System.out.println("Average favs per tweet for " + trendVector.getTrend() + ": " + (double) favsPopulation / tweetsWithTrend);
         System.out.println("Average media per tweet for " + trendVector.getTrend() + ": " + (double) mediasPopulation / tweetsWithTrend);
 
-        System.out.println("Percentage of tweets that had url: " +  urls * (double) 100 / tweetsWithTrend);
-        System.out.println("Percentage of tweets that were replies: " +  replies * (double) 100 / tweetsWithTrend);
-        System.out.println("Percentage of tweets that were RTs: " +  rts * (double) 100 / tweetsWithTrend);
+        System.out.println("Percentage of tweets with url: " +  (double)urls / tweetsWithTrend);
+        System.out.println("Replies percentage:: " +  (double) replies / tweetsWithTrend);
+        System.out.println("Retweets percentage of : " + (double) rts / tweetsWithTrend);
         System.out.println();
     }
 

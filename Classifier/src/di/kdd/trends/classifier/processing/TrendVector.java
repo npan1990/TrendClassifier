@@ -135,16 +135,15 @@ public class TrendVector {
 
     public void setHashTagsPerTweet (double hashTagsPerTweet) { this.hashTagsPerTweet = hashTagsPerTweet; }
 
-    public void setTweetsWithUrl (double tweetsWithUrl) { this.tweetsWithUrl = tweetsWithUrl; }
+    public void setPercentageOfTweetsWithUrl(double tweetsWithUrl) { this.tweetsWithUrl = tweetsWithUrl; }
 
-    public void setTweetsWithReplies (double tweetsWithReplies) { this.tweetsWithReplies = tweetsWithReplies; }
+    public void setRepliesPerTrend(double tweetsWithReplies) { this.tweetsWithReplies = tweetsWithReplies; }
 
     public void setTweetsWithRts (double tweetsWithRts) { this.tweetsWithRts = tweetsWithRts; }
 
     public void setRetweetsPerTweet(double retweetsPerTweet) { this.retweetsPerTweet = retweetsPerTweet; }
 
     public void setFavoritesPerTweet(double favoritesPerTweet) { this.favoritesPerTweet = favoritesPerTweet; }
-
 
     public void setUrlsPerTweet(double urlsPerTweet) { this.urlsPerTweet = urlsPerTweet; }
 
@@ -153,7 +152,6 @@ public class TrendVector {
     public void setAverageRank(double averageRank) {  this.averageRank = averageRank; }
 
     public void setMostDominantRank(int mostDominantRank) { this.mostDominantRank = mostDominantRank; }
-
 
     public void setMaximumRank(int maximumRank) { this.maximumRank = maximumRank; }
 
