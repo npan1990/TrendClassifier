@@ -15,6 +15,8 @@ public class TrendsProcessor {
 
     private Hashtable<String, ArrayList<TrendValue>> trends = new Hashtable<String, ArrayList<TrendValue>>();
 
+    private Hashtable<String, ArrayList<DateRankPair>> trendRanks = new Hashtable<String, ArrayList<DateRankPair>>();
+
     public void process(String fileName) throws Exception {
         BufferedReader reader = new BufferedReader(new FileReader(fileName));
 
@@ -35,6 +37,7 @@ public class TrendsProcessor {
 
                 if (this.trends.containsKey(trend) == false) {
                     this.trends.put(trend, new ArrayList<TrendValue>());
+                    this.trendRanks.put(trend, new ArrayList<DateRankPair>());
                 }
 
                 ArrayList<TrendValue> trendValues = this.trends.get(trend);
@@ -59,6 +62,11 @@ public class TrendsProcessor {
 
                     trendValues.add(new TrendValue(date, rank));
                 }
+
+                ArrayList<DateRankPair> dateRankPairs = this.trendRanks.get(trend);
+                DateRange dateRange = new DateRange();
+                dateRange.updateRange(date);
+                dateRankPairs.add(new DateRankPair(dateRange, 11-rank));
 
                 currentTrends.add(trend);
             }
@@ -156,7 +164,34 @@ public class TrendsProcessor {
         return appearances;
     }
 
-    public int getMostDominantSlice(String trend) {
+    public int getMostDominantSlice(String trend) throws Exception {
+
+        int []sliceSums = new int[TrendVector.DAY_SLICES];
+
+        for (int i = 0; i < sliceSums.length; i++) {
+
+            int sliceStartHour = i * (24 / TrendVector.DAY_SLICES);
+            int sliceEndHour = sliceStartHour + (24 / TrendVector.DAY_SLICES);
+
+            ArrayList<DateRankPair> dateRankPairs = this.trendRanks.get(trend);
+
+            for (DateRankPair dateRankPair : dateRankPairs) {
+                if (dateRankPair.isInSlice(sliceStartHour, sliceEndHour)) {
+                    sliceSums[i] += dateRankPair.getRank();
+                }
+            }
+        }
+
+        int maxSum = 0;
+        int maxIndex = -1;
+        for (int i=0; i<sliceSums.length; i++) {
+            if (sliceSums[i] > maxSum) {
+                maxSum = sliceSums[i];
+                maxIndex = i;
+            }
+        }
+
+        return maxIndex;
 
     }
 

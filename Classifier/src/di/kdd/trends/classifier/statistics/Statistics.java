@@ -244,11 +244,15 @@ public class Statistics {
 
         trendVector.setDaySlice(Statistics.trendsProcessor.getAppearanceSlices(trendVector.getTrend()));
 
+
         System.out.println("Appearances in day slices:");
         for (boolean appearance : trendVector.getDaySlices()) {
             System.out.print(appearance + " ");
         }
         System.out.println();
+
+        trendVector.setMostDominantSlice(Statistics.trendsProcessor.getMostDominantSlice(trendVector.getTrend()));
+        System.out.println("Most dominant slice: " + trendVector.getMostDominantSlice());
     }
 
 

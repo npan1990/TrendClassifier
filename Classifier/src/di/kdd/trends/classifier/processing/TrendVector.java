@@ -37,6 +37,10 @@ public class TrendVector {
     protected double averageRank;
     protected int mostDominantRank;
     protected int maximumRank;
+
+
+
+    protected int mostDominantSlice;
     protected int duration;
     protected int durationOfLongestDateRange;
     protected boolean[] daySlices = new boolean[TrendVector.DAY_SLICES];
@@ -120,6 +124,10 @@ public class TrendVector {
     public int getDurationOfLongestDateRange() { return durationOfLongestDateRange; }
 
     public boolean[] getDaySlices() { return daySlices; }
+
+    public int getMostDominantSlice() { return mostDominantSlice; }
+
+    public void setMostDominantSlice(int mostDominantSlice) { this.mostDominantSlice = mostDominantSlice; }
 
     public void setTrend (String trend) { this.trend = trend; }
 
