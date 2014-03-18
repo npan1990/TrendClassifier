@@ -27,7 +27,6 @@ public class TrendVector {
     private double tweetsWithRts;
     private double retweetsPerTweet;
     private double favoritesPerTweet;
-    private double symbolsPerTweet;
     private double urlsPerTweet;
     private double mediasPerTweet;
 
@@ -70,8 +69,6 @@ public class TrendVector {
 
     public double getRetweetsPerTweet() { return retweetsPerTweet; }
 
-    public double getSymbolsPerTweet() { return symbolsPerTweet; }
-
     public double getUrlsPerTweet() { return urlsPerTweet; }
 
     public double getMediasPerTweet() { return mediasPerTweet; }
@@ -100,8 +97,6 @@ public class TrendVector {
 
     public void setFavoritesPerTweet(double favoritesPerTweet) { this.favoritesPerTweet = favoritesPerTweet; }
 
-    public void setSymbolsPerTweet(double symbolsPerTweet) { this.symbolsPerTweet = symbolsPerTweet; }
-
     public void setUrlsPerTweet(double urlsPerTweet) { this.urlsPerTweet = urlsPerTweet; }
 
     public void setMediasPerTweet(double mediasPerTweet) { this.mediasPerTweet = mediasPerTweet; }
@@ -119,7 +114,6 @@ public class TrendVector {
                             + this.tweetsWithRts + TrendVector.VALUE_SEPARATOR
                             + this.retweetsPerTweet + TrendVector.VALUE_SEPARATOR
                             + this.favoritesPerTweet + TrendVector.VALUE_SEPARATOR
-                            +this.symbolsPerTweet + TrendVector.VALUE_SEPARATOR
                             +this.urlsPerTweet + TrendVector.VALUE_SEPARATOR
                             +this.mediasPerTweet;
 
