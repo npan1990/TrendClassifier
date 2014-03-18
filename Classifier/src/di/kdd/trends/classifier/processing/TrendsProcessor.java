@@ -113,6 +113,8 @@ public class TrendsProcessor {
     }
 
     public void dump(String trend) {
+        System.out.println();
+
         for (TrendValue value : this.trends.get(trend)) {
             System.out.println(value.toString());
         }
