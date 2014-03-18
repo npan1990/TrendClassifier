@@ -152,10 +152,10 @@ public class Statistics {
         int relevantTweetsFromStream = 0;
 
         int tokenPopulation, urlPopulation, mentionsPopulation,
-                hashTagsPopulation, urls, replies, rts, favsPopulation, mediasPopulation, symbolPopulation;
+                hashTagsPopulation, urls, replies, rts, favsPopulation, mediasPopulation;
 
         tokenPopulation = urlPopulation = mentionsPopulation
-                = hashTagsPopulation = urls = replies = rts = favsPopulation = mediasPopulation = symbolPopulation =0;
+                = hashTagsPopulation = urls = replies = rts = favsPopulation = mediasPopulation =0;
 
         for (ProcessedTweet tweet : Statistics.tweets) {
 
@@ -173,9 +173,6 @@ public class Statistics {
                 hashTagsPopulation += tweet.getHashTags().size();
                 mediasPopulation += tweet.getMediaCount();
                 favsPopulation += tweet.getFavoriteCount();
-                symbolPopulation += tweet.getSymbolCount();
-
-
 
                 if (tweet.getUrlsCount() > 0) {
                     urls++;
