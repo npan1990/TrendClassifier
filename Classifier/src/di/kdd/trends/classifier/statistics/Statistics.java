@@ -58,6 +58,7 @@ public class Statistics {
     public static void clear() {
         Statistics.tweets.clear();
         Statistics.trends.clear();
+        Statistics.trendsProcessor.clear();
     }
 
     private static void loadTweets(String tweetsFileName) throws Exception {

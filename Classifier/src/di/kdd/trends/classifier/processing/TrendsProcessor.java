@@ -235,4 +235,9 @@ public class TrendsProcessor {
             System.out.println(value.toString());
         }
     }
+
+    public void clear() {
+        this.trends.clear();
+        this.trendRanks.clear();
+    }
 }
