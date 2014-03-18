@@ -77,10 +77,10 @@ public class TrendsProcessor {
     }
 
     public int getMaxRank(String trend) {
-        int maxRank = 0;
+        int maxRank = 11;
 
         for (TrendValue value : this.trends.get(trend)) {
-            if (value.getMaximumRank() > maxRank) {
+            if (value.getMaximumRank() < maxRank) {
                 maxRank = value.getMaximumRank();
             }
         }

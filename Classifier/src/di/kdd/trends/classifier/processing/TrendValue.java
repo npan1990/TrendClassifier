@@ -35,10 +35,10 @@ public class TrendValue {
 
     public int getMaximumRank()
     {
-        int maximumRank = 0;
+        int maximumRank = 11;
 
         for (Integer integer : this.rankings) {
-            if (integer > maximumRank) {
+            if (integer < maximumRank) {
                 maximumRank = integer;
             }
         }
