@@ -9,7 +9,7 @@ import java.lang.reflect.Modifier;
 
 public class TrendVector {
 
-    public enum TrendClass { Meme, PlannedEvent, UnplannedEvent, General };
+    public enum TrendClass { Meme, Event };
 
     public static final int DAY_SLICES = 8;
 

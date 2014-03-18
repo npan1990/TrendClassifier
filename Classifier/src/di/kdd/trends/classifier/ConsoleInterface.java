@@ -21,9 +21,7 @@ public class ConsoleInterface {
     private static String currentDate = null;
 
     private static String MEME_TAG = "m";
-    private static String PLANNED_EVENT_TAG = "p";
-    private static String UNPLANNED_EVENT_TAG = "u";
-    private static String GENERAL_TAG = "g";
+    private static String EVENT_TAG = "e";
 
     private static ArrayList<TrendVector> trendVectors = null;
 
@@ -80,16 +78,14 @@ public class ConsoleInterface {
                                     System.out.println("Enter new tag");
                                 }
 
-                                System.out.print(trend + " is meme (m), planned event (p), unplanned event (u) or general (g)?\ntag-mode>");
+                                System.out.print(trend + " is meme (m) or event (e)?\ntag-mode>");
 
                                 command = scanner.nextLine();
 
                                 while (command.compareTo(ConsoleInterface.MEME_TAG) != 0 &&
-                                        command.compareTo(ConsoleInterface.PLANNED_EVENT_TAG) != 0 &&
-                                        command.compareTo(ConsoleInterface.UNPLANNED_EVENT_TAG) != 0 &&
-                                        command.compareTo(ConsoleInterface.GENERAL_TAG) != 0) {
+                                        command.compareTo(ConsoleInterface.EVENT_TAG) != 0) {
 
-                                    System.out.print(trend + " is meme (m), planned event (p), unplanned event (u) or general (g)?\ntag-mode>");
+                                    System.out.print(trend + " is meme (m) or event (e)?\ntag-mode>");
                                 }
 
 
@@ -97,14 +93,8 @@ public class ConsoleInterface {
                                 if (command.compareTo(ConsoleInterface.MEME_TAG) == 0) {
                                     trendVector.setTrendClass(TrendVector.TrendClass.Meme);
                                 }
-                                else if (command.compareTo(ConsoleInterface.PLANNED_EVENT_TAG) == 0 ) {
-                                    trendVector.setTrendClass(TrendVector.TrendClass.PlannedEvent);
-                                }
-                                else if (command.compareTo(ConsoleInterface.UNPLANNED_EVENT_TAG) == 0) {
-                                    trendVector.setTrendClass(TrendVector.TrendClass.UnplannedEvent);
-                                }
-                                else if (command.compareTo(ConsoleInterface.GENERAL_TAG) == 0) {
-                                    trendVector.setTrendClass(TrendVector.TrendClass.General);
+                                else if (command.compareTo(ConsoleInterface.EVENT_TAG) == 0 ) {
+                                    trendVector.setTrendClass(TrendVector.TrendClass.Event);
                                 }
 
                                 ConsoleInterface.updateTrendVector(trendVector);
