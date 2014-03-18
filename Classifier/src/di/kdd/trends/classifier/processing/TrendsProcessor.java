@@ -185,7 +185,9 @@ public class TrendsProcessor {
         int maxSum = 0;
         int maxIndex = -1;
         for (int i=0; i<sliceSums.length; i++) {
+            System.out.println("Slice " + i + " has sum: " + sliceSums[i]);
             if (sliceSums[i] > maxSum) {
+
                 maxSum = sliceSums[i];
                 maxIndex = i;
             }
