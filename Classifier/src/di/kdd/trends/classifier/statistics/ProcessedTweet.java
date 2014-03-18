@@ -54,9 +54,7 @@ public class ProcessedTweet {
         return retweetCount;
     }
 
-    public int getSymbolCount() {
-        return retweetCount;
-    }
+    public int getSymbolCount() { return symbolCount; }
 
     public int getUrlsCount() { return urlsCount; }
 
