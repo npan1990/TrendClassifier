@@ -31,6 +31,19 @@ public class TrendValue {
         return this.rankings;
     }
 
+    public int getMaximumRank()
+    {
+        int maximumRank = 0;
+
+        for (Integer integer : this.rankings) {
+            if (integer > maximumRank) {
+                maximumRank = integer;
+            }
+        }
+
+        return maximumRank;
+    }
+
     @Override
     public String toString() {
         StringWriter output = new StringWriter();

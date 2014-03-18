@@ -68,6 +68,18 @@ public class TrendsProcessor {
         }
     }
 
+    public int getMaxRank(String trend) {
+        int maxRank = 0;
+
+        for (TrendValue value : this.trends.get(trend)) {
+            if (value.getMaximumRank() > maxRank) {
+                maxRank = value.getMaximumRank();
+            }
+        }
+
+        return maxRank;
+    }
+
     public ArrayList<String> getTrends() {
         ArrayList<String> trends = new ArrayList<String>();
 

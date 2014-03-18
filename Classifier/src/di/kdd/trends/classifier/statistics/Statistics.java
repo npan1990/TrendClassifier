@@ -33,6 +33,7 @@ public class Statistics {
         System.out.println("Length: " + trendVector.getTrend().length());
         Statistics.findDistinctWordsOfTrend(trendVector.getTrend());
         Statistics.computeAveragesPerTweetOfTrend(trendVector);
+        Statistics.computeDateRangeFeatures(trendVector);
         Statistics.trendsProcessor.dump(trendVector.getTrend());
     }
 
@@ -221,6 +222,11 @@ public class Statistics {
         System.out.println("Percentage of tweets that were RTs: " +  rts * (double) 100 / tweetsWithTrend);
         System.out.println();
     }
+
+    private static void computeDateRangeFeatures(TrendVector trendVector) {
+        trendVector.setMaximumRank(Statistics.trendsProcessor.getMaxRank(trendVector.getTrend()));
+    }
+
 
     private static boolean isRelevant(ProcessedTweet tweet, String trend) {
 
