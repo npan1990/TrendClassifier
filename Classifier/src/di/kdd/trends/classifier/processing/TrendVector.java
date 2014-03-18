@@ -11,6 +11,8 @@ public class TrendVector {
 
     public enum TrendClass { Meme, PlannedEvent, UnplannedEvent, General };
 
+    private static final int DAY_SLICES = 6;
+
     private static String VALUE_SEPARATOR = ", ";
     private static int TREND_INDEX = 0;
     private static int CLASS_INDEX = 1;
@@ -33,6 +35,12 @@ public class TrendVector {
     protected double symbolsPerTweet;
     protected double urlsPerTweet;
     protected double mediasPerTweet;
+    private int averageRank;
+    private int mostDominantRank;
+    private int maximumRank;
+    private int duration;
+    private int durationOfLongestDateRange;
+    private boolean[] daySlices = new boolean[TrendVector.DAY_SLICES];
 
     public static String getColumnNames() {
         String columns = "";
@@ -99,6 +107,19 @@ public class TrendVector {
 
     public double getMediasPerTweet() { return mediasPerTweet; }
 
+    public int getAverageRank() { return averageRank; }
+
+    public int getMostDominantRank() { return mostDominantRank; }
+
+    public int getMaximumRank() { return maximumRank; }
+
+
+    public int getDuration() { return duration; }
+
+    public int getDurationOfLongestDateRange() { return durationOfLongestDateRange; }
+
+    public boolean[] getDaySlices() { return daySlices; }
+
     public void setTrend (String trend) { this.trend = trend; }
 
     public void setTrendClass (TrendClass trendClass) { this.trendClass = trendClass; }
@@ -128,6 +149,26 @@ public class TrendVector {
     public void setUrlsPerTweet(double urlsPerTweet) { this.urlsPerTweet = urlsPerTweet; }
 
     public void setMediasPerTweet(double mediasPerTweet) { this.mediasPerTweet = mediasPerTweet; }
+
+    public void setAverageRank(int averageRank) {  this.averageRank = averageRank; }
+
+    public void setMostDominantRank(int mostDominantRank) { this.mostDominantRank = mostDominantRank; }
+
+
+    public void setMaximumRank(int maximumRank) { this.maximumRank = maximumRank; }
+
+    public void setDuration(int duration) { this.duration = duration; }
+
+    public void setDurationOfLongestDateRange(int durationOfLongestDateRange) { this.durationOfLongestDateRange = durationOfLongestDateRange; }
+
+    public void setDaySlice(int which) {
+        if (which >= this.daySlices.length) {
+            return;
+        }
+
+        this.daySlices[which] = true;
+    }
+
 
     public String toCsv () {
 
