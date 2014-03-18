@@ -37,9 +37,6 @@ public class TrendVector {
     protected double averageRank;
     protected int mostDominantRank;
     protected int maximumRank;
-
-
-
     protected int mostDominantSlice;
     protected int duration;
     protected int durationOfLongestDateRange;
@@ -191,6 +188,7 @@ public class TrendVector {
                             + this.averageRank + TrendVector.VALUE_SEPARATOR
                             + this.mostDominantRank + TrendVector.VALUE_SEPARATOR
                             + this.maximumRank + TrendVector.VALUE_SEPARATOR
+                            + this.mostDominantSlice + TrendVector.VALUE_SEPARATOR
                             + this.duration + TrendVector.VALUE_SEPARATOR
                             + this.durationOfLongestDateRange + TrendVector.VALUE_SEPARATOR;
 
