@@ -156,6 +156,10 @@ public class TrendsProcessor {
         return appearances;
     }
 
+    public int getMostDominantSlice(String trend) {
+
+    }
+
     public ArrayList<String> getTrends() {
         ArrayList<String> trends = new ArrayList<String>();
 
