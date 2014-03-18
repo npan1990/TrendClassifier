@@ -1,5 +1,8 @@
 package di.kdd.trends.classifier.processing;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+
 /**
  * Created by panos on 3/11/14.
  */
@@ -12,24 +15,44 @@ public class TrendVector {
     private static int TREND_INDEX = 0;
     private static int CLASS_INDEX = 1;
 
-    private String trend;
-    private TrendClass trendClass;
+    protected String trend;
+    protected TrendClass trendClass;
 
     /* Dimensions of feature vector */
 
-    private int trendLength;
-    private double relevantTweetsFromStream;
-    private double tokensPerTweet;
-    private double mentionsPerTweet;
-    private double hashTagsPerTweet;
-    private double tweetsWithUrl;
-    private double tweetsWithReplies;
-    private double tweetsWithRts;
-    private double retweetsPerTweet;
-    private double favoritesPerTweet;
-    private double symbolsPerTweet;
-    private double urlsPerTweet;
-    private double mediasPerTweet;
+    protected int trendLength;
+    protected double relevantTweetsFromStream;
+    protected double tokensPerTweet;
+    protected double mentionsPerTweet;
+    protected double hashTagsPerTweet;
+    protected double tweetsWithUrl;
+    protected double tweetsWithReplies;
+    protected double tweetsWithRts;
+    protected double retweetsPerTweet;
+    protected double favoritesPerTweet;
+    protected double symbolsPerTweet;
+    protected double urlsPerTweet;
+    protected double mediasPerTweet;
+
+    public static String getColumnNames() {
+        String columns = "";
+        boolean isFirst = true;
+
+
+        for (Field field : TrendVector.class.getDeclaredFields()) {
+            if (Modifier.isProtected(field.getModifiers())) {
+                if (isFirst) {
+                    columns += field.getName();
+                    isFirst = false;
+                }
+                else {
+                    columns += " " + field.getName();
+                }
+            }
+        }
+
+        return columns;
+    }
 
     public TrendVector() { }
 
@@ -107,6 +130,7 @@ public class TrendVector {
     public void setMediasPerTweet(double mediasPerTweet) { this.mediasPerTweet = mediasPerTweet; }
 
     public String toCsv () {
+
         String vectorCsv =  this.trend + TrendVector.VALUE_SEPARATOR
                             + this.trendClass + TrendVector.VALUE_SEPARATOR
                             + this.trendLength + TrendVector.VALUE_SEPARATOR
