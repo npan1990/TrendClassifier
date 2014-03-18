@@ -1,17 +1,12 @@
 package di.kdd.trends.classifier.statistics;
 
-import com.google.common.collect.ConcurrentHashMultiset;
-import com.google.common.collect.Maps;
 import di.kdd.trends.classifier.processing.TrendVector;
 import di.kdd.trends.classifier.processing.TrendsProcessor;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.*;
-import java.util.concurrent.ConcurrentMap;
 
-
-import com.google.common.collect.Maps.*;
 /**
  * Created by panos on 2/25/14.
  */
@@ -154,9 +149,11 @@ public class Statistics {
         int tweetsFromStream = 0;
         int relevantTweetsFromStream = 0;
 
-        int tokenPopulation, urlPopulation, mentionsPopulation, hashTagsPopulation, urls, replies,  rts;
+        int tokenPopulation, urlPopulation, mentionsPopulation,
+                hashTagsPopulation, urls, replies, rts, favsPopulation, mediasPopulation, symbolPopulation;
 
-        tokenPopulation = urlPopulation = mentionsPopulation = hashTagsPopulation = urls = replies = rts = 0;
+        tokenPopulation = urlPopulation = mentionsPopulation
+                = hashTagsPopulation = urls = replies = rts = favsPopulation = mediasPopulation = symbolPopulation =0;
 
         for (ProcessedTweet tweet : Statistics.tweets) {
 
@@ -165,10 +162,18 @@ public class Statistics {
             }
 
             if (Statistics.isRelevant(tweet, trendVector.getTrend())) {
+
+                tweetsWithTrend++;
+
                 tokenPopulation += tweet.getTokens().size();
                 urlPopulation += tweet.getUrlsCount();
                 mentionsPopulation += tweet.getMentions().size();
                 hashTagsPopulation += tweet.getHashTags().size();
+                mediasPopulation += tweet.getMediaCount();
+                favsPopulation += tweet.getFavoriteCount();
+                symbolPopulation += tweet.getSymbolCount();
+
+
 
                 if (tweet.getUrlsCount() > 0) {
                     urls++;
@@ -189,7 +194,7 @@ public class Statistics {
                     relevantTweetsFromStream++;
                 }
 
-                tweetsWithTrend++;
+
             }
         }
 
@@ -207,6 +212,10 @@ public class Statistics {
         System.out.println("Average urls per tweet for " + trendVector.getTrend() + ": " + (double) urlPopulation / tweetsWithTrend);
         System.out.println("Average mentions per tweet for " + trendVector.getTrend() + ": " + (double) mentionsPopulation / tweetsWithTrend);
         System.out.println("Average hash tags per tweet for " + trendVector.getTrend() + ": " + (double) hashTagsPopulation / tweetsWithTrend);
+        System.out.println("Average favs per tweet for " + trendVector.getTrend() + ": " + (double) favsPopulation / tweetsWithTrend);
+        System.out.println("Average media per tweet for " + trendVector.getTrend() + ": " + (double) mediasPopulation / tweetsWithTrend);
+        System.out.println("Average symbols per tweet for " + trendVector.getTrend() + ": " + (double) symbolPopulation / tweetsWithTrend);
+
         System.out.println("Percentage of tweets that had url: " +  urls * (double) 100 / tweetsWithTrend);
         System.out.println("Percentage of tweets that were replies: " +  replies * (double) 100 / tweetsWithTrend);
         System.out.println("Percentage of tweets that were RTs: " +  rts * (double) 100 / tweetsWithTrend);

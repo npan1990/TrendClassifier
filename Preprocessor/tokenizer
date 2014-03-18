@@ -22,7 +22,7 @@ args = vars(parser.parse_args())
 
 print args['verbose']
 
-#tweet file decription
+#tweet file description
 #line1: metaInfo
 #line2: tweet
 
