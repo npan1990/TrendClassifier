@@ -85,7 +85,7 @@ public class Crawler extends Thread {
 
             this.crawlTrends();
             this.crawlStream();
-//            this.crawlTweetsWithTrends();
+            this.crawlTweetsWithTrends();
         }
 
         this.flushWriters();
