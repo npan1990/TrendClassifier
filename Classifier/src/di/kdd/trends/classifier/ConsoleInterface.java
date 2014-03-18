@@ -256,6 +256,7 @@ public class ConsoleInterface {
 
         PrintWriter vectorWriter = new PrintWriter(new File(ConsoleInterface.getCurrentVectorFileName()));
 
+        vectorWriter.println(TrendVector.getColumnNames());
         for (TrendVector trendVector : ConsoleInterface.trendVectors) {
             vectorWriter.println(trendVector.toCsv());
         }

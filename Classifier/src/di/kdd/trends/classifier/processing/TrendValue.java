@@ -1,6 +1,8 @@
 package di.kdd.trends.classifier.processing;
 
 import java.io.StringWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -29,6 +31,56 @@ public class TrendValue {
     public ArrayList<Integer> getRanking()
     {
         return this.rankings;
+    }
+
+    public int getMaximumRank()
+    {
+        int maximumRank = 0;
+
+        for (Integer integer : this.rankings) {
+            if (integer > maximumRank) {
+                maximumRank = integer;
+            }
+        }
+
+        return maximumRank;
+    }
+
+    public boolean isInSlice(int start, int end) throws Exception {
+        DateFormat hourFormat = new SimpleDateFormat("HH");
+
+        String startHourString = hourFormat.parse(hourFormat.format(this.dateRange.getFrom())).toString().replaceFirst("0", "");
+        String endHourString = hourFormat.parse(hourFormat.format(this.dateRange.getTo())).toString().replaceFirst("0", "");
+
+        int hourIndex = startHourString.indexOf(":") - 2;
+        startHourString = startHourString.substring(hourIndex, hourIndex + 2).replace("0", "");
+        hourIndex = endHourString.indexOf(":") - 2;
+        endHourString = endHourString.substring(hourIndex, hourIndex + 2).replace("0", "");
+
+        int startHour;
+
+        if (startHourString.isEmpty()) {
+            startHour = 0;
+        }
+        else {
+            startHour = Integer.parseInt(startHourString);
+        }
+
+        int endHour;
+
+        if (endHourString.isEmpty()) {
+            endHour = 0;
+        }
+        else {
+            endHour = Integer.parseInt(endHourString);
+        }
+
+        if (startHour < start && endHour < start ||
+                startHour > end && endHour > end) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override

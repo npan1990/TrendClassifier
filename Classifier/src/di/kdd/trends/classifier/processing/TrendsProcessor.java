@@ -68,6 +68,94 @@ public class TrendsProcessor {
         }
     }
 
+    public int getMaxRank(String trend) {
+        int maxRank = 0;
+
+        for (TrendValue value : this.trends.get(trend)) {
+            if (value.getMaximumRank() > maxRank) {
+                maxRank = value.getMaximumRank();
+            }
+        }
+
+        return maxRank;
+    }
+
+    public int getDuration(String trend) {
+        int duration = 0;
+
+        for (TrendValue value : this.trends.get(trend)) {
+            duration += value.getRanking().size();
+        }
+
+        return duration;
+    }
+
+    public int getDurationOfLongestRange(String trend) {
+        int duration = 0;
+        int maxRange = 0;
+
+        for (TrendValue value : this.trends.get(trend)) {
+            if (value.getRanking().size() > maxRange) {
+                duration = value.getRanking().size();
+                maxRange = duration;
+            }
+        }
+
+        return duration;
+    }
+
+    public double getAverageRank(String trend) {
+        double sum = 0.0f;
+        int howMany = 0;
+
+        for (TrendValue value : this.trends.get(trend)) {
+            howMany += value.getRanking().size();
+
+            for (Integer rank : value.getRanking()) {
+                sum += rank;
+            }
+        }
+
+        return sum / howMany;
+    }
+
+    public int getMostDominantRank(String trend) {
+        int []rankHistogram = new int[10];
+
+        for (TrendValue value : this.trends.get(trend)) {
+            for (Integer rank : value.getRanking()) {
+                rankHistogram[rank - 1]++;
+            }
+        }
+
+        int dominant = 0;
+        for (int i = 1; i < rankHistogram.length; i++) {
+            if (rankHistogram[i] > rankHistogram[dominant]) {
+                dominant = i;
+            }
+        }
+
+        return dominant + 1;
+    }
+
+    public boolean []getAppearanceSlices(String trend) throws Exception {
+        boolean []appearances = new boolean[TrendVector.DAY_SLICES];
+
+        for (int i = 0; i < appearances.length; i++) {
+
+            int sliceStartHour = i * (24 / TrendVector.DAY_SLICES);
+            int sliceEndHour = sliceStartHour + (24 / TrendVector.DAY_SLICES);
+
+            for (TrendValue value : this.trends.get(trend)) {
+                if (value.isInSlice(sliceStartHour, sliceEndHour)) {
+                    appearances[i] = true;
+                }
+            }
+        }
+
+        return appearances;
+    }
+
     public ArrayList<String> getTrends() {
         ArrayList<String> trends = new ArrayList<String>();
 
@@ -101,6 +189,8 @@ public class TrendsProcessor {
     }
 
     public void dump(String trend) {
+        System.out.println();
+
         for (TrendValue value : this.trends.get(trend)) {
             System.out.println(value.toString());
         }

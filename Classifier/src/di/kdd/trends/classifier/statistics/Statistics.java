@@ -33,6 +33,7 @@ public class Statistics {
         System.out.println("Length: " + trendVector.getTrend().length());
         Statistics.findDistinctWordsOfTrend(trendVector.getTrend());
         Statistics.computeAveragesPerTweetOfTrend(trendVector);
+        Statistics.computeDateRangeFeatures(trendVector);
         Statistics.trendsProcessor.dump(trendVector.getTrend());
     }
 
@@ -217,6 +218,33 @@ public class Statistics {
         System.out.println("Percentage of tweets that were RTs: " +  rts * (double) 100 / tweetsWithTrend);
         System.out.println();
     }
+
+    private static void computeDateRangeFeatures(TrendVector trendVector) throws Exception {
+        trendVector.setMaximumRank(Statistics.trendsProcessor.getMaxRank(trendVector.getTrend()));
+        System.out.println("Maximum rank: " + trendVector.getMaximumRank());
+
+        trendVector.setDuration(Statistics.trendsProcessor.getDuration(trendVector.getTrend()));
+        System.out.println("Duration : " + trendVector.getDuration());
+
+        trendVector.setDurationOfLongestDateRange(Statistics.trendsProcessor.getDurationOfLongestRange(trendVector.getTrend()));
+        System.out.println("Duration of longest range: " + trendVector.getDurationOfLongestDateRange());
+
+        trendVector.setAverageRank(Statistics.trendsProcessor.getAverageRank(trendVector.getTrend()));
+        System.out.println("Average rank: " + trendVector.getAverageRank());
+
+        trendVector.setMostDominantRank(Statistics.trendsProcessor.getMostDominantRank(trendVector.getTrend()));
+        System.out.println("Most dominant rank: " + trendVector.getMostDominantRank());
+
+        trendVector.setDaySlice(Statistics.trendsProcessor.getAppearanceSlices(trendVector.getTrend()));
+
+
+        System.out.println("Appearances in day slices:");
+        for (boolean appearance : trendVector.getDaySlices()) {
+            System.out.print(appearance + " ");
+        }
+        System.out.println();
+    }
+
 
     private static boolean isRelevant(ProcessedTweet tweet, String trend) {
 

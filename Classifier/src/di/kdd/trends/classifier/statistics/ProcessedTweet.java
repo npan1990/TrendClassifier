@@ -18,7 +18,6 @@ public class ProcessedTweet {
     private Boolean fromSearch;
     private int retweetCount;
     private int favoriteCount;
-    private int symbolCount;
     private int urlsCount;
     private int mediaCount;
     private String rawTweet;
@@ -53,8 +52,6 @@ public class ProcessedTweet {
     public int getFavoriteCount() {
         return retweetCount;
     }
-
-    public int getSymbolCount() { return symbolCount; }
 
     public int getUrlsCount() { return urlsCount; }
 
@@ -95,7 +92,6 @@ public class ProcessedTweet {
         this.isRetweet = Boolean.parseBoolean(split[5]);
         this.retweetCount = Integer.parseInt(split[6]);
         this.favoriteCount = Integer.parseInt(split[7]);
-        this.symbolCount = Integer.parseInt(split[8]);
         this.urlsCount = Integer.parseInt(split[9]);
         this.mediaCount = Integer.parseInt(split[10]);
 
