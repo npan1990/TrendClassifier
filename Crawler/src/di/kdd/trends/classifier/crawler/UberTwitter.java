@@ -24,7 +24,7 @@ public class UberTwitter {
     private static int TREND_TOKEN = 0;
     private static int STREAM_TOKEN = TREND_TOKEN + 1;
     private static int FIRST_ACTIVE = STREAM_TOKEN + 1;
-    private static int LAST_ACTIVE = SEARCH_TOKENS;
+    private static int LAST_ACTIVE = SEARCH_TOKENS + 1;
 
     private static int NO_TOKENS = 1 + 1 + SEARCH_TOKENS;
 
