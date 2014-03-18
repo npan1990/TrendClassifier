@@ -104,6 +104,21 @@ public class TrendsProcessor {
         return duration;
     }
 
+    public double getAverageRank(String trend) {
+        double sum = 0.0f;
+        int howMany = 0;
+
+        for (TrendValue value : this.trends.get(trend)) {
+            howMany += value.getRanking().size();
+
+            for (Integer rank : value.getRanking()) {
+                sum += rank;
+            }
+        }
+
+        return sum / howMany;
+    }
+
     public ArrayList<String> getTrends() {
         ArrayList<String> trends = new ArrayList<String>();
 

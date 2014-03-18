@@ -35,7 +35,7 @@ public class TrendVector {
     protected double symbolsPerTweet;
     protected double urlsPerTweet;
     protected double mediasPerTweet;
-    private int averageRank;
+    private double averageRank;
     private int mostDominantRank;
     private int maximumRank;
     private int duration;
@@ -107,7 +107,7 @@ public class TrendVector {
 
     public double getMediasPerTweet() { return mediasPerTweet; }
 
-    public int getAverageRank() { return averageRank; }
+    public double getAverageRank() { return averageRank; }
 
     public int getMostDominantRank() { return mostDominantRank; }
 
@@ -150,7 +150,7 @@ public class TrendVector {
 
     public void setMediasPerTweet(double mediasPerTweet) { this.mediasPerTweet = mediasPerTweet; }
 
-    public void setAverageRank(int averageRank) {  this.averageRank = averageRank; }
+    public void setAverageRank(double averageRank) {  this.averageRank = averageRank; }
 
     public void setMostDominantRank(int mostDominantRank) { this.mostDominantRank = mostDominantRank; }
 

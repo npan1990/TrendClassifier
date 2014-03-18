@@ -232,6 +232,9 @@ public class Statistics {
 
         trendVector.setDurationOfLongestDateRange(Statistics.trendsProcessor.getDurationOfLongestRange(trendVector.getTrend()));
         System.out.println("Duration of longest range: " + trendVector.getDurationOfLongestDateRange());
+
+        trendVector.setAverageRank(Statistics.trendsProcessor.getAverageRank(trendVector.getTrend()));
+        System.out.println("Average rank: " + trendVector.getAverageRank());
     }
 
 
