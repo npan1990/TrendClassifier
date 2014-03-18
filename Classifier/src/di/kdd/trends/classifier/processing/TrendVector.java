@@ -1,7 +1,5 @@
 package di.kdd.trends.classifier.processing;
 
-import java.util.ArrayList;
-
 /**
  * Created by panos on 3/11/14.
  */
@@ -27,6 +25,11 @@ public class TrendVector {
     private double tweetsWithUrl;
     private double tweetsWithReplies;
     private double tweetsWithRts;
+    private double retweetsPerTweet;
+    private double favoritesPerTweet;
+    private double symbolsPerTweet;
+    private double urlsPerTweet;
+    private double mediasPerTweet;
 
     public TrendVector() { }
 
@@ -63,6 +66,16 @@ public class TrendVector {
 
     private double getTweetsWithRts () { return this.tweetsWithRts; }
 
+    public double getFavoritesPerTweet() { return favoritesPerTweet; }
+
+    public double getRetweetsPerTweet() { return retweetsPerTweet; }
+
+    public double getSymbolsPerTweet() { return symbolsPerTweet; }
+
+    public double getUrlsPerTweet() { return urlsPerTweet; }
+
+    public double getMediasPerTweet() { return mediasPerTweet; }
+
     public void setTrend (String trend) { this.trend = trend; }
 
     public void setTrendClass (TrendClass trendClass) { this.trendClass = trendClass; }
@@ -83,6 +96,16 @@ public class TrendVector {
 
     public void setTweetsWithRts (double tweetsWithRts) { this.tweetsWithRts = tweetsWithRts; }
 
+    public void setRetweetsPerTweet(double retweetsPerTweet) { this.retweetsPerTweet = retweetsPerTweet; }
+
+    public void setFavoritesPerTweet(double favoritesPerTweet) { this.favoritesPerTweet = favoritesPerTweet; }
+
+    public void setSymbolsPerTweet(double symbolsPerTweet) { this.symbolsPerTweet = symbolsPerTweet; }
+
+    public void setUrlsPerTweet(double urlsPerTweet) { this.urlsPerTweet = urlsPerTweet; }
+
+    public void setMediasPerTweet(double mediasPerTweet) { this.mediasPerTweet = mediasPerTweet; }
+
     public String toCsv () {
         String vectorCsv =  this.trend + TrendVector.VALUE_SEPARATOR
                             + this.trendClass + TrendVector.VALUE_SEPARATOR
@@ -93,7 +116,12 @@ public class TrendVector {
                             + this.hashTagsPerTweet + TrendVector.VALUE_SEPARATOR
                             + this.tweetsWithUrl + TrendVector.VALUE_SEPARATOR
                             + this.tweetsWithReplies + TrendVector.VALUE_SEPARATOR
-                            + this.tweetsWithRts + TrendVector.VALUE_SEPARATOR;
+                            + this.tweetsWithRts + TrendVector.VALUE_SEPARATOR
+                            + this.retweetsPerTweet + TrendVector.VALUE_SEPARATOR
+                            + this.favoritesPerTweet + TrendVector.VALUE_SEPARATOR
+                            +this.symbolsPerTweet + TrendVector.VALUE_SEPARATOR
+                            +this.urlsPerTweet + TrendVector.VALUE_SEPARATOR
+                            +this.mediasPerTweet;
 
         return vectorCsv;
     }

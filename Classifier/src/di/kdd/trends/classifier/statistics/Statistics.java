@@ -1,17 +1,13 @@
 package di.kdd.trends.classifier.statistics;
 
-import com.google.common.collect.ConcurrentHashMultiset;
-import com.google.common.collect.Maps;
 import di.kdd.trends.classifier.processing.TrendVector;
 import di.kdd.trends.classifier.processing.TrendsProcessor;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.*;
-import java.util.concurrent.ConcurrentMap;
 
 
-import com.google.common.collect.Maps.*;
 /**
  * Created by panos on 2/25/14.
  */
