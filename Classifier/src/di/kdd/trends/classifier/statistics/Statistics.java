@@ -48,6 +48,7 @@ public class Statistics {
 
         Statistics.computeAveragesPerTweetOfTrend(trendVector);
         Statistics.findDistinctWordsOfTrend(trend);
+        Statistics.computeDateRangeFeatures(trendVector);
 
         Statistics.trendsProcessor.dump(trend);
 
@@ -207,6 +208,10 @@ public class Statistics {
         trendVector.setTweetsWithReplies((double) replies / tweetsWithTrend);
         trendVector.setTweetsWithRts((double) rts / tweetsWithTrend);
 
+        trendVector.setFavoritesPerTweet((double) favsPopulation / tweetsWithTrend);
+        trendVector.setUrlsPerTweet((double) urlPopulation / tweetsWithTrend);
+        trendVector.setMediasPerTweet((double) mediasPopulation / tweetsWithTrend);
+
         System.out.println("Found in " + tweetsWithTrend + " out of " + Statistics.tweets.size() +  " tweets (" + (double) tweetsWithTrend / Statistics.tweets.size() + ")");
         System.out.println("Found in " + relevantTweetsFromStream + " out of " + tweetsFromStream +  " tweets from stream (" + (double) relevantTweetsFromStream / tweetsFromStream + ")");
         System.out.println("Average tokens per tweet for " + trendVector.getTrend() + ": " + (double) tokenPopulation / tweetsWithTrend);
@@ -215,7 +220,6 @@ public class Statistics {
         System.out.println("Average hash tags per tweet for " + trendVector.getTrend() + ": " + (double) hashTagsPopulation / tweetsWithTrend);
         System.out.println("Average favs per tweet for " + trendVector.getTrend() + ": " + (double) favsPopulation / tweetsWithTrend);
         System.out.println("Average media per tweet for " + trendVector.getTrend() + ": " + (double) mediasPopulation / tweetsWithTrend);
-        System.out.println("Average symbols per tweet for " + trendVector.getTrend() + ": " + (double) symbolPopulation / tweetsWithTrend);
 
         System.out.println("Percentage of tweets that had url: " +  urls * (double) 100 / tweetsWithTrend);
         System.out.println("Percentage of tweets that were replies: " +  replies * (double) 100 / tweetsWithTrend);
@@ -240,7 +244,6 @@ public class Statistics {
         System.out.println("Most dominant rank: " + trendVector.getMostDominantRank());
 
         trendVector.setDaySlice(Statistics.trendsProcessor.getAppearanceSlices(trendVector.getTrend()));
-
 
         System.out.println("Appearances in day slices:");
         for (boolean appearance : trendVector.getDaySlices()) {

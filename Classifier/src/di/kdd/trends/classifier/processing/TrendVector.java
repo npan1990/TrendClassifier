@@ -32,20 +32,18 @@ public class TrendVector {
     protected double tweetsWithRts;
     protected double retweetsPerTweet;
     protected double favoritesPerTweet;
-    protected double symbolsPerTweet;
     protected double urlsPerTweet;
     protected double mediasPerTweet;
-    private double averageRank;
-    private int mostDominantRank;
-    private int maximumRank;
-    private int duration;
-    private int durationOfLongestDateRange;
-    private boolean[] daySlices = new boolean[TrendVector.DAY_SLICES];
+    protected double averageRank;
+    protected int mostDominantRank;
+    protected int maximumRank;
+    protected int duration;
+    protected int durationOfLongestDateRange;
+    protected boolean[] daySlices = new boolean[TrendVector.DAY_SLICES];
 
     public static String getColumnNames() {
         String columns = "";
         boolean isFirst = true;
-
 
         for (Field field : TrendVector.class.getDeclaredFields()) {
             if (Modifier.isProtected(field.getModifiers())) {
@@ -58,6 +56,12 @@ public class TrendVector {
                 }
             }
         }
+
+        for (int i = 1; i < TrendVector.DAY_SLICES - 1; i++) {
+            columns += " " + i;
+        }
+
+        columns += " " + (TrendVector.DAY_SLICES - 1);
 
         return columns;
     }
@@ -101,8 +105,6 @@ public class TrendVector {
 
     public double getRetweetsPerTweet() { return retweetsPerTweet; }
 
-    public double getSymbolsPerTweet() { return symbolsPerTweet; }
-
     public double getUrlsPerTweet() { return urlsPerTweet; }
 
     public double getMediasPerTweet() { return mediasPerTweet; }
@@ -112,7 +114,6 @@ public class TrendVector {
     public int getMostDominantRank() { return mostDominantRank; }
 
     public int getMaximumRank() { return maximumRank; }
-
 
     public int getDuration() { return duration; }
 
@@ -144,7 +145,6 @@ public class TrendVector {
 
     public void setFavoritesPerTweet(double favoritesPerTweet) { this.favoritesPerTweet = favoritesPerTweet; }
 
-    public void setSymbolsPerTweet(double symbolsPerTweet) { this.symbolsPerTweet = symbolsPerTweet; }
 
     public void setUrlsPerTweet(double urlsPerTweet) { this.urlsPerTweet = urlsPerTweet; }
 
@@ -180,9 +180,22 @@ public class TrendVector {
                             + this.tweetsWithRts + TrendVector.VALUE_SEPARATOR
                             + this.retweetsPerTweet + TrendVector.VALUE_SEPARATOR
                             + this.favoritesPerTweet + TrendVector.VALUE_SEPARATOR
-                            +this.symbolsPerTweet + TrendVector.VALUE_SEPARATOR
-                            +this.urlsPerTweet + TrendVector.VALUE_SEPARATOR
-                            +this.mediasPerTweet;
+                            + this.urlsPerTweet + TrendVector.VALUE_SEPARATOR
+                            + this.mediasPerTweet + TrendVector.VALUE_SEPARATOR
+                            + this.averageRank + TrendVector.VALUE_SEPARATOR
+                            + this.mostDominantRank + TrendVector.VALUE_SEPARATOR
+                            + this.maximumRank + TrendVector.VALUE_SEPARATOR
+                            + this.duration + TrendVector.VALUE_SEPARATOR
+                            + this.durationOfLongestDateRange + TrendVector.VALUE_SEPARATOR;
+
+        for (int i = 0; i < this.daySlices.length; i++) {
+            if (i == this.daySlices.length - 1) {
+                vectorCsv += this.daySlices[i];
+            }
+            else {
+                vectorCsv += this.daySlices[i] + TrendVector.VALUE_SEPARATOR;
+            }
+        }
 
         return vectorCsv;
     }
