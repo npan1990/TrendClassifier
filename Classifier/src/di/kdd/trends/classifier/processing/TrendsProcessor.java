@@ -15,7 +15,7 @@ public class TrendsProcessor {
 
     private Hashtable<String, ArrayList<TrendValue>> trends = new Hashtable<String, ArrayList<TrendValue>>();
 
-    private Hashtable<String, ArrayList<DateRankPair>> trendRanks = new Hashtable<String, ArrayList<DateRankPair>>();
+    private Hashtable<String, ArrayList<DateWeightPair>> trendRanks = new Hashtable<String, ArrayList<DateWeightPair>>();
 
     public void process(String fileName) throws Exception {
         BufferedReader reader = new BufferedReader(new FileReader(fileName));
@@ -37,7 +37,7 @@ public class TrendsProcessor {
 
                 if (this.trends.containsKey(trend) == false) {
                     this.trends.put(trend, new ArrayList<TrendValue>());
-                    this.trendRanks.put(trend, new ArrayList<DateRankPair>());
+                    this.trendRanks.put(trend, new ArrayList<DateWeightPair>());
                 }
 
                 ArrayList<TrendValue> trendValues = this.trends.get(trend);
@@ -63,10 +63,10 @@ public class TrendsProcessor {
                     trendValues.add(new TrendValue(date, rank));
                 }
 
-                ArrayList<DateRankPair> dateRankPairs = this.trendRanks.get(trend);
+                ArrayList<DateWeightPair> dateWeightPairs = this.trendRanks.get(trend);
                 DateRange dateRange = new DateRange();
                 dateRange.updateRange(date);
-                dateRankPairs.add(new DateRankPair(dateRange, 11-rank));
+                dateWeightPairs.add(new DateWeightPair(dateRange, 11-rank));
 
                 currentTrends.add(trend);
             }
@@ -173,11 +173,11 @@ public class TrendsProcessor {
             int sliceStartHour = i * (24 / TrendVector.DAY_SLICES);
             int sliceEndHour = sliceStartHour + (24 / TrendVector.DAY_SLICES);
 
-            ArrayList<DateRankPair> dateRankPairs = this.trendRanks.get(trend);
+            ArrayList<DateWeightPair> dateWeightPairs = this.trendRanks.get(trend);
 
-            for (DateRankPair dateRankPair : dateRankPairs) {
-                if (dateRankPair.isInSlice(sliceStartHour, sliceEndHour)) {
-                    sliceSums[i] += dateRankPair.getRank();
+            for (DateWeightPair dateWeightPair : dateWeightPairs) {
+                if (dateWeightPair.isInSlice(sliceStartHour, sliceEndHour)) {
+                    sliceSums[i] += dateWeightPair.getWeight();
                 }
             }
         }
@@ -185,7 +185,6 @@ public class TrendsProcessor {
         int maxSum = 0;
         int maxIndex = -1;
         for (int i=0; i<sliceSums.length; i++) {
-            System.out.println("Slice " + i + " has sum: " + sliceSums[i]);
             if (sliceSums[i] > maxSum) {
 
                 maxSum = sliceSums[i];
