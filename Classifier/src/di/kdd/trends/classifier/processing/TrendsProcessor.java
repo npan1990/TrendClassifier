@@ -90,6 +90,20 @@ public class TrendsProcessor {
         return duration;
     }
 
+    public int getDurationOfLongestRange(String trend) {
+        int duration = 0;
+        int maxRange = 0;
+
+        for (TrendValue value : this.trends.get(trend)) {
+            if (value.getRanking().size() > maxRange) {
+                duration = value.getRanking().size();
+                maxRange = duration;
+            }
+        }
+
+        return duration;
+    }
+
     public ArrayList<String> getTrends() {
         ArrayList<String> trends = new ArrayList<String>();
 
