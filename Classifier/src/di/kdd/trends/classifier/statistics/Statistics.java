@@ -226,6 +226,9 @@ public class Statistics {
     private static void computeDateRangeFeatures(TrendVector trendVector) {
         trendVector.setMaximumRank(Statistics.trendsProcessor.getMaxRank(trendVector.getTrend()));
         System.out.println("Maximum rank: " + trendVector.getMaximumRank());
+
+        trendVector.setDuration(Statistics.trendsProcessor.getDuration(trendVector.getTrend()));
+        System.out.println("Duration : " + trendVector.getDuration());
     }
 
 

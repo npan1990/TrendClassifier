@@ -80,6 +80,16 @@ public class TrendsProcessor {
         return maxRank;
     }
 
+    public int getDuration(String trend) {
+        int duration = 0;
+
+        for (TrendValue value : this.trends.get(trend)) {
+            duration += value.getRanking().size();
+        }
+
+        return duration;
+    }
+
     public ArrayList<String> getTrends() {
         ArrayList<String> trends = new ArrayList<String>();
 
