@@ -223,7 +223,7 @@ public class Statistics {
         System.out.println();
     }
 
-    private static void computeDateRangeFeatures(TrendVector trendVector) {
+    private static void computeDateRangeFeatures(TrendVector trendVector) throws Exception {
         trendVector.setMaximumRank(Statistics.trendsProcessor.getMaxRank(trendVector.getTrend()));
         System.out.println("Maximum rank: " + trendVector.getMaximumRank());
 
@@ -238,6 +238,15 @@ public class Statistics {
 
         trendVector.setMostDominantRank(Statistics.trendsProcessor.getMostDominantRank(trendVector.getTrend()));
         System.out.println("Most dominant rank: " + trendVector.getMostDominantRank());
+
+        trendVector.setDaySlice(Statistics.trendsProcessor.getAppearanceSlices(trendVector.getTrend()));
+
+
+        System.out.println("Appearances in day slices:");
+        for (boolean appearance : trendVector.getDaySlices()) {
+            System.out.print(appearance + " ");
+        }
+        System.out.println();
     }
 
 

@@ -138,6 +138,24 @@ public class TrendsProcessor {
         return dominant + 1;
     }
 
+    public boolean []getAppearanceSlices(String trend) throws Exception {
+        boolean []appearances = new boolean[TrendVector.DAY_SLICES];
+
+        for (int i = 0; i < appearances.length; i++) {
+
+            int sliceStartHour = i * (24 / TrendVector.DAY_SLICES);
+            int sliceEndHour = sliceStartHour + (24 / TrendVector.DAY_SLICES);
+
+            for (TrendValue value : this.trends.get(trend)) {
+                if (value.isInSlice(sliceStartHour, sliceEndHour)) {
+                    appearances[i] = true;
+                }
+            }
+        }
+
+        return appearances;
+    }
+
     public ArrayList<String> getTrends() {
         ArrayList<String> trends = new ArrayList<String>();
 

@@ -11,7 +11,7 @@ public class TrendVector {
 
     public enum TrendClass { Meme, PlannedEvent, UnplannedEvent, General };
 
-    private static final int DAY_SLICES = 6;
+    public static final int DAY_SLICES = 8;
 
     private static String VALUE_SEPARATOR = ", ";
     private static int TREND_INDEX = 0;
@@ -161,12 +161,8 @@ public class TrendVector {
 
     public void setDurationOfLongestDateRange(int durationOfLongestDateRange) { this.durationOfLongestDateRange = durationOfLongestDateRange; }
 
-    public void setDaySlice(int which) {
-        if (which >= this.daySlices.length) {
-            return;
-        }
-
-        this.daySlices[which] = true;
+    public void setDaySlice(boolean []daySlices) {
+        this.daySlices = daySlices;
     }
 
 
