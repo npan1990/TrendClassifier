@@ -235,6 +235,9 @@ public class Statistics {
 
         trendVector.setAverageRank(Statistics.trendsProcessor.getAverageRank(trendVector.getTrend()));
         System.out.println("Average rank: " + trendVector.getAverageRank());
+
+        trendVector.setMostDominantRank(Statistics.trendsProcessor.getMostDominantRank(trendVector.getTrend()));
+        System.out.println("Most dominant rank: " + trendVector.getMostDominantRank());
     }
 
 

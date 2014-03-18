@@ -119,6 +119,25 @@ public class TrendsProcessor {
         return sum / howMany;
     }
 
+    public int getMostDominantRank(String trend) {
+        int []rankHistogram = new int[10];
+
+        for (TrendValue value : this.trends.get(trend)) {
+            for (Integer rank : value.getRanking()) {
+                rankHistogram[rank - 1]++;
+            }
+        }
+
+        int dominant = 0;
+        for (int i = 1; i < rankHistogram.length; i++) {
+            if (rankHistogram[i] > rankHistogram[dominant]) {
+                dominant = i;
+            }
+        }
+
+        return dominant + 1;
+    }
+
     public ArrayList<String> getTrends() {
         ArrayList<String> trends = new ArrayList<String>();
 
