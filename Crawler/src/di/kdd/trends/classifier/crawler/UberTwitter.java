@@ -20,13 +20,13 @@ public class UberTwitter {
     public enum What {Trends, Stream, Search};
 
     private static int SEARCH_TOKENS = 10;
+    private static int NO_TOKENS = 1 + 1 + SEARCH_TOKENS;
 
     private static int TREND_TOKEN = 0;
     private static int STREAM_TOKEN = TREND_TOKEN + 1;
     private static int FIRST_ACTIVE = STREAM_TOKEN + 1;
-    private static int LAST_ACTIVE = SEARCH_TOKENS + 1;
+    private static int LAST_ACTIVE = NO_TOKENS;
 
-    private static int NO_TOKENS = 1 + 1 + SEARCH_TOKENS;
 
     private ArrayList<Twitter> twitterz = new ArrayList<Twitter>();
 
@@ -36,7 +36,7 @@ public class UberTwitter {
 
         TokenLoader tokenLoader = new TokenLoader();
 
-        for (int i = location.getId(); i < location.getId() + UberTwitter.NO_TOKENS; i++) {
+        for (int i = location.getId() * UberTwitter.NO_TOKENS; i < (location.getId() * UberTwitter.NO_TOKENS) + UberTwitter.NO_TOKENS; i++) {
             Token token = tokenLoader.getToken(i);
             Twitter twitter = new TwitterFactory().getInstance();
             twitter.setOAuthConsumer(token.getConsumer(), token.getConsumerSecret());
@@ -47,7 +47,7 @@ public class UberTwitter {
     }
 
     private int nextToken () {
-        if (this.activeToken == UberTwitter.LAST_ACTIVE) {
+        if (this.activeToken == UberTwitter.LAST_ACTIVE - 1) {
             return UberTwitter.FIRST_ACTIVE;
         }
         else {
@@ -57,7 +57,7 @@ public class UberTwitter {
 
     private int previousToken () {
         if (this.activeToken == UberTwitter.FIRST_ACTIVE) {
-            return UberTwitter.LAST_ACTIVE;
+            return UberTwitter.LAST_ACTIVE - 1;
         }
         else {
             return this.activeToken - 1;
