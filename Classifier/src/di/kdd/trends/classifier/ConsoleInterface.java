@@ -41,6 +41,9 @@ public class ConsoleInterface {
                 else if (tokens.length == 1 && tokens[0].compareTo("ls") == 0) {
                     Statistics.list();
                 }
+                else if (tokens.length == 1 && tokens[0].compareTo("ls -a") == 0) {
+                    Statistics.listAll();
+                }
                 else if (tokens.length == 1 && tokens[0].compareTo("q") == 0) {
                     return;
                 }
@@ -53,6 +56,9 @@ public class ConsoleInterface {
                         if (command.compareTo("ls") == 0) {
                             Statistics.list();
                         }
+                        else if (command.compareTo("ls -a") == 0) {
+                            Statistics.listAll();
+                        }
                         else if (command.compareTo("ls -t") == 0) {
                             for (TrendVector trendVector : ConsoleInterface.trendVectors) {
                                 System.out.println(trendVector.getTrend() + " " + trendVector.getTrendClass());
@@ -63,7 +69,7 @@ public class ConsoleInterface {
 
                             if (Statistics.getTrends().contains(trend) == false) {
                                 System.out.println(trend + " doesn't exist in current trends");
-                                Statistics.list();
+                                Statistics.listAll();
                             }
                             else {
 

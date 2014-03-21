@@ -13,6 +13,8 @@ import java.util.*;
 
 public class Statistics {
 
+    public static int TWEETS_THRESHOLD = 100;
+
     private static TrendsProcessor trendsProcessor = new TrendsProcessor();
     private static ArrayList<ProcessedTweet> tweets = new ArrayList<ProcessedTweet>();
     private static ArrayList<String> trends = new ArrayList<String>();
@@ -318,9 +320,25 @@ public class Statistics {
         return false;
     }
 
-    public static void list() {
+    public static void listAll() {
         for (String trend : Statistics.trends) {
             System.out.println(trend);
+        }
+    }
+
+    public static void list() {
+        for (String trend : Statistics.trends) {
+            int tweetsCount = 0;
+
+            for (ProcessedTweet tweet : Statistics.tweets) {
+                if (Statistics.isRelevant(tweet, trend)) {
+                    tweetsCount++;
+                }
+            }
+
+            if (tweetsCount >= Statistics.TWEETS_THRESHOLD) {
+                System.out.println(trend);
+            }
         }
     }
 
