@@ -179,7 +179,7 @@ public class Crawler extends Thread {
             this.tweetsWriter.flush();
             this.lastStreamCrawl = now;
 
-            System.out.println(this.getLogTag() + "Got stream. Left: " + this.twitter.getRemainingRateLimit(What.Stream));
+            System.out.println(this.getLogTag() + "Got " + queryResult.getCount() + " tweets from stream. Left: " + this.twitter.getRemainingRateLimit(What.Stream));
         }
         catch (TwitterException exception) {
             System.err.println(this.getLogTag() + "Failed to crawl tweets");
@@ -223,7 +223,7 @@ public class Crawler extends Thread {
                 this.tweetsWriter.flush();
                 this.lastSearchCrawl = now;
 
-                System.out.println(this.getLogTag() + "Got tweets containing trend: " + crawledTrend + ". Left: " + this.twitter.getRemainingRateLimit(What.Search));
+                System.out.println(this.getLogTag() + "Got " + queryResult.getCount() + " tweets containing trend: " + crawledTrend + ". Left: " + this.twitter.getRemainingRateLimit(What.Search));
             }
             catch (TwitterException exception) {
                 System.err.println(this.getLogTag() + "Failed to crawl tweets with trend " + crawledTrend);
