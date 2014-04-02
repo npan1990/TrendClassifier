@@ -93,8 +93,17 @@ public class Crawler extends Thread implements StatusListener{
 
     private void setUpTwitterStreamCrawling() {
 
+        FilterQuery filterQuery = new FilterQuery();
+        double [][] location = new double[1][4];
+        location[0][0] = this.location.getLongitude();
+        location[0][1] = this.location.getLatitude() - 1;
+        location[0][2] = this.location.getLongitude() + 1;
+        location[0][3] = this.location.getLatitude();
+
+        filterQuery.locations(location);
+
         try {
-            this.twitter.startStream(this);
+            this.twitter.startStream(this, filterQuery);
         }
         catch(Exception exception) {
             System.err.println("Failed to start crawling twitter stream");
@@ -166,7 +175,7 @@ public class Crawler extends Thread implements StatusListener{
 
         for (String crawledTrend : this.crawledTrends) {
             Query queryTrend = new Query(crawledTrend);
-            queryTrend.geoCode(new GeoLocation(this.location.getLongitude(), this.location.getLatitude()), this.location.getRadius(), Query.KILOMETERS);
+            queryTrend.geoCode(new GeoLocation(this.location.getLatitude(), this.location.getLongitude()), this.location.getRadius(), Query.KILOMETERS);
             queryTrend.lang("en");
 
             try {

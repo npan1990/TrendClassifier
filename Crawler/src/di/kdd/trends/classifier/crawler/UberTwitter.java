@@ -97,8 +97,9 @@ public class UberTwitter {
         return this.twitterz.get(UberTwitter.TREND_TOKEN).getPlaceTrends(woeid);
     }
 
-    public void startStream(StatusListener statusListener) throws TwitterException {
+    public void startStream(StatusListener statusListener, FilterQuery filterQuery) throws TwitterException {
         this.twitterStream.addListener(statusListener);
+        this.twitterStream.filter(filterQuery);
         this.twitterStream.sample();
     }
 
