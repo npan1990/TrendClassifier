@@ -240,10 +240,13 @@ public class ConsoleInterface {
         // Skip first line
         String line = reader.readLine();
 
+        Statistics.printToConsole = false;
         while ((line = reader.readLine()) != null) {
-               trendVectors.add(new TrendVector(line));
+            TrendVector trendVector = new TrendVector(line);
+            trendVector = Statistics.getTrendFeatures(trendVector.getTrend(), trendVector.getTrendClass());
+            trendVectors.add(trendVector);
         }
-
+        Statistics.printToConsole = true;
         return trendVectors;
     }
 

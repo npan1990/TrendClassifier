@@ -22,6 +22,8 @@ public class Statistics {
     private static ArrayList<ProcessedTweet> tweets = new ArrayList<ProcessedTweet>();
     private static ArrayList<String> trends = new ArrayList<String>();
 
+    public static boolean printToConsole = true;
+
     public static void load(String tweetsFileName, String trendsFileName) throws Exception {
         Statistics.clear();
         Statistics.loadTweets(tweetsFileName);
@@ -42,20 +44,39 @@ public class Statistics {
         Statistics.trendsProcessor.dump(trendVector.getTrend());
     }
 
-    public static TrendVector getTrendFeatures(String trend) throws Exception {
+    public static TrendVector getTrendFeatures(String trend, TrendVector.TrendClass trendClass) throws Exception {
         TrendVector trendVector = new TrendVector();
+        trendVector.setTrendClass(trendClass);
         trendVector.setTrend(trend);
-
-        System.out.println("Trend: " + trend);
-        System.out.println("Length: " + trend.length());
-
         trendVector.setTrendLength(trend.length());
 
         Statistics.computeAveragesPerTweetOfTrend(trendVector);
         Statistics.findDistinctWordsOfTrend(trend);
         Statistics.computeDateRangeFeatures(trendVector);
 
-        Statistics.trendsProcessor.dump(trend);
+        if (printToConsole) {
+            System.out.println("Trend: " + trend);
+            System.out.println("Length: " + trend.length());
+            Statistics.trendsProcessor.dump(trend);
+        }
+
+        return trendVector;
+    }
+
+    public static TrendVector getTrendFeatures(String trend) throws Exception {
+        TrendVector trendVector = new TrendVector();
+        trendVector.setTrend(trend);
+        trendVector.setTrendLength(trend.length());
+
+        Statistics.computeAveragesPerTweetOfTrend(trendVector);
+        Statistics.findDistinctWordsOfTrend(trend);
+        Statistics.computeDateRangeFeatures(trendVector);
+
+        if (printToConsole) {
+            System.out.println("Trend: " + trend);
+            System.out.println("Length: " + trend.length());
+            Statistics.trendsProcessor.dump(trend);
+        }
 
         return trendVector;
     }
@@ -120,7 +141,9 @@ public class Statistics {
             }
         }
 
-        System.out.println("Number of distinct words for " + trend + ": " + distinctWords.size());
+        if (printToConsole) {
+            System.out.println("Number of distinct words for " + trend + ": " + distinctWords.size());
+        }
     }
 
     private static void computeAveragesPerTweet() {
@@ -200,8 +223,6 @@ public class Statistics {
                 if (!tweet.isFromSearch()) {
                     relevantTweetsFromStream++;
                 }
-
-
             }
         }
 
@@ -212,55 +233,49 @@ public class Statistics {
         trendVector.setPercentageOfTweetsWithUrl((double) urls / tweetsWithTrend);
         trendVector.setRepliesPerTrend((double) replies / tweetsWithTrend);
         trendVector.setTweetsWithRts((double) rts / tweetsWithTrend);
-
         trendVector.setFavoritesPerTweet((double) favsPopulation / tweetsWithTrend);
         trendVector.setUrlsPerTweet((double) urlPopulation / tweetsWithTrend);
         trendVector.setMediasPerTweet((double) mediasPopulation / tweetsWithTrend);
         trendVector.setRetweetsPerTweet((double)rts / tweetsWithTrend);
 
-
-        System.out.println("Found in " + tweetsWithTrend + " out of " + Statistics.tweets.size() +  " tweets (" + (double) tweetsWithTrend / Statistics.tweets.size() + ")");
-        System.out.println("Found in " + relevantTweetsFromStream + " out of " + tweetsFromStream +  " tweets from stream (" + (double) relevantTweetsFromStream / tweetsFromStream + ")");
-        System.out.println("Average tokens per tweet for " + trendVector.getTrend() + ": " + (double) tokenPopulation / tweetsWithTrend);
-        System.out.println("Average urls per tweet for " + trendVector.getTrend() + ": " + (double) urlPopulation / tweetsWithTrend);
-        System.out.println("Average mentions per tweet for " + trendVector.getTrend() + ": " + (double) mentionsPopulation / tweetsWithTrend);
-        System.out.println("Average hash tags per tweet for " + trendVector.getTrend() + ": " + (double) hashTagsPopulation / tweetsWithTrend);
-        System.out.println("Average favs per tweet for " + trendVector.getTrend() + ": " + (double) favsPopulation / tweetsWithTrend);
-        System.out.println("Average media per tweet for " + trendVector.getTrend() + ": " + (double) mediasPopulation / tweetsWithTrend);
-
-        System.out.println("Percentage of tweets with url: " +  (double)urls / tweetsWithTrend);
-        System.out.println("Replies percentage:: " +  (double) replies / tweetsWithTrend);
-        System.out.println("Retweets percentage of : " + (double) rts / tweetsWithTrend);
-        System.out.println();
+        if (printToConsole) {
+            System.out.println("Found in " + tweetsWithTrend + " out of " + Statistics.tweets.size() +  " tweets (" + (double) tweetsWithTrend / Statistics.tweets.size() + ")");
+            System.out.println("Found in " + relevantTweetsFromStream + " out of " + tweetsFromStream +  " tweets from stream (" + (double) relevantTweetsFromStream / tweetsFromStream + ")");
+            System.out.println("Average tokens per tweet for " + trendVector.getTrend() + ": " + (double) tokenPopulation / tweetsWithTrend);
+            System.out.println("Average urls per tweet for " + trendVector.getTrend() + ": " + (double) urlPopulation / tweetsWithTrend);
+            System.out.println("Average mentions per tweet for " + trendVector.getTrend() + ": " + (double) mentionsPopulation / tweetsWithTrend);
+            System.out.println("Average hash tags per tweet for " + trendVector.getTrend() + ": " + (double) hashTagsPopulation / tweetsWithTrend);
+            System.out.println("Average favs per tweet for " + trendVector.getTrend() + ": " + (double) favsPopulation / tweetsWithTrend);
+            System.out.println("Average media per tweet for " + trendVector.getTrend() + ": " + (double) mediasPopulation / tweetsWithTrend);
+            System.out.println("Percentage of tweets with url: " +  (double)urls / tweetsWithTrend);
+            System.out.println("Replies percentage:: " +  (double) replies / tweetsWithTrend);
+            System.out.println("Retweets percentage of : " + (double) rts / tweetsWithTrend);
+            System.out.println();
+        }
     }
 
     private static void computeDateRangeFeatures(TrendVector trendVector) throws Exception {
         trendVector.setMaximumRank(Statistics.trendsProcessor.getMaxRank(trendVector.getTrend()));
-        System.out.println("Maximum rank: " + trendVector.getMaximumRank());
-
         trendVector.setDuration(Statistics.trendsProcessor.getDuration(trendVector.getTrend()));
-        System.out.println("Duration : " + trendVector.getDuration());
-
         trendVector.setDurationOfLongestDateRange(Statistics.trendsProcessor.getDurationOfLongestRange(trendVector.getTrend()));
-        System.out.println("Duration of longest range: " + trendVector.getDurationOfLongestDateRange());
-
         trendVector.setAverageRank(Statistics.trendsProcessor.getAverageRank(trendVector.getTrend()));
-        System.out.println("Average rank: " + trendVector.getAverageRank());
-
         trendVector.setMostDominantRank(Statistics.trendsProcessor.getMostDominantRank(trendVector.getTrend()));
-        System.out.println("Most dominant rank: " + trendVector.getMostDominantRank());
-
         trendVector.setDaySlice(Statistics.trendsProcessor.getAppearanceSlices(trendVector.getTrend()));
-
-
-        System.out.println("Appearances in day slices:");
-        for (boolean appearance : trendVector.getDaySlices()) {
-            System.out.print(appearance + " ");
-        }
-        System.out.println();
-
         trendVector.setMostDominantSlice(Statistics.trendsProcessor.getMostDominantSlice(trendVector.getTrend()));
-        System.out.println("Most dominant slice: " + trendVector.getMostDominantSlice());
+
+        if (printToConsole) {
+            System.out.println("Maximum rank: " + trendVector.getMaximumRank());
+            System.out.println("Duration : " + trendVector.getDuration());
+            System.out.println("Duration of longest range: " + trendVector.getDurationOfLongestDateRange());
+            System.out.println("Average rank: " + trendVector.getAverageRank());
+            System.out.println("Most dominant rank: " + trendVector.getMostDominantRank());
+            System.out.println("Appearances in day slices:");
+            for (boolean appearance : trendVector.getDaySlices()) {
+                System.out.print(appearance + " ");
+            }
+            System.out.println();
+            System.out.println("Most dominant slice: " + trendVector.getMostDominantSlice());
+        }
     }
 
 
