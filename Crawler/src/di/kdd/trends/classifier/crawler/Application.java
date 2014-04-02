@@ -18,7 +18,7 @@ public class Application {
     public static final String SECRET_TOKENS_FOLDER = CONFIGS_FOLDER + "/Tokens/SecretTokens/";
     public static final String DATA_FOLDER = "Data/";
 
-    private static ArrayList<Crawler> crawlers = new ArrayList<Crawler>();
+    private static Crawler crawler;
 
     public static void main(String[] args) throws Exception {
 
@@ -31,38 +31,28 @@ public class Application {
 
         LocationLoader locationLoader = new LocationLoader();
 
-        if (args.length == 0) {
+        if (args.length != 1){
+            System.err.println("Run with only location as argument");
+            return;
+        }
 
-            /* Light'em all */
+        for (String locationName : args) {
+            location = locationLoader.getLocation(locationName);
 
-            while ((location = locationLoader.getLocation()) != null) {
-                crawlers.add(new Crawler(location));
+            if (location == null) {
+                System.err.println("No location " + locationName);
+                continue;
             }
-        }
-        else {
 
-            for (String locationName : args) {
-                location = locationLoader.getLocation(locationName);
-
-                if (location == null) {
-                    System.err.println("No location " + locationName);
-                    continue;
-                }
-
-                crawlers.add(new Crawler(location));
-            }
+            Application.crawler = new Crawler(location);
         }
 
-        for (Crawler crawler : crawlers) {
-            crawler.start();
-        }
+        Application.crawler.start();
 
         while (true) {
-            for (Crawler crawler : crawlers) {
-                if (crawler.isCrawling()) {
-                    crawler.join();
+                if (Application.crawler.isCrawling()) {
+                    Application.crawler.join();
                 }
-            }
         }
     }
 
@@ -72,9 +62,7 @@ public class Application {
             @Override
             public void run()
             {
-                for (Crawler crawler : crawlers) {
-                    crawler.stopCrawling();
-                }
+                Application.crawler.stopCrawling();
             }
         });
     }
