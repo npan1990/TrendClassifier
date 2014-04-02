@@ -237,7 +237,8 @@ public class ConsoleInterface {
 
         BufferedReader reader = new BufferedReader(new FileReader(ConsoleInterface.getCurrentDirectory() + ConsoleInterface.VECTOR_FILE_NAME));
 
-        String line;
+        // Skip first line
+        String line = reader.readLine();
 
         while ((line = reader.readLine()) != null) {
                trendVectors.add(new TrendVector(line));
