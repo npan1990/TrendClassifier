@@ -17,17 +17,17 @@ import java.util.Map;
 
 public class UberTwitter {
 
-    public enum What {Trends, Stream, Search};
+    public enum What {Trends, Search};
 
     private static int SEARCH_TOKENS = 10;
     private static int NO_TOKENS = 1 + 1 + SEARCH_TOKENS;
 
-    private static int TREND_TOKEN = 0;
-    private static int STREAM_TOKEN = TREND_TOKEN + 1;
-    private static int FIRST_ACTIVE = STREAM_TOKEN + 1;
-    private static int LAST_ACTIVE = NO_TOKENS;
+    private static int STREAM_TOKEN = 0;
+    private static int TREND_TOKEN = STREAM_TOKEN + 1;
+    private static int FIRST_ACTIVE = TREND_TOKEN + 1;
+    private static int LAST_ACTIVE = NO_TOKENS - 1;
 
-
+    private TwitterStream twitterStream = null;
     private ArrayList<Twitter> twitterz = new ArrayList<Twitter>();
 
     private int activeToken = FIRST_ACTIVE;
@@ -37,6 +37,20 @@ public class UberTwitter {
         TokenLoader tokenLoader = new TokenLoader();
 
         for (int i = location.getId() * UberTwitter.NO_TOKENS; i < (location.getId() * UberTwitter.NO_TOKENS) + UberTwitter.NO_TOKENS; i++) {
+
+            if (this.twitterStream == null) {
+
+                /* Set up authentication token for stream */
+
+                Token token = tokenLoader.getToken(i);
+                this.twitterStream = TwitterStreamFactory.getSingleton();
+                this.twitterStream.setOAuthConsumer(token.getConsumer(), token.getConsumerSecret());
+                AccessToken oathAccessToken = new AccessToken(token.getAccess(), token.getAccessSecret());
+                this.twitterStream.setOAuthAccessToken(oathAccessToken);
+
+                continue;
+            }
+
             Token token = tokenLoader.getToken(i);
             Twitter twitter = new TwitterFactory().getInstance();
             twitter.setOAuthConsumer(token.getConsumer(), token.getConsumerSecret());
@@ -71,9 +85,6 @@ public class UberTwitter {
             case Trends:
                 rateLimitStatus = this.twitterz.get(UberTwitter.TREND_TOKEN).getRateLimitStatus();
                 return rateLimitStatus.get("/trends/place").getRemaining();
-            case Stream:
-                rateLimitStatus = this.twitterz.get(UberTwitter.STREAM_TOKEN).getRateLimitStatus();
-                return rateLimitStatus.get("/search/tweets").getRemaining();
             case Search:
                 rateLimitStatus = this.twitterz.get(previousToken()).getRateLimitStatus();
                 return rateLimitStatus.get("/search/tweets").getRemaining();
@@ -86,8 +97,9 @@ public class UberTwitter {
         return this.twitterz.get(UberTwitter.TREND_TOKEN).getPlaceTrends(woeid);
     }
 
-    public QueryResult getStream(Query query) throws TwitterException {
-        return this.twitterz.get(UberTwitter.STREAM_TOKEN).search(query);
+    public void startStream(StatusListener statusListener) throws TwitterException {
+        this.twitterStream.addListener(statusListener);
+        this.twitterStream.sample();
     }
 
     public QueryResult search(Query queryTrend) throws TwitterException {

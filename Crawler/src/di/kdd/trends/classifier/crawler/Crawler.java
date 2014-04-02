@@ -15,7 +15,7 @@ import java.util.Date;
 
 import di.kdd.trends.classifier.crawler.UberTwitter.What;
 
-public class Crawler extends Thread {
+public class Crawler extends Thread implements StatusListener{
 
     private static String TWEETS_FILE = "tweets";
     private static String TRENDS_FILE = "trends";
@@ -26,7 +26,6 @@ public class Crawler extends Thread {
     private static int RATE_LIMIT_FLOOR = 10;
 
     private static int TRENDS_CRAWL_INTERVAL = 5 * 60 * 1000; // 5 Minutes (in millis)
-    private static int TWEETS_CRAWL_INTERVAL =  10 * 1000; // 10 Seconds (in millis)
     private static int SEARCH_TREND_CRAWL_INTERVAL =  5 * 1000; // 5 Seconds (in millis)
 
     private boolean isCrawling = false;
@@ -40,7 +39,6 @@ public class Crawler extends Thread {
         this.twitter = new UberTwitter(location);
 
         this.location = location;
-
     }
 
     private synchronized void startCrawling () {
@@ -75,6 +73,8 @@ public class Crawler extends Thread {
         DateFormat dateFormat = new SimpleDateFormat("dd");
         String previousDay = dateFormat.format(new Date());
 
+        this.setUpTwitterStreamCrawling();
+
         while (this.isCrawling()) {
             String currentDay = dateFormat.format(new Date());
 
@@ -84,7 +84,6 @@ public class Crawler extends Thread {
             }
 
             this.crawlTrends();
-            this.crawlStream();
             this.crawlTweetsWithTrends();
         }
 
@@ -92,8 +91,17 @@ public class Crawler extends Thread {
         this.closeWriters();
     }
 
+    private void setUpTwitterStreamCrawling() {
+
+        try {
+            this.twitter.startStream(this);
+        }
+        catch(Exception exception) {
+            System.err.println("Failed to start crawling twitter stream");
+        }
+    }
+
     private long lastTrendCrawl;
-    private long lastStreamCrawl;
     private long lastSearchCrawl;
 
     private void crawlTrends () {
@@ -143,49 +151,6 @@ public class Crawler extends Thread {
         }
     }
 
-    private void crawlStream () {
-
-        long now = System.currentTimeMillis();
-
-        if (lastStreamCrawl != 0) {
-
-            /* Check if TWEETS_CRAWL_INTERVAL elapsed since last trend crawling */
-
-            if (now - this.lastStreamCrawl < Crawler.TWEETS_CRAWL_INTERVAL) {
-                return;
-            }
-        }
-
-        Query emptyQuery = new Query("");
-        emptyQuery.geoCode(new GeoLocation(this.location.getLongitude(), this.location.getLatitude()), this.location.getRadius(), Query.KILOMETERS);
-        emptyQuery.lang("en");
-
-        try {
-
-            /* Check rate limit */
-
-            if (this.twitter.getRemainingRateLimit(What.Stream) < Crawler.RATE_LIMIT_FLOOR) {
-                System.out.println(this.getLogTag() + "Hit rate limit floor (" + Crawler.RATE_LIMIT_FLOOR + ") for stream crawling");
-                return;
-            }
-
-            QueryResult queryResult = this.twitter.getStream(emptyQuery);
-
-            for (Status status : queryResult.getTweets()) {
-                printMetaInfo(status, Crawler.STREAM_TAG);
-                printText(status);
-            }
-
-            this.tweetsWriter.flush();
-            this.lastStreamCrawl = now;
-
-            System.out.println(this.getLogTag() + "Got " + queryResult.getCount() + " tweets from stream. Left: " + this.twitter.getRemainingRateLimit(What.Stream));
-        }
-        catch (TwitterException exception) {
-            System.err.println(this.getLogTag() + "Failed to crawl tweets");
-            System.err.println(exception.getMessage());
-        }
-    }
 
     private void crawlTweetsWithTrends() {
         long now = System.currentTimeMillis();
@@ -275,7 +240,7 @@ public class Crawler extends Thread {
         return "[" + location.getName() + " " + this.getDate() + "]: ";
     }
 
-    private void printMetaInfo(Status status, int tag) {
+    protected void printMetaInfo(Status status, int tag) {
         StringBuilder sb = new StringBuilder();
         sb.append(tag +
                 "|" + status.getId() +
@@ -322,8 +287,27 @@ public class Crawler extends Thread {
         tweetsWriter.println(sb.toString().replace("[", "").replace("]", ""));
     }
 
-    private void printText(Status status) {
+    protected void printText(Status status) {
         String text = status.getText().replace("\n", " ").replace("\r", " ").replace("\r\n", " ");
         tweetsWriter.println(text);
     }
+
+    /* StatusListener interface */
+
+    public void onStatus(Status status) {
+        this.printMetaInfo(status, Crawler.STREAM_TAG);
+        this.printText(status);
+        this.tweetsWriter.flush();
+    }
+
+    public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {}
+    public void onTrackLimitationNotice(int numberOfLimitedStatuses) {}
+    public void onScrubGeo(long l, long l2) {}
+    public void onStallWarning(StallWarning stallWarning) {}
+
+    public void onException(Exception ex) {
+        System.err.println("Error while crawling stream: " + ex.getMessage());
+        ex.printStackTrace();
+    }
+
 }
