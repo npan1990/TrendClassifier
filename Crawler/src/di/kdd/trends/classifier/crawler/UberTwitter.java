@@ -99,7 +99,6 @@ public class UberTwitter {
     public void startStream(StatusListener statusListener, FilterQuery filterQuery) throws TwitterException {
         this.twitterStream.addListener(statusListener);
         this.twitterStream.filter(filterQuery);
-        this.twitterStream.sample();
     }
 
     public QueryResult search(Query queryTrend) throws TwitterException {

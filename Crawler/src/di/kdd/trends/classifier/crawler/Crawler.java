@@ -94,13 +94,22 @@ public class Crawler extends Thread implements StatusListener{
     private void setUpTwitterStreamCrawling() {
 
         FilterQuery filterQuery = new FilterQuery();
-        double [][] location = new double[2][2];
-        location[0][0] = this.location.getSwlong();
-        location[0][1] = this.location.getSwlat();
-        location[1][0] = this.location.getNelong();
-        location[1][1] = this.location.getNelat();
 
-        filterQuery.locations(location);
+
+        double long1 = this.location.getSwlong();
+        double lat1 =  this.location.getSwlat();
+        double long2 = this.location.getNelong();
+        double lat2 = this.location.getNelat();
+//        double lat = 53.186288;
+//        double longitude = -8.043709;
+//        double lat1 = lat - 4;
+//        double longitude1 = longitude - 8;
+//        double lat2 = lat + 4;
+//        double longitude2 = longitude + 8;
+//
+        double[][] bb = {{long1, lat1}, {long2, lat2}};
+
+        filterQuery.locations(bb);
 
         try {
             this.twitter.startStream(this, filterQuery);
