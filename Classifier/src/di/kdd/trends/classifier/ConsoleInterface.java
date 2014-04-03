@@ -22,6 +22,7 @@ public class ConsoleInterface {
 
     private static String MEME_TAG = "m";
     private static String EVENT_TAG = "e";
+    private static String QUIT = "q";
 
     private static ArrayList<TrendVector> trendVectors = null;
 
@@ -84,23 +85,24 @@ public class ConsoleInterface {
                                     System.out.println("Enter new tag");
                                 }
 
-                                System.out.print(trend + " is meme (m) or event (e)?\ntag-mode>");
+                                System.out.print(trend + " is meme (m) or event (e)? ('q' for quit)\ntag-mode>");
 
                                 command = scanner.nextLine();
 
                                 while (command.compareTo(ConsoleInterface.MEME_TAG) != 0 &&
-                                        command.compareTo(ConsoleInterface.EVENT_TAG) != 0) {
+                                        command.compareTo(ConsoleInterface.EVENT_TAG) != 0 &&
+                                        command.compareTo(ConsoleInterface.QUIT) != 0) {
 
-                                    System.out.print(trend + " is meme (m) or event (e)?\ntag-mode>");
+                                    System.out.print(trend + " is meme (m) or event (e)? ('q' for quit)\ntag-mode>");
                                 }
-
-
 
                                 if (command.compareTo(ConsoleInterface.MEME_TAG) == 0) {
                                     trendVector.setTrendClass(TrendVector.TrendClass.Meme);
                                 }
                                 else if (command.compareTo(ConsoleInterface.EVENT_TAG) == 0 ) {
                                     trendVector.setTrendClass(TrendVector.TrendClass.Event);
+                                }
+                                else if (command.compareTo(ConsoleInterface.QUIT) == 0) {
                                 }
 
                                 ConsoleInterface.updateTrendVector(trendVector);

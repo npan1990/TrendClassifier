@@ -31,7 +31,7 @@ public class Application {
 
         LocationLoader locationLoader = new LocationLoader();
 
-        if (args.length != 1){
+        if (args.length != 1) {
             System.err.println("Run with only location as argument");
             return;
         }
