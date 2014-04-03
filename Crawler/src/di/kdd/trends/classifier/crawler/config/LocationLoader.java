@@ -26,7 +26,11 @@ public class LocationLoader {
                     Double.parseDouble(tokens[1]),
                     Double.parseDouble(tokens[2]),
                     Double.parseDouble(tokens[3]),
-                    Integer.parseInt(tokens[4])));
+                    Double.parseDouble(tokens[4]),
+                    Double.parseDouble(tokens[5]),
+                    Double.parseDouble(tokens[6]),
+                    Double.parseDouble(tokens[7]),
+                    Integer.parseInt(tokens[8])));
         }
     }
 

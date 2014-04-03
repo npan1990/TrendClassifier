@@ -95,10 +95,10 @@ public class Crawler extends Thread implements StatusListener{
 
         FilterQuery filterQuery = new FilterQuery();
         double [][] location = new double[1][4];
-        location[0][0] = this.location.getLongitude();
-        location[0][1] = this.location.getLatitude() - 1;
-        location[0][2] = this.location.getLongitude() + 1;
-        location[0][3] = this.location.getLatitude();
+        location[0][0] = this.location.getSwlong();
+        location[0][1] = this.location.getSwlat();
+        location[0][2] = this.location.getNelong();
+        location[0][3] = this.location.getNelat();
 
         filterQuery.locations(location);
 
@@ -175,7 +175,7 @@ public class Crawler extends Thread implements StatusListener{
 
         for (String crawledTrend : this.crawledTrends) {
             Query queryTrend = new Query(crawledTrend);
-            queryTrend.geoCode(new GeoLocation(this.location.getLatitude(), this.location.getLongitude()), this.location.getRadius(), Query.KILOMETERS);
+            queryTrend.geoCode(new GeoLocation(this.location.getLatitude(), this.location.getLongitude()), this.location.getRadius(), Query.KILOMETERS.toString());
             queryTrend.lang("en");
 
             try {

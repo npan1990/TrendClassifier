@@ -12,11 +12,18 @@ public class Location {
     private String name;
     private double latitude, longitude, radius;
 
-    public Location (String name, double latitude, double longitude, double radius, int woeid) {
+    private double swlong, swlat, nelong, nelat;
+
+    public Location (String name, double latitude, double longitude, double swlong,
+                     double swlat, double nelong, double nelat,  double radius, int woeid) {
         this.id = Location.ID++;
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.swlong = swlong;
+        this.swlat = swlat;
+        this.nelong = nelong;
+        this.nelat = nelat;
         this.radius = radius;
         this.woeid = woeid;
     }
@@ -44,4 +51,12 @@ public class Location {
     public int getWoeid () {
         return this.woeid;
     }
+
+    public double getSwlong() { return swlong; }
+
+    public double getSwlat() { return swlat; }
+
+    public double getNelong() { return nelong; }
+
+    public double getNelat() { return nelat; }
 }
