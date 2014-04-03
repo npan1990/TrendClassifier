@@ -16,7 +16,7 @@ public class Statistics {
     public static int TWEETS_THRESHOLD = 100;
 
     private static boolean cached = false;
-    private static ArrayList<String> cachedTrends = new ArrayList<String>();
+    public static ArrayList<String> cachedTrends = new ArrayList<String>();
 
     private static TrendsProcessor trendsProcessor = new TrendsProcessor();
     private static ArrayList<ProcessedTweet> tweets = new ArrayList<ProcessedTweet>();
@@ -346,8 +346,7 @@ public class Statistics {
         }
     }
 
-    public static void list() {
-
+    public static void filterTrends() {
         if (cached == false) {
             for (String trend : Statistics.trends) {
                 int tweetsCount = 0;
@@ -363,8 +362,15 @@ public class Statistics {
                     Statistics.cachedTrends.add(trend);
                 }
             }
+        }
 
-            cached = true;
+        cached = true;
+    }
+
+    public static void list() {
+
+        if (cached == false) {
+            Statistics.filterTrends();
         }
         else {
             for (String trend : Statistics.cachedTrends) {
