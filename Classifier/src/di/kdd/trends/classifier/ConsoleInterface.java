@@ -65,6 +65,24 @@ public class ConsoleInterface {
                                 System.out.println(trendVector.getTrend() + " " + trendVector.getTrendClass());
                             }
                         }
+                        else if (command.compareTo("ls -u") == 0) {
+                            Statistics.filterTrends();
+
+                            for (String trend : Statistics.cachedTrends) {
+                                boolean isTagged = false;
+
+                                for (TrendVector vector : ConsoleInterface.trendVectors) {
+                                    if (vector.getTrend().compareTo(trend) == 0) {
+                                        isTagged = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!isTagged) {
+                                    System.out.println(trend);
+                                }
+                            }
+                        }
                         else {
                             String trend = command;
 
