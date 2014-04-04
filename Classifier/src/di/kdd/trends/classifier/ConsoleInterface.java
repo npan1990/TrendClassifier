@@ -117,14 +117,15 @@ public class ConsoleInterface {
 
                                 if (command.compareTo(ConsoleInterface.MEME_TAG) == 0) {
                                     trendVector.setTrendClass(TrendVector.TrendClass.Meme);
+                                    ConsoleInterface.updateTrendVector(trendVector);
                                 }
                                 else if (command.compareTo(ConsoleInterface.EVENT_TAG) == 0 ) {
                                     trendVector.setTrendClass(TrendVector.TrendClass.Event);
+                                    ConsoleInterface.updateTrendVector(trendVector);
                                 }
                                 else if (command.compareTo(ConsoleInterface.QUIT) == 0) {
                                 }
 
-                                ConsoleInterface.updateTrendVector(trendVector);
                             }
                         }
 
