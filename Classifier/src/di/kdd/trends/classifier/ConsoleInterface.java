@@ -112,6 +112,7 @@ public class ConsoleInterface {
                                         command.compareTo(ConsoleInterface.QUIT) != 0) {
 
                                     System.out.print(trend + " is meme (m) or event (e)? ('q' for quit)\ntag-mode>");
+                                    command = scanner.nextLine();
                                 }
 
                                 if (command.compareTo(ConsoleInterface.MEME_TAG) == 0) {
@@ -278,7 +279,9 @@ public class ConsoleInterface {
 
         vectorWriter.println(TrendVector.getColumnNames());
         for (TrendVector trendVector : ConsoleInterface.trendVectors) {
-            vectorWriter.println(trendVector.toCsv());
+            if (trendVector.getClass() != null) {
+                vectorWriter.println(trendVector.toCsv());
+            }
         }
 
         vectorWriter.flush();

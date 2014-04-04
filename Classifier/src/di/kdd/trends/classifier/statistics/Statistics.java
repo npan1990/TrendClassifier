@@ -369,13 +369,10 @@ public class Statistics {
 
     public static void list() {
 
-        if (cached == false) {
-            Statistics.filterTrends();
-        }
-        else {
-            for (String trend : Statistics.cachedTrends) {
-                System.out.println(trend);
-            }
+        Statistics.filterTrends();
+
+        for (String trend : Statistics.cachedTrends) {
+            System.out.println(trend);
         }
     }
 
