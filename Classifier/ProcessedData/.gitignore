@@ -3,7 +3,3 @@
 
 !.gitignore
 
-!Vectors/
-!Vectors/*/
-!Vectors/*/*/
-!Vectors/*/*/*

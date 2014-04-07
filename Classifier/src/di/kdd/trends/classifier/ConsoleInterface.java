@@ -39,6 +39,9 @@ public class ConsoleInterface {
                 if (tokens.length == 1 && tokens[0].compareTo("all") == 0) {
                     Statistics.sense();
                 }
+                else if (tokens.length == 1 && tokens[0].compareTo("#") == 0) {
+                    Statistics.hashtags();
+                }
                 else if (tokens.length == 1 && tokens[0].compareTo("ls") == 0) {
                     Statistics.list();
                 }
