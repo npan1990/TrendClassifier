@@ -200,7 +200,6 @@ public class Crawler extends Thread implements StatusListener{
 
                 for (Status status : queryResult.getTweets()) {
                     printMetaInfo(status, Crawler.SEARCH_TAG);
-                    printText(status);
                 }
 
                 this.tweetsWriter.flush();
@@ -302,19 +301,19 @@ public class Crawler extends Thread implements StatusListener{
         }
         sb.append("|" + media + "|" + media.size());
 
-        tweetsWriter.println(sb.toString().replace("[", "").replace("]", ""));
-    }
+        String meta = sb.toString().replace("[", "").replace("]", "");
 
-    protected void printText(Status status) {
-        String text = status.getText().replace("\n", " ").replace("\r", " ").replace("\r\n", " ");
-        tweetsWriter.println(text);
+        /* Append tweet */
+
+        String tweet = "\n" + status.getText().replace("\n", " ").replace("\r", " ").replace("\r\n", " ");
+
+        tweetsWriter.println(meta + tweet);
     }
 
     /* StatusListener interface */
 
     public void onStatus(Status status) {
         this.printMetaInfo(status, Crawler.STREAM_TAG);
-        this.printText(status);
         this.tweetsWriter.flush();
     }
 
