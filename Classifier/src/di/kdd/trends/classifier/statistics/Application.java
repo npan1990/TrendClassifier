@@ -6,12 +6,7 @@ package di.kdd.trends.classifier.statistics;
 
 public class Application {
 
-<<<<<<< HEAD
-    public static String DATA_FOLDER = "UK/";
-    public static String TRENDS_FILE = "/trends.tok";
-=======
     public static String DATA_FOLDER = "ProcessedData/";
->>>>>>> 45f5c64c4d617364a029aa6fffe387484acfb9f2
     public static String TWEETS_FILE = "/tweets";
 
     public static void main (String []args) throws Exception {
