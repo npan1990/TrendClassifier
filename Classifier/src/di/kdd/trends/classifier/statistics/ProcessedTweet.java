@@ -104,8 +104,11 @@ public class ProcessedTweet {
 
         String []hashTags = split[12].split(",", -1);
         for (String hashTag : hashTags) {
-            if (hashTag.length() > 0) {
-                this.getHashTags().add(hashTag);
+
+            String rawhashTag = hashTag.toLowerCase().trim();
+
+            if (rawhashTag.length() > 0 && !this.getHashTags().contains(rawhashTag)) {
+                this.getHashTags().add(rawhashTag);
             }
         }
 

@@ -39,8 +39,9 @@ public class ConsoleInterface {
                 if (tokens.length == 1 && tokens[0].compareTo("all") == 0) {
                     Statistics.sense();
                 }
-                else if (tokens.length == 1 && tokens[0].compareTo("#") == 0) {
-                    Statistics.hashtags();
+                else if (tokens.length == 1 && tokens[0].startsWith("#")) {
+                    String[] fields = tokens[0].split(" ");
+                    Statistics.hashtags(Integer.parseInt(fields[1]));
                 }
                 else if (tokens.length == 1 && tokens[0].compareTo("ls") == 0) {
                     Statistics.list();
@@ -59,6 +60,10 @@ public class ConsoleInterface {
                     while ((command = scanner.nextLine()).compareTo("q") != 0) {
                         if (command.compareTo("ls") == 0) {
                             Statistics.list();
+                        }
+                        else if (command.startsWith("#")) {
+                            String[] fields = command.split(" ");
+                            Statistics.hashtags(Integer.parseInt(fields[1]));
                         }
                         else if (command.compareTo("ls -a") == 0) {
                             Statistics.listAll();
@@ -89,11 +94,11 @@ public class ConsoleInterface {
                         else {
                             String trend = command;
 
-                            if (Statistics.getTrends().contains(trend) == false) {
-                                System.out.println(trend + " doesn't exist in current trends");
-                                Statistics.listAll();
-                            }
-                            else {
+//                            if (Statistics.getTrends().contains(trend) == false) {
+//                                System.out.println(trend + " doesn't exist in current trends");
+//                                Statistics.listAll();
+//                            }
+//                            else {
 
                                 TrendVector trendVector = new TrendVector();
                                 trendVector.setTrend(trend);
@@ -129,7 +134,7 @@ public class ConsoleInterface {
                                 else if (command.compareTo(ConsoleInterface.QUIT) == 0) {
                                 }
 
-                            }
+//                            }
                         }
 
                         System.out.print("tag-mode>");
