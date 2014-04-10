@@ -205,6 +205,7 @@ public class Statistics {
                 = usersStatusesPopulation =  verifiedUsersPopulation = 0;
 
         for (User user : usersList) {
+            usersListedPopulation += user.getUserListedCount();
             usersFollowersPopulation += user.getUserFollowersCount();
             usersFriendsPopulation += user.getUserFriendsCount();
             usersStatusesPopulation += user.getUserStatusesCount();
