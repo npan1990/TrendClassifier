@@ -198,20 +198,25 @@ public class Statistics {
         int uniqueUsers = usersList.size();
         double tweetsPerUser = (double)tweetsWithTrend / uniqueUsers;
 
-        long usersListedPopulation, usersFollowersPopulation, usersFriendsPopulation,
-                usersStatusesPopulation,  verifiedUsersPopulation;
+        long[] usersListedPopulation = new long[uniqueUsers];
+        long[] usersFollowersPopulation = new long[uniqueUsers];
+        long[] usersFriendsPopulation = new long[uniqueUsers];
+        long[] usersStatusesPopulation = new long[uniqueUsers];
+        long verifiedUsersPopulation = 0;
 
-        usersListedPopulation = usersFollowersPopulation = usersFriendsPopulation
-                = usersStatusesPopulation =  verifiedUsersPopulation = 0;
+//        usersListedPopulation = usersFollowersPopulation = usersFriendsPopulation
+//                = usersStatusesPopulation =  verifiedUsersPopulation = 0;
 
+        int i = 0;
         for (User user : usersList) {
-            usersListedPopulation += user.getUserListedCount();
-            usersFollowersPopulation += user.getUserFollowersCount();
-            usersFriendsPopulation += user.getUserFriendsCount();
-            usersStatusesPopulation += user.getUserStatusesCount();
+            usersListedPopulation[i] = user.getUserListedCount();
+            usersFollowersPopulation[i] = user.getUserFollowersCount();
+            usersFriendsPopulation[i] = user.getUserFriendsCount();
+            usersStatusesPopulation[i] = user.getUserStatusesCount();
             if (user.isUserVerified()) {
                 verifiedUsersPopulation++;
             }
+            i++;
         }
 
         trendVector.setTokensPerTweet((double) tokenPopulation / tweetsWithTrend);
@@ -227,10 +232,10 @@ public class Statistics {
         // Users features
         trendVector.setTweetsPerUser(tweetsPerUser);
         trendVector.setUniqueUsers(uniqueUsers);
-        trendVector.setListedCountPerUser((double) usersListedPopulation / uniqueUsers);
-        trendVector.setUserFollowersPerUser((double) usersFollowersPopulation / uniqueUsers);
-        trendVector.setUserFriendsPerUser((double) usersFriendsPopulation / uniqueUsers);
-        trendVector.setUserStatusesPerUser((double) usersStatusesPopulation / uniqueUsers);
+        trendVector.setListedCountPerUser(findMedian(usersListedPopulation));
+        trendVector.setUserFollowersPerUser(findMedian(usersFollowersPopulation));
+        trendVector.setUserFriendsPerUser(findMedian(usersFriendsPopulation));
+        trendVector.setUserStatusesPerUser(findMedian(usersStatusesPopulation));
         trendVector.setAvgVerifiedUsers((double) verifiedUsersPopulation / uniqueUsers);
 
         if (printToConsole) {
@@ -246,6 +251,19 @@ public class Statistics {
             System.out.println("Retweets percentage of : " + (double) rts / tweetsWithTrend);
             System.out.println();
         }
+    }
+
+    private static double findMedian(long[] unsortedArray) {
+        long[] sortedArray = Arrays.copyOf(unsortedArray, unsortedArray.length);
+        Arrays.sort(sortedArray);
+        int index;
+        double median;
+        if (sortedArray.length % 2 == 0)
+            median = ((double)sortedArray[sortedArray.length/2] + (double)sortedArray[sortedArray.length/2 - 1])/2;
+        else
+            median = (double) sortedArray[sortedArray.length/2];
+
+        return median;
     }
 
     private static boolean isRelevant(ProcessedTweet tweet, String trend) {
