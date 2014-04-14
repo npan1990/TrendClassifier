@@ -9,9 +9,11 @@ import java.lang.reflect.Modifier;
 
 public class TrendVector {
 
+
+
+
     public enum TrendClass { Meme, Event };
 
-    public static final int DAY_SLICES = 8;
 
     private static String VALUE_SEPARATOR = ", ";
     private static int TREND_INDEX = 0;
@@ -23,24 +25,24 @@ public class TrendVector {
     /* Dimensions of feature vector */
 
     protected int trendLength;
-    protected double relevantTweetsFromStream;
     protected double tokensPerTweet;
     protected double mentionsPerTweet;
     protected double hashTagsPerTweet;
     protected double tweetsWithUrl;
     protected double tweetsWithReplies;
-    protected double tweetsWithRts;
     protected double retweetsPerTweet;
     protected double favoritesPerTweet;
     protected double urlsPerTweet;
     protected double mediasPerTweet;
-    protected double averageRank;
-    protected int mostDominantRank;
-    protected int maximumRank;
-    protected int mostDominantSlice;
-    protected int duration;
-    protected int durationOfLongestDateRange;
-    protected boolean[] daySlices = new boolean[TrendVector.DAY_SLICES];
+
+    //User features
+    protected double tweetsPerUser;
+    protected int uniqueUsersCount;
+    protected double userStatusesPerUser;
+    protected double listedUsersPerUser;
+    protected double userFollowersPerUser;
+    protected double userFriendsPerUser;
+    protected double avgVerifiedUsers;
 
     public static String getColumnNames() {
         String columns = "";
@@ -57,12 +59,6 @@ public class TrendVector {
                 }
             }
         }
-
-        for (int i = 1; i < TrendVector.DAY_SLICES - 1; i++) {
-            columns += " " + i;
-        }
-
-        columns += " " + (TrendVector.DAY_SLICES - 1);
 
         return columns;
     }
@@ -88,8 +84,6 @@ public class TrendVector {
 
     public int getTrendLength () { return this.trendLength; }
 
-    public double getRelevantTweetsFromStream () { return this.relevantTweetsFromStream; }
-
     public double getTokensPerTweet () { return this.tokensPerTweet; }
 
     public double getMentionsPerTweet () { return this.mentionsPerTweet; }
@@ -100,8 +94,6 @@ public class TrendVector {
 
     private double getTweetsWithReplies () { return this.tweetsWithReplies; }
 
-    private double getTweetsWithRts () { return this.tweetsWithRts; }
-
     public double getFavoritesPerTweet() { return favoritesPerTweet; }
 
     public double getRetweetsPerTweet() { return retweetsPerTweet; }
@@ -110,29 +102,12 @@ public class TrendVector {
 
     public double getMediasPerTweet() { return mediasPerTweet; }
 
-    public double getAverageRank() { return averageRank; }
-
-    public int getMostDominantRank() { return mostDominantRank; }
-
-    public int getMaximumRank() { return maximumRank; }
-
-    public int getDuration() { return duration; }
-
-    public int getDurationOfLongestDateRange() { return durationOfLongestDateRange; }
-
-    public boolean[] getDaySlices() { return daySlices; }
-
-    public int getMostDominantSlice() { return mostDominantSlice; }
-
-    public void setMostDominantSlice(int mostDominantSlice) { this.mostDominantSlice = mostDominantSlice; }
 
     public void setTrend (String trend) { this.trend = trend; }
 
     public void setTrendClass (TrendClass trendClass) { this.trendClass = trendClass; }
 
     public void setTrendLength (int trendLength) { this.trendLength = trendLength; }
-
-    public void setRelevantTweetsFromStream (double relevantTweetsFromStream) { this.relevantTweetsFromStream  = relevantTweetsFromStream; }
 
     public void setTokensPerTweet (double tokensPerTweet) { this.tokensPerTweet = tokensPerTweet; }
 
@@ -144,8 +119,6 @@ public class TrendVector {
 
     public void setRepliesPerTrend(double tweetsWithReplies) { this.tweetsWithReplies = tweetsWithReplies; }
 
-    public void setTweetsWithRts (double tweetsWithRts) { this.tweetsWithRts = tweetsWithRts; }
-
     public void setRetweetsPerTweet(double retweetsPerTweet) { this.retweetsPerTweet = retweetsPerTweet; }
 
     public void setFavoritesPerTweet(double favoritesPerTweet) { this.favoritesPerTweet = favoritesPerTweet; }
@@ -154,52 +127,43 @@ public class TrendVector {
 
     public void setMediasPerTweet(double mediasPerTweet) { this.mediasPerTweet = mediasPerTweet; }
 
-    public void setAverageRank(double averageRank) {  this.averageRank = averageRank; }
+    public void setTweetsPerUser(double tweetsPerUser) { this.tweetsPerUser = tweetsPerUser; }
 
-    public void setMostDominantRank(int mostDominantRank) { this.mostDominantRank = mostDominantRank; }
+    public void setUniqueUsers(int uniqueUsersCount ) { this.uniqueUsersCount = uniqueUsersCount; }
 
-    public void setMaximumRank(int maximumRank) { this.maximumRank = maximumRank; }
+    public void setListedCountPerUser(double listedUsersPerUser) { this.listedUsersPerUser = listedUsersPerUser; }
 
-    public void setDuration(int duration) { this.duration = duration; }
+    public void setUserStatusesPerUser(double userStatusesPerUser) { this.userStatusesPerUser = userStatusesPerUser; }
 
-    public void setDurationOfLongestDateRange(int durationOfLongestDateRange) { this.durationOfLongestDateRange = durationOfLongestDateRange; }
+    public void setUserFriendsPerUser(double userFriendsPerUser) { this.userFriendsPerUser = userFriendsPerUser; }
 
-    public void setDaySlice(boolean []daySlices) {
-        this.daySlices = daySlices;
-    }
+    public void setUserFollowersPerUser(double userFollowersPerUser) { this.userFollowersPerUser = userFollowersPerUser; }
 
+    public void setAvgVerifiedUsers(double avgVerifiedUsers) { this.avgVerifiedUsers = avgVerifiedUsers; }
 
     public String toCsv () {
 
         String vectorCsv =  this.trend + TrendVector.VALUE_SEPARATOR
                             + this.trendClass + TrendVector.VALUE_SEPARATOR
                             + this.trendLength + TrendVector.VALUE_SEPARATOR
-                            + this.relevantTweetsFromStream + TrendVector.VALUE_SEPARATOR
                             + this.tokensPerTweet + TrendVector.VALUE_SEPARATOR
                             + this.mentionsPerTweet + TrendVector.VALUE_SEPARATOR
                             + this.hashTagsPerTweet + TrendVector.VALUE_SEPARATOR
                             + this.tweetsWithUrl + TrendVector.VALUE_SEPARATOR
                             + this.tweetsWithReplies + TrendVector.VALUE_SEPARATOR
-                            + this.tweetsWithRts + TrendVector.VALUE_SEPARATOR
                             + this.retweetsPerTweet + TrendVector.VALUE_SEPARATOR
                             + this.favoritesPerTweet + TrendVector.VALUE_SEPARATOR
                             + this.urlsPerTweet + TrendVector.VALUE_SEPARATOR
-                            + this.mediasPerTweet + TrendVector.VALUE_SEPARATOR
-                            + this.averageRank + TrendVector.VALUE_SEPARATOR
-                            + this.mostDominantRank + TrendVector.VALUE_SEPARATOR
-                            + this.maximumRank + TrendVector.VALUE_SEPARATOR
-                            + this.mostDominantSlice + TrendVector.VALUE_SEPARATOR
-                            + this.duration + TrendVector.VALUE_SEPARATOR
-                            + this.durationOfLongestDateRange + TrendVector.VALUE_SEPARATOR;
+                            + this.mediasPerTweet + TrendVector.VALUE_SEPARATOR;
 
-        for (int i = 0; i < this.daySlices.length; i++) {
-            if (i == this.daySlices.length - 1) {
-                vectorCsv += this.daySlices[i];
-            }
-            else {
-                vectorCsv += this.daySlices[i] + TrendVector.VALUE_SEPARATOR;
-            }
-        }
+        // User features
+        vectorCsv +=  this.tweetsPerUser + TrendVector.VALUE_SEPARATOR
+                            + this.uniqueUsersCount + TrendVector.VALUE_SEPARATOR
+                            + this.userStatusesPerUser + TrendVector.VALUE_SEPARATOR
+                            + this.listedUsersPerUser + TrendVector.VALUE_SEPARATOR
+                            + this.userFollowersPerUser + TrendVector.VALUE_SEPARATOR
+                            + this.userFriendsPerUser + TrendVector.VALUE_SEPARATOR
+                            + this.avgVerifiedUsers;
 
         return vectorCsv;
     }

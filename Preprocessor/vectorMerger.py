@@ -41,7 +41,7 @@ for location_name in os.listdir(vectors_directory):
 
 				trend = fields[0]
 				trend = trend.replace(' ','_')
-				trend = "_".join([trend, location_name, date]).replace("-","_")
+				trend = "_".join([trend, location_name, date]).replace("-","_").replace("'","")
 				fields[0] = trend
 				newline = ', '.join(fields)
 

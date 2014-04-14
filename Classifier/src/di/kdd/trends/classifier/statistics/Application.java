@@ -7,8 +7,7 @@ package di.kdd.trends.classifier.statistics;
 public class Application {
 
     public static String DATA_FOLDER = "ProcessedData/";
-    public static String TRENDS_FILE = "/trends.tok";
-    public static String TWEETS_FILE = "/tweets.tok";
+    public static String TWEETS_FILE = "/tweets";
 
     public static void main (String []args) throws Exception {
 
@@ -20,9 +19,7 @@ public class Application {
         String location = args[0];
         String date = args[1];
 
-        Statistics.load(Application.DATA_FOLDER + location + "/" + date + Application.TWEETS_FILE,
-                Application.DATA_FOLDER + location + "/" + date + Application.TRENDS_FILE);
+        Statistics.load(Application.DATA_FOLDER + location + "/" + date + Application.TWEETS_FILE);
 
-         Statistics.sense();
     }
 }

@@ -22,6 +22,10 @@ public class ProcessedTweet {
     private int mediaCount;
     private String rawTweet;
 
+    private User user;
+
+
+
     private ArrayList<String> tokens = new ArrayList<String>();
     private ArrayList<String> hashTags = new ArrayList<String>();
     private ArrayList<String> urls = new ArrayList<String>();
@@ -67,6 +71,8 @@ public class ProcessedTweet {
         return hashTags;
     }
 
+    public User getUser() { return user; }
+
 //    public ArrayList<String> getUrls() {
 //        return urls;
 //    }
@@ -77,9 +83,12 @@ public class ProcessedTweet {
 
 
     //Tokenizer output
-    //(0)fromSearch, (1)tweetId, (2)userName, (3)time, (4)isReply, (5)isRetweet, (6)retweetCount,
-    //(7)favoriteCount, (8)symbolCount, (9)urlsCount, (10)mediaCount, (11)tokenList, (12)hashtagList,
-    //(13)mentionList, (14)raw_tweet
+    //(0)fromSearch, (1)tweetId, (2)userName, (3)userId, (4)userVerified, (5)userFollowersCount, (6)userFriendsCount,
+    //(7)userListedCount, (8)userStatusesCount, (9)dateStr, (10)inReplyToUserId, (11)isRetweet, (12)retweetCount,
+    //(13)favoriteCount, (14)hashtags, (15)hashtagsCount, (16)urls, (17)urlsCount, (18)user_mentions, (19)user_mentionsCount
+    //(20)media, (21)mediaCount, (22)tokens, (23)raw_tweet
+
+
 
     public ProcessedTweet(String fromString) throws ParseException {
         String []split = fromString.split("\\|", -1);
@@ -87,35 +96,77 @@ public class ProcessedTweet {
         this.fromSearch = Integer.parseInt(split[0]) == 1;
         this.id = split[1];
         this.userName = split[2];
-        this.time = (new SimpleDateFormat("HH:mm:ss")).parse(split[3]);
-        this.isReply = Boolean.parseBoolean(split[4]);
-        this.isRetweet = Boolean.parseBoolean(split[5]);
-        this.retweetCount = Integer.parseInt(split[6]);
-        this.favoriteCount = Integer.parseInt(split[7]);
-        this.urlsCount = Integer.parseInt(split[9]);
-        this.mediaCount = Integer.parseInt(split[10]);
+        //Tue Apr 01 10:34:06 +0000 2014
+        this.time = (new SimpleDateFormat("HH:mm:ss")).parse(split[9].split(" ")[3]);
 
-        String []tokens = split[11].split(",", -1);
+        if ( split[10].equals("None")) {
+            this.isReply = false;
+        }
+        else {
+            this.isReply = true;
+        }
+
+        this.isRetweet = Boolean.parseBoolean(split[11]);
+        this.retweetCount = Integer.parseInt(split[12]);
+        this.favoriteCount = Integer.parseInt(split[13]);
+        this.urlsCount = Integer.parseInt(split[17]);
+        this.mediaCount = Integer.parseInt(split[21]);
+
+        String []tokens = split[22].split(",", -1);
         for (String token : tokens) {
             if (token.length() > 0) {
                 this.getTokens().add(token);
             }
         }
 
-        String []hashTags = split[12].split(",", -1);
+        String []hashTags = split[14].split(",", -1);
         for (String hashTag : hashTags) {
             if (hashTag.length() > 0) {
-                this.getHashTags().add(hashTag);
+                this.getHashTags().add(hashTag.trim().toLowerCase());
             }
         }
 
-        String []mentions = split[13].split(",", -1);
+        String []mentions = split[18].split(",", -1);
         for (String mention : mentions) {
             if (mention.length() > 0) {
                 this.getMentions().add(mention);
             }
         }
 
-        this.rawTweet = split[14];
+        this.rawTweet = split[23];
+
+        //(3)userId, (4)userVerified, (5)userFollowersCount, (6)userFriendsCount,
+        //(7)userListedCount, (8)userStatusesCount,
+
+        //User information
+        Boolean userVerified;
+
+        if ("True".equals(split[4])) { userVerified = true; }
+        else { userVerified = false; }
+
+        long userId = Long.parseLong(split[3]);
+        long userFollowersCount = Long.parseLong(split[5]);
+        long userFriendsCount = Long.parseLong(split[6]);
+        long userListedCount = Long.parseLong(split[7]);
+        long userStatusesCount = Long.parseLong(split[8]);
+
+        this.user = new User(userId, userFollowersCount, userFriendsCount, userVerified, userStatusesCount, userListedCount);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ProcessedTweet that = (ProcessedTweet) o;
+
+        if (!id.equals(that.id)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 }

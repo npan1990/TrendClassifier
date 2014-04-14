@@ -36,8 +36,9 @@ public class ConsoleInterface {
             try {
                 String tokens[] = command.split(",");
 
-                if (tokens.length == 1 && tokens[0].compareTo("all") == 0) {
-                    Statistics.sense();
+                if (tokens.length == 1 && tokens[0].startsWith("#")) {
+                    String[] fields = tokens[0].split(" ");
+                    Statistics.hashtags(Integer.parseInt(fields[1]));
                 }
                 else if (tokens.length == 1 && tokens[0].compareTo("ls") == 0) {
                     Statistics.list();
@@ -56,6 +57,10 @@ public class ConsoleInterface {
                     while ((command = scanner.nextLine()).compareTo("q") != 0) {
                         if (command.compareTo("ls") == 0) {
                             Statistics.list();
+                        }
+                        else if (command.startsWith("#")) {
+                            String[] fields = command.split(" ");
+                            Statistics.hashtags(Integer.parseInt(fields[1]));
                         }
                         else if (command.compareTo("ls -a") == 0) {
                             Statistics.listAll();
@@ -86,46 +91,38 @@ public class ConsoleInterface {
                         else {
                             String trend = command;
 
-                            if (Statistics.getTrends().contains(trend) == false) {
-                                System.out.println(trend + " doesn't exist in current trends");
-                                Statistics.listAll();
+                            TrendVector trendVector = new TrendVector();
+                            trendVector.setTrend(trend);
+
+                            trendVector = Statistics.getTrendFeatures(trend);
+
+                            if (ConsoleInterface.trendIsTagged(trend)) {
+                                trendVector = ConsoleInterface.getTaggedTrendVector(trend);
+                                System.out.println(trend + " is tagged as " + trendVector.getTrendClass());
+                                System.out.println("Enter new tag");
                             }
-                            else {
 
-                                TrendVector trendVector = new TrendVector();
-                                trendVector.setTrend(trend);
+                            System.out.print(trend + " is meme (m) or event (e)? ('q' for quit)\ntag-mode>");
 
-                                trendVector = Statistics.getTrendFeatures(trend);
+                            command = scanner.nextLine();
 
-                                if (ConsoleInterface.trendIsTagged(trend)) {
-                                    trendVector = ConsoleInterface.getTaggedTrendVector(trend);
-                                    System.out.println(trend + " is tagged as " + trendVector.getTrendClass());
-                                    System.out.println("Enter new tag");
-                                }
+                            while (command.compareTo(ConsoleInterface.MEME_TAG) != 0 &&
+                                    command.compareTo(ConsoleInterface.EVENT_TAG) != 0 &&
+                                    command.compareTo(ConsoleInterface.QUIT) != 0) {
 
                                 System.out.print(trend + " is meme (m) or event (e)? ('q' for quit)\ntag-mode>");
-
                                 command = scanner.nextLine();
+                            }
 
-                                while (command.compareTo(ConsoleInterface.MEME_TAG) != 0 &&
-                                        command.compareTo(ConsoleInterface.EVENT_TAG) != 0 &&
-                                        command.compareTo(ConsoleInterface.QUIT) != 0) {
-
-                                    System.out.print(trend + " is meme (m) or event (e)? ('q' for quit)\ntag-mode>");
-                                    command = scanner.nextLine();
-                                }
-
-                                if (command.compareTo(ConsoleInterface.MEME_TAG) == 0) {
-                                    trendVector.setTrendClass(TrendVector.TrendClass.Meme);
-                                    ConsoleInterface.updateTrendVector(trendVector);
-                                }
-                                else if (command.compareTo(ConsoleInterface.EVENT_TAG) == 0 ) {
-                                    trendVector.setTrendClass(TrendVector.TrendClass.Event);
-                                    ConsoleInterface.updateTrendVector(trendVector);
-                                }
-                                else if (command.compareTo(ConsoleInterface.QUIT) == 0) {
-                                }
-
+                            if (command.compareTo(ConsoleInterface.MEME_TAG) == 0) {
+                                trendVector.setTrendClass(TrendVector.TrendClass.Meme);
+                                ConsoleInterface.updateTrendVector(trendVector);
+                            }
+                            else if (command.compareTo(ConsoleInterface.EVENT_TAG) == 0 ) {
+                                trendVector.setTrendClass(TrendVector.TrendClass.Event);
+                                ConsoleInterface.updateTrendVector(trendVector);
+                            }
+                            else if (command.compareTo(ConsoleInterface.QUIT) == 0) {
                             }
                         }
 
@@ -148,8 +145,7 @@ public class ConsoleInterface {
                         else {
                             System.out.println("Location: " + ConsoleInterface.currentLocation);
                             System.out.println("Processing data...");
-                            Statistics.load(Application.DATA_FOLDER + ConsoleInterface.currentLocation + "/" + ConsoleInterface.currentDate + Application.TWEETS_FILE,
-                                    Application.DATA_FOLDER + ConsoleInterface.currentLocation + "/" + ConsoleInterface.currentDate + Application.TRENDS_FILE);
+                            Statistics.load(Application.DATA_FOLDER + ConsoleInterface.currentLocation + "/" + ConsoleInterface.currentDate + Application.TWEETS_FILE);
                             System.out.println("Finished processing!");
                         }
                     }
@@ -164,8 +160,7 @@ public class ConsoleInterface {
                         else {
                             System.out.println("Date: " + ConsoleInterface.currentDate);
                             System.out.println("Processing data...");
-                            Statistics.load(Application.DATA_FOLDER + ConsoleInterface.currentLocation + "/" + ConsoleInterface.currentDate + Application.TWEETS_FILE,
-                                    Application.DATA_FOLDER + ConsoleInterface.currentLocation + "/" + ConsoleInterface.currentDate + Application.TRENDS_FILE);
+                            Statistics.load(Application.DATA_FOLDER + ConsoleInterface.currentLocation + "/" + ConsoleInterface.currentDate + Application.TWEETS_FILE);
                             System.out.println("Finished processing!");
                         }
                     }

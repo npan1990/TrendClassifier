@@ -24,15 +24,9 @@ public class Statistics {
 
     public static boolean printToConsole = true;
 
-    public static void load(String tweetsFileName, String trendsFileName) throws Exception {
+    public static void load(String tweetsFileName) throws Exception {
         Statistics.clear();
         Statistics.loadTweets(tweetsFileName);
-        Statistics.loadTrends(trendsFileName);
-    }
-
-    public static void sense () throws Exception {
-        Statistics.findDistinctWords();
-        Statistics.computeAveragesPerTweet();
     }
 
     public static void senseTrend (TrendVector trendVector) throws Exception {
@@ -40,8 +34,7 @@ public class Statistics {
         System.out.println("Length: " + trendVector.getTrend().length());
         Statistics.findDistinctWordsOfTrend(trendVector.getTrend());
         Statistics.computeAveragesPerTweetOfTrend(trendVector);
-        Statistics.computeDateRangeFeatures(trendVector);
-        Statistics.trendsProcessor.dump(trendVector.getTrend());
+//        Statistics.trendsProcessor.dump(trendVector.getTrend());
     }
 
     public static TrendVector getTrendFeatures(String trend, TrendVector.TrendClass trendClass) throws Exception {
@@ -52,12 +45,12 @@ public class Statistics {
 
         Statistics.computeAveragesPerTweetOfTrend(trendVector);
         Statistics.findDistinctWordsOfTrend(trend);
-        Statistics.computeDateRangeFeatures(trendVector);
+//        Statistics.computeDateRangeFeatures(trendVector);
 
         if (printToConsole) {
             System.out.println("Trend: " + trend);
             System.out.println("Length: " + trend.length());
-            Statistics.trendsProcessor.dump(trend);
+//            Statistics.trendsProcessor.dump(trend);
         }
 
         return trendVector;
@@ -70,12 +63,11 @@ public class Statistics {
 
         Statistics.computeAveragesPerTweetOfTrend(trendVector);
         Statistics.findDistinctWordsOfTrend(trend);
-        Statistics.computeDateRangeFeatures(trendVector);
 
         if (printToConsole) {
             System.out.println("Trend: " + trend);
             System.out.println("Length: " + trend.length());
-            Statistics.trendsProcessor.dump(trend);
+//            Statistics.trendsProcessor.dump(trend);
         }
 
         return trendVector;
@@ -91,17 +83,20 @@ public class Statistics {
 
     private static void loadTweets(String tweetsFileName) throws Exception {
         BufferedReader reader = new BufferedReader(new FileReader(tweetsFileName));
-
         String line;
 
         while ((line = reader.readLine()) != null) {
-            Statistics.tweets.add(new ProcessedTweet(line));
-        }
-    }
+            try {
+                ProcessedTweet processedTweet = new ProcessedTweet(line);
+                //            if (!Statistics.tweets.contains(processedTweet))
+                Statistics.tweets.add(processedTweet);
+            }
+            catch (Exception e) {
+                continue;
+            }
 
-    private static void loadTrends(String trendsFileName) throws Exception {
-        trendsProcessor.process(trendsFileName);
-        Statistics.trends = trendsProcessor.getTrends();
+
+        }
     }
 
     private static void findDistinctWords() {
@@ -146,58 +141,23 @@ public class Statistics {
         }
     }
 
-    private static void computeAveragesPerTweet() {
-        int tokenPopulation, urlPopulation, repliesPopulation, hashTagsPopulation, urls, rts;
-
-        tokenPopulation = urlPopulation = repliesPopulation = hashTagsPopulation = urls = rts = 0;
-
-        for (ProcessedTweet tweet : Statistics.tweets) {
-            if (tweet.isFromSearch() == false) {
-                tokenPopulation += tweet.getTokens().size();
-                urlPopulation += tweet.getUrlsCount();
-                repliesPopulation += tweet.getMentions().size();
-                hashTagsPopulation += tweet.getHashTags().size();
-
-                if (tweet.getUrlsCount() > 0) {
-                    urls++;
-                }
-
-                if (tweet.isRetweet()) {
-                    rts++;
-                }
-            }
-        }
-
-        System.out.println("Average tokens per tweet: " + (double) tokenPopulation / Statistics.tweets.size());
-        System.out.println("Average urls per tweet: " + (double) urlPopulation / Statistics.tweets.size());
-        System.out.println("Average replies per tweet: " + (double) repliesPopulation / Statistics.tweets.size());
-        System.out.println("Average hash tags per tweet: " + (double) hashTagsPopulation / Statistics.tweets.size());
-        System.out.println("Percentage of tweets that had url: " +  urls * (double) 100 / Statistics.tweets.size());
-        System.out.println("Percentage of tweets that were RTs: " +  rts * (double) 100 / Statistics.tweets.size());
-        System.out.println();
-    }
-
     private static void computeAveragesPerTweetOfTrend(TrendVector trendVector) {
         int tweetsWithTrend = 0;
-        int tweetsFromStream = 0;
-        int relevantTweetsFromStream = 0;
+        int relevantTweetsCount = 0;
 
         int tokenPopulation, urlPopulation, mentionsPopulation,
                 hashTagsPopulation, urls, replies, rts, favsPopulation, mediasPopulation;
 
         tokenPopulation = urlPopulation = mentionsPopulation
-                = hashTagsPopulation = urls = replies = rts = favsPopulation = mediasPopulation =0;
+                = hashTagsPopulation = urls = replies = rts = favsPopulation = mediasPopulation = 0;
+
+        List<User> usersList = new ArrayList<User>();
 
         for (ProcessedTweet tweet : Statistics.tweets) {
-
-            if (!tweet.isFromSearch()) {
-                tweetsFromStream++;
-            }
 
             if (Statistics.isRelevant(tweet, trendVector.getTrend())) {
 
                 tweetsWithTrend++;
-
                 tokenPopulation += tweet.getTokens().size();
                 urlPopulation += tweet.getUrlsCount();
                 mentionsPopulation += tweet.getMentions().size();
@@ -220,27 +180,66 @@ public class Statistics {
                     rts+= tweet.getRetweetCount();
                 }
 
-                if (!tweet.isFromSearch()) {
-                    relevantTweetsFromStream++;
+                relevantTweetsCount++;
+
+                // Keep unique users for this trend
+
+                //User
+                User user = tweet.getUser();
+                if (!usersList.contains(user)) {
+                    usersList.add(user);
                 }
             }
         }
 
-        trendVector.setRelevantTweetsFromStream((double) relevantTweetsFromStream / tweetsFromStream);
+        int totalTweets = Statistics.tweets.size();
+
+        // Go over users list and compute user-related features
+        int uniqueUsers = usersList.size();
+        double tweetsPerUser = (double)tweetsWithTrend / uniqueUsers;
+
+        long[] usersListedPopulation = new long[uniqueUsers];
+        long[] usersFollowersPopulation = new long[uniqueUsers];
+        long[] usersFriendsPopulation = new long[uniqueUsers];
+        long[] usersStatusesPopulation = new long[uniqueUsers];
+        long verifiedUsersPopulation = 0;
+
+//        usersListedPopulation = usersFollowersPopulation = usersFriendsPopulation
+//                = usersStatusesPopulation =  verifiedUsersPopulation = 0;
+
+        int i = 0;
+        for (User user : usersList) {
+            usersListedPopulation[i] = user.getUserListedCount();
+            usersFollowersPopulation[i] = user.getUserFollowersCount();
+            usersFriendsPopulation[i] = user.getUserFriendsCount();
+            usersStatusesPopulation[i] = user.getUserStatusesCount();
+            if (user.isUserVerified()) {
+                verifiedUsersPopulation++;
+            }
+            i++;
+        }
+
         trendVector.setTokensPerTweet((double) tokenPopulation / tweetsWithTrend);
         trendVector.setMentionsPerTweet((double) mentionsPopulation / tweetsWithTrend);
         trendVector.setHashTagsPerTweet((double) hashTagsPopulation / tweetsWithTrend);
         trendVector.setPercentageOfTweetsWithUrl((double) urls / tweetsWithTrend);
         trendVector.setRepliesPerTrend((double) replies / tweetsWithTrend);
-        trendVector.setTweetsWithRts((double) rts / tweetsWithTrend);
         trendVector.setFavoritesPerTweet((double) favsPopulation / tweetsWithTrend);
         trendVector.setUrlsPerTweet((double) urlPopulation / tweetsWithTrend);
         trendVector.setMediasPerTweet((double) mediasPopulation / tweetsWithTrend);
         trendVector.setRetweetsPerTweet((double)rts / tweetsWithTrend);
 
+        // Users features
+        trendVector.setTweetsPerUser(tweetsPerUser);
+        trendVector.setUniqueUsers(uniqueUsers);
+        trendVector.setListedCountPerUser(findMedian(usersListedPopulation));
+        trendVector.setUserFollowersPerUser(findMedian(usersFollowersPopulation));
+        trendVector.setUserFriendsPerUser(findMedian(usersFriendsPopulation));
+        trendVector.setUserStatusesPerUser(findMedian(usersStatusesPopulation));
+        trendVector.setAvgVerifiedUsers((double) verifiedUsersPopulation / uniqueUsers);
+
         if (printToConsole) {
             System.out.println("Found in " + tweetsWithTrend + " out of " + Statistics.tweets.size() +  " tweets (" + (double) tweetsWithTrend / Statistics.tweets.size() + ")");
-            System.out.println("Found in " + relevantTweetsFromStream + " out of " + tweetsFromStream +  " tweets from stream (" + (double) relevantTweetsFromStream / tweetsFromStream + ")");
             System.out.println("Average tokens per tweet for " + trendVector.getTrend() + ": " + (double) tokenPopulation / tweetsWithTrend);
             System.out.println("Average urls per tweet for " + trendVector.getTrend() + ": " + (double) urlPopulation / tweetsWithTrend);
             System.out.println("Average mentions per tweet for " + trendVector.getTrend() + ": " + (double) mentionsPopulation / tweetsWithTrend);
@@ -254,30 +253,18 @@ public class Statistics {
         }
     }
 
-    private static void computeDateRangeFeatures(TrendVector trendVector) throws Exception {
-        trendVector.setMaximumRank(Statistics.trendsProcessor.getMaxRank(trendVector.getTrend()));
-        trendVector.setDuration(Statistics.trendsProcessor.getDuration(trendVector.getTrend()));
-        trendVector.setDurationOfLongestDateRange(Statistics.trendsProcessor.getDurationOfLongestRange(trendVector.getTrend()));
-        trendVector.setAverageRank(Statistics.trendsProcessor.getAverageRank(trendVector.getTrend()));
-        trendVector.setMostDominantRank(Statistics.trendsProcessor.getMostDominantRank(trendVector.getTrend()));
-        trendVector.setDaySlice(Statistics.trendsProcessor.getAppearanceSlices(trendVector.getTrend()));
-        trendVector.setMostDominantSlice(Statistics.trendsProcessor.getMostDominantSlice(trendVector.getTrend()));
+    private static double findMedian(long[] unsortedArray) {
+        long[] sortedArray = Arrays.copyOf(unsortedArray, unsortedArray.length);
+        Arrays.sort(sortedArray);
+        int index;
+        double median;
+        if (sortedArray.length % 2 == 0)
+            median = ((double)sortedArray[sortedArray.length/2] + (double)sortedArray[sortedArray.length/2 - 1])/2;
+        else
+            median = (double) sortedArray[sortedArray.length/2];
 
-        if (printToConsole) {
-            System.out.println("Maximum rank: " + trendVector.getMaximumRank());
-            System.out.println("Duration : " + trendVector.getDuration());
-            System.out.println("Duration of longest range: " + trendVector.getDurationOfLongestDateRange());
-            System.out.println("Average rank: " + trendVector.getAverageRank());
-            System.out.println("Most dominant rank: " + trendVector.getMostDominantRank());
-            System.out.println("Appearances in day slices:");
-            for (boolean appearance : trendVector.getDaySlices()) {
-                System.out.print(appearance + " ");
-            }
-            System.out.println();
-            System.out.println("Most dominant slice: " + trendVector.getMostDominantSlice());
-        }
+        return median;
     }
-
 
     private static boolean isRelevant(ProcessedTweet tweet, String trend) {
 
@@ -378,5 +365,86 @@ public class Statistics {
 
     public static ArrayList<String> getTrends() {
         return Statistics.trends;
+    }
+
+    public static void hashtags(int threshold) {
+
+        HashMap<String, Integer> allHashtags = new HashMap<String, Integer>();
+
+        // Iterate over all tweets from stream and get hashtags
+        for (ProcessedTweet tweet : Statistics.tweets) {
+
+            if (tweet.isFromSearch())
+                continue;
+
+            List<String> tweetHashtags = tweet.getHashTags();
+
+            // Create a set with raw - lowercased - hashtags from tweet
+            HashSet<String> tweetHashtagSet = new HashSet<String>();
+            for (String hashtag : tweetHashtags) {
+                String rawHashtag = hashtag.toLowerCase().trim();
+                if (!tweetHashtagSet.contains(rawHashtag)) {
+                    tweetHashtagSet.add(rawHashtag);
+                }
+            }
+
+            for (String hashtag : tweetHashtagSet) {
+                if (allHashtags.get(hashtag)==null){
+                    allHashtags.put(hashtag, new Integer(1));
+                }
+                else {
+                    Integer uptoNow = allHashtags.get(hashtag);
+                    uptoNow++;
+                    allHashtags.put(hashtag, uptoNow);
+                }
+            }
+        }
+
+        boolean ASC = true;
+        Map<String, Integer> sortedMapAsc = sortByComparator(allHashtags, ASC);
+        printMap(sortedMapAsc, threshold);
+
+
+    }
+
+
+
+    private static Map<String, Integer> sortByComparator(Map<String, Integer> unsortMap, final boolean order) {
+
+        List<Map.Entry<String, Integer>> list = new LinkedList<Map.Entry<String, Integer>>(unsortMap.entrySet());
+
+        // Sorting the list based on values
+        Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
+            public int compare(Map.Entry<String, Integer> o1,
+                               Map.Entry<String, Integer> o2) {
+                if (order) {
+                    return o1.getValue().compareTo(o2.getValue());
+                }
+                else {
+                    return o2.getValue().compareTo(o1.getValue());
+
+                }
+            }
+        });
+
+        // Maintaining insertion order with the help of LinkedList
+        Map<String, Integer> sortedMap = new LinkedHashMap<String, Integer>();
+        for (Map.Entry<String, Integer> entry : list) {
+            sortedMap.put(entry.getKey(), entry.getValue());
+        }
+
+        return sortedMap;
+    }
+
+    public static void printMap(Map<String, Integer> map, int threshold) {
+        int count = 0;
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            if (entry.getValue() > threshold) {
+                System.out.println(entry.getKey() + ","+ entry.getValue());
+                count++;
+            }
+        }
+
+        System.out.println("Found " + count + " unique hashtags with more than " + threshold + " occurences");
     }
 }
