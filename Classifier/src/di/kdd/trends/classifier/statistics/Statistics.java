@@ -1,9 +1,11 @@
 package di.kdd.trends.classifier.statistics;
 
+import di.kdd.trends.classifier.ConsoleInterface;
 import di.kdd.trends.classifier.processing.TrendVector;
 import di.kdd.trends.classifier.processing.TrendsProcessor;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.util.*;
 
