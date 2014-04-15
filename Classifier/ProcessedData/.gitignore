@@ -1,0 +1,9 @@
+*
+!README
+
+!.gitignore
+
+!Vectors/
+!Vectors/*/
+!Vectors/*/*/
+!Vectors/*/*/*
