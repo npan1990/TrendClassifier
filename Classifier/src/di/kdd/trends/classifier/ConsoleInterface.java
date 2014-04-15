@@ -3,6 +3,7 @@ package di.kdd.trends.classifier;
 import di.kdd.trends.classifier.processing.TrendVector;
 import di.kdd.trends.classifier.statistics.Application;
 import di.kdd.trends.classifier.statistics.Statistics;
+import org.omg.CORBA.CODESET_INCOMPATIBLE;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -14,15 +15,16 @@ import java.util.Scanner;
 
 public class ConsoleInterface {
 
-    private static String VECTORS_DIRECTORY = Application.DATA_FOLDER + "Vectors/";
-    private static String VECTOR_FILE_NAME = "vector.csv";
+    public static String VECTORS_DIRECTORY = Application.DATA_FOLDER + "Vectors/";
+    public static String VECTOR_FILE_NAME = "vector.csv";
 
-    private static String currentLocation = null;
-    private static String currentDate = null;
+    public static String currentLocation = null;
+    public static String currentDate = null;
 
     private static String MEME_TAG = "m";
     private static String EVENT_TAG = "e";
     private static String QUIT = "q";
+    private static String UPDATE_VECTORS_CMD = "update";
 
     private static ArrayList<TrendVector> trendVectors = null;
 
@@ -48,6 +50,9 @@ public class ConsoleInterface {
                 }
                 else if (tokens.length == 1 && tokens[0].compareTo("q") == 0) {
                     return;
+                }
+                else if (command.compareTo(ConsoleInterface.UPDATE_VECTORS_CMD) == 0) {
+                    ConsoleInterface.updateVectors();
                 }
                 else if (tokens.length == 1 && tokens[0].compareTo("tag") == 0) {
                     System.out.print("Entered tag mode\ntag-mode>");
@@ -247,7 +252,7 @@ public class ConsoleInterface {
     }
 
 
-    private static ArrayList<TrendVector> loadVectors() throws Exception {
+    public static ArrayList<TrendVector> loadVectors() throws Exception {
         ArrayList<TrendVector> trendVectors = new ArrayList<TrendVector>();
 
         ConsoleInterface.setupFileSystem();
@@ -267,7 +272,10 @@ public class ConsoleInterface {
         return trendVectors;
     }
 
-    private static void dumpTrendVectors() throws Exception {
+    public static void dumpTrendVectors() throws Exception {
+
+        System.out.println("Writing vectors to disk");
+
         (new File(ConsoleInterface.getCurrentVectorFileName())).delete();
         (new File(ConsoleInterface.getCurrentVectorFileName())).createNewFile();
 
@@ -282,5 +290,44 @@ public class ConsoleInterface {
 
         vectorWriter.flush();
         vectorWriter.close();
+    }
+
+    public static void updateVectors() throws Exception {
+
+        /* For each month under the Vectors directory */
+
+        File vectorsDirectory = new File(ConsoleInterface.VECTORS_DIRECTORY);
+
+        String []months = vectorsDirectory.list();
+
+        /* For each month */
+
+        for (String month : months) {
+
+            File monthVectors = new File(vectorsDirectory + "/" + month);
+
+            if (monthVectors.isDirectory()) {
+
+                ConsoleInterface.currentLocation = month;
+
+                /* For each day */
+
+                String []days = monthVectors.list();
+
+                for (String day : days) {
+
+                    ConsoleInterface.currentDate = day;
+
+                    System.out.println("Date: " + ConsoleInterface.currentDate);
+                    System.out.println("Location: " + ConsoleInterface.currentLocation);
+                    System.out.println("Processing data...");
+                    Statistics.load(Application.DATA_FOLDER + ConsoleInterface.currentLocation + "/" + ConsoleInterface.currentDate + Application.TWEETS_FILE);
+                    System.out.println("Finished processing!");
+
+                    ConsoleInterface.trendVectors = ConsoleInterface.loadVectors();
+                    ConsoleInterface.dumpTrendVectors();
+                }
+            }
+        }
     }
 }

@@ -1,9 +1,11 @@
 package di.kdd.trends.classifier.statistics;
 
+import di.kdd.trends.classifier.ConsoleInterface;
 import di.kdd.trends.classifier.processing.TrendVector;
 import di.kdd.trends.classifier.processing.TrendsProcessor;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.util.*;
 
@@ -232,10 +234,10 @@ public class Statistics {
         // Users features
         trendVector.setTweetsPerUser(tweetsPerUser);
         trendVector.setUniqueUsers(uniqueUsers);
-        trendVector.setListedCountPerUser(findMedian(usersListedPopulation));
-        trendVector.setUserFollowersPerUser(findMedian(usersFollowersPopulation));
-        trendVector.setUserFriendsPerUser(findMedian(usersFriendsPopulation));
-        trendVector.setUserStatusesPerUser(findMedian(usersStatusesPopulation));
+        trendVector.setListedCountPerUser(findAvg(usersListedPopulation));
+        trendVector.setUserFollowersPerUser(findAvg(usersFollowersPopulation));
+        trendVector.setUserFriendsPerUser(findAvg(usersFriendsPopulation));
+        trendVector.setUserStatusesPerUser(findAvg(usersStatusesPopulation));
         trendVector.setAvgVerifiedUsers((double) verifiedUsersPopulation / uniqueUsers);
 
         if (printToConsole) {
@@ -264,6 +266,16 @@ public class Statistics {
             median = (double) sortedArray[sortedArray.length/2];
 
         return median;
+    }
+
+    private static double findAvg(long[] unsortedArray) {
+        long sum = 0;
+
+        for (long l : unsortedArray) {
+            sum += l;
+        }
+
+        return (double)sum/unsortedArray.length;
     }
 
     private static boolean isRelevant(ProcessedTweet tweet, String trend) {
